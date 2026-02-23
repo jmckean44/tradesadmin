@@ -20,6 +20,18 @@ header {
 	//border-bottom: 1px #ddd solid;
 }
 
+/* =========================
+	 LOGO DESKTOP
+============================ */
+#logo {
+	max-width: clamp(170px, 30vw, 250px);
+	transition: all 0.5s ease;
+	margin-left: 1.25rem;
+	align-self: center;
+	opacity: 1;
+	cursor: pointer;
+}
+
 @media (max-width: 800px) {
 	header {
 		padding: 0;
@@ -37,42 +49,31 @@ header > div {
 #header.unpinned,
 #header.pinned {
 	top: 0;
-	height: 76px;
+	height: 70px;
 	padding: 0;
 	transition: all 0.4s ease;
 	border-bottom: 1px #ddd solid;
 	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
 }
 
-#header.unpinned #logo,
-#header.pinned #logo {
-	max-width: 160px;
+#header.unpinned #nav-desktop,
+#header.pinned #nav-desktop {
+	align-items: start;
 }
 
-#header #logo img {
-	vertical-align: baseline;
+#header.unpinned #logo,
+#header.pinned #logo {
+	max-width: 170px;
 }
 
 @media (max-width: var.$mobile) {
 	#header.unpinned,
 	#header.pinned {
 		padding: 0;
+		height: 70px;
 		transition: all 0.4s ease;
 		border-bottom: 1px #ddd solid;
 	}
-}
-
-/* =========================
-	 LOGO DESKTOP
-============================ */
-#logo {
-	max-width: clamp(200px, 30vw, 300px);
-	transition: all 0.5s ease;
-	margin-left: 1.25rem;
-	align-self: center;
-	margin-bottom: 0;
-	opacity: 1;
-	cursor: pointer;
 }
 
 /* =======================

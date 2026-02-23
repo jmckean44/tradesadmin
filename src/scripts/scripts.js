@@ -146,20 +146,20 @@ document.addEventListener('astro:page-load', () => {
 });
 
 // MOBILE NAV
-// document.addEventListener('asto: page-load', () => {
-// 	const hamburger = document.getElementById('hamburger');
-// 	const overlay = document.getElementById('mobile-overlay');
+document.addEventListener('asto: page-load', () => {
+	const hamburger = document.getElementById('hamburger');
+	const overlay = document.getElementById('mobile-overlay');
 
-// 	hamburger.addEventListener('click', () => {
-// 		overlay.classList.toggle('active');
-// 		hamburger.setAttribute('aria-expanded', overlay.classList.contains('active'));
-// 	});
+	hamburger.addEventListener('click', () => {
+		overlay.classList.toggle('active');
+		hamburger.setAttribute('aria-expanded', overlay.classList.contains('active'));
+	});
 
-// 	// Optional: close menu when clicking outside nav or on a link
-// 	overlay.addEventListener('click', (e) => {
-// 		if (e.target === overlay || e.target.tagName === 'A') {
-// 			overlay.classList.remove('active');
-// 			hamburger.setAttribute('aria-expanded', 'false');
-// 		}
-// 	});
-// });
+	// Optional: close menu when clicking outside nav or on a link
+	overlay.addEventListener('click', (e) => {
+		if (e.target === overlay || e.target.tagName === 'A') {
+			overlay.classList.remove('active');
+			hamburger.setAttribute('aria-expanded', 'false');
+		}
+	});
+});
