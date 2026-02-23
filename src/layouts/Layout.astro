@@ -85,20 +85,87 @@ import { ClientRouter } from 'astro:transitions';
 			}
 		</style>
 
-		<!-- JSON-LD  -->
-		<script is:inline type="application/ld+json">
+		<script type="application/ld+json">
 			{
 				"@context": "https://schema.org",
 				"@type": "LocalBusiness",
 				"name": "TradesAdmin",
 				"url": "https://tradesadmin.ca",
+				"image": "https://tradesadmin.ca/assets/logo.png",
+				"description": "Technical website support for HVAC, plumbing, electrical, roofing, and service contractors across Toronto and the GTA.",
+				"address": {
+					"@type": "PostalAddress",
+					"addressLocality": "Toronto",
+					"addressRegion": "ON",
+					"addressCountry": "CA"
+				},
+				"telephone": "+1-416-986-1059",
+				"email": "hello@tradesadmin.ca",
+				"areaServed": ["Toronto", "GTA", "Etobicoke", "Scarborough", "North York", "Mississauga", "Brampton", "Vaughan", "Markham", "Richmond Hill"],
+				"sameAs": []
+			}
+		</script>
+
+		<!-- JSON-LD  -->
+		<script is:inline type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Service",
+				"serviceType": "Technical Website Support for Contractors",
 				"logo": "https://tradesadmin.ca/logo.svg",
-				"description": "TradesAdmin delivers structured technical support for small businesses, specializing in indexing fixes, local data accuracy, performance optimization, security enhancements, technical SEO, website audits, troubleshooting, and ongoing maintenance for businesses in Toronto and the GTA."
+				"description": "TradesAdmin delivers structured technical support for small businesses, specializing in indexing fixes, local data accuracy, performance optimization, security enhancements, technical SEO, website audits, troubleshooting, and ongoing maintenance for businesses in Toronto and the GTA.",
+				"provider": {
+					"@type": "Organization",
+					"name": "TradesAdmin",
+					"url": "https://tradesadmin.ca"
+				},
+				"areaServed": "Toronto and the Greater Toronto Area",
+				"hasOfferCatalog": {
+					"@type": "OfferCatalog",
+					"name": "Contractor Technical Services",
+					"itemListElement": [
+						{
+							"@type": "Offer",
+							"itemOffered": {
+								"@type": "Service",
+								"name": "Technical & Local SEO Cleanup"
+							}
+						},
+						{
+							"@type": "Offer",
+							"itemOffered": {
+								"@type": "Service",
+								"name": "Performance Optimization"
+							}
+						},
+						{
+							"@type": "Offer",
+							"itemOffered": {
+								"@type": "Service",
+								"name": "Structural Cleanup"
+							}
+						},
+						{
+							"@type": "Offer",
+							"itemOffered": {
+								"@type": "Service",
+								"name": "Website Maintenance Plans"
+							}
+						},
+						{
+							"@type": "Offer",
+							"itemOffered": {
+								"@type": "Service",
+								"name": "Hosting, DNS & SSL Support"
+							}
+						}
+					]
+				}
 			}
 		</script>
 
 		<!-- Google tag (gtag.js) -->
-		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-C9RE8CZ4CT"></script>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-ES0ZCH7R7T"></script>
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
 			function gtag() {
@@ -106,7 +173,7 @@ import { ClientRouter } from 'astro:transitions';
 			}
 			gtag('js', new Date());
 
-			gtag('config', 'G-C9RE8CZ4CT');
+			gtag('config', 'G-ES0ZCH7R7T');
 		</script>
 
 		<ClientRouter />
