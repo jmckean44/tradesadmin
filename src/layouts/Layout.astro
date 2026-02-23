@@ -85,10 +85,11 @@ import { ClientRouter } from 'astro:transitions';
 			}
 		</style>
 
-		<script type="application/ld+json">
+		<script is:inline type="application/ld+json">
 			{
 				"@context": "https://schema.org",
 				"@type": "LocalBusiness",
+				"@id": "https://tradesadmin.ca/#business",
 				"name": "TradesAdmin",
 				"url": "https://tradesadmin.ca",
 				"image": "https://tradesadmin.ca/assets/logo.png",
@@ -106,20 +107,17 @@ import { ClientRouter } from 'astro:transitions';
 			}
 		</script>
 
-		<!-- JSON-LD  -->
 		<script is:inline type="application/ld+json">
 			{
 				"@context": "https://schema.org",
 				"@type": "Service",
+				"@id": "https://tradesadmin.ca/#services",
 				"serviceType": "Technical Website Support for Contractors",
-				"logo": "https://tradesadmin.ca/logo.svg",
-				"description": "TradesAdmin delivers structured technical support for small businesses, specializing in indexing fixes, local data accuracy, performance optimization, security enhancements, technical SEO, website audits, troubleshooting, and ongoing maintenance for businesses in Toronto and the GTA.",
+				"description": "TradesAdmin provides technical website fixes, indexing cleanup, local search alignment, performance optimization, structural corrections, hosting support, and ongoing maintenance for service contractors in Toronto and the GTA.",
 				"provider": {
-					"@type": "Organization",
-					"name": "TradesAdmin",
-					"url": "https://tradesadmin.ca"
+					"@id": "https://tradesadmin.ca/#business"
 				},
-				"areaServed": "Toronto and the Greater Toronto Area",
+				"areaServed": ["Toronto", "GTA", "Etobicoke", "Scarborough", "North York", "Mississauga", "Brampton", "Vaughan", "Markham", "Richmond Hill"],
 				"hasOfferCatalog": {
 					"@type": "OfferCatalog",
 					"name": "Contractor Technical Services",
@@ -128,35 +126,40 @@ import { ClientRouter } from 'astro:transitions';
 							"@type": "Offer",
 							"itemOffered": {
 								"@type": "Service",
-								"name": "Technical & Local SEO Cleanup"
+								"name": "Technical & Local SEO Cleanup",
+								"description": "Indexing corrections, metadata cleanup, sitemap validation, structured data fixes, and Google Business Profile alignment."
 							}
 						},
 						{
 							"@type": "Offer",
 							"itemOffered": {
 								"@type": "Service",
-								"name": "Performance Optimization"
+								"name": "Performance Optimization",
+								"description": "Core Web Vitals diagnostics, mobile responsiveness, asset cleanup, script optimization, and WebP image conversion."
 							}
 						},
 						{
 							"@type": "Offer",
 							"itemOffered": {
 								"@type": "Service",
-								"name": "Structural Cleanup"
+								"name": "Structural Cleanup",
+								"description": "Navigation restructuring, layout corrections, page hierarchy improvements, and theme conflict resolution."
 							}
 						},
 						{
 							"@type": "Offer",
 							"itemOffered": {
 								"@type": "Service",
-								"name": "Website Maintenance Plans"
+								"name": "Website Maintenance Plans",
+								"description": "Ongoing updates, monitoring, backups, broken link checks, form corrections, and error debugging."
 							}
 						},
 						{
 							"@type": "Offer",
 							"itemOffered": {
 								"@type": "Service",
-								"name": "Hosting, DNS & SSL Support"
+								"name": "Hosting, DNS & SSL Support",
+								"description": "Hosting review, DNS and nameserver configuration, SSL certificate fixes, and migration support."
 							}
 						}
 					]

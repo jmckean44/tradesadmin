@@ -14,7 +14,7 @@ header {
 	width: 100%;
 	z-index: 999999999;
 	transition: all 0.3s ease;
-	padding: 1rem 0;
+	//padding: 1rem 0;
 	background: var.$bg-clr;
 	border-top: 5px var.$theme-clr solid;
 	//border-bottom: 1px #ddd solid;
@@ -41,6 +41,16 @@ header > div {
 	padding: 0;
 	transition: all 0.4s ease;
 	border-bottom: 1px #ddd solid;
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
+}
+
+#header.unpinned #logo,
+#header.pinned #logo {
+	max-width: 160px;
+}
+
+#header #logo img {
+	vertical-align: baseline;
 }
 
 @media (max-width: var.$mobile) {
