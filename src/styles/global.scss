@@ -628,10 +628,14 @@ $container-padding-mobile: 1.25rem;
 
 .txt-lrg {
 	font-size: min(max(1.5rem, 2.5vw), 26px) !important;
-	//line-height: 1.5;
 	margin: 0 auto 1.5rem;
 	width: 100%;
-	//border: 1px red solid;
+}
+
+.txt-xl {
+	font-size: min(max(2.5rem, 3.5vw), 36px) !important;
+	margin: 0 auto 1.5rem;
+	width: 100%;
 }
 
 .txt-wh {

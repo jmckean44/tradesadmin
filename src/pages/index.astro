@@ -42,22 +42,8 @@ import tanya from '../img/tanya.webp';
 
 					<div class="swiper-slide">
 						<div class="flex padding-x align-middle">
-							<div class="cell small-18 medium-8 center">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center">
 								<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
-							</div>
-							<div class="cell small-18 medium-10">
-								<h1><strong>Performance Optimization</strong></h1>
-								<p>
-									<strong>Core Web Vitals</strong> diagnostics, layout stabilization, and <strong>performance corrections</strong>.
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="flex padding-x align-middle">
-							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center performance">
-								<Image src={performance} alt="Performance icon" />
 							</div>
 							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
 								<h1><strong>Performance Optimization</strong></h1>
@@ -88,7 +74,7 @@ import tanya from '../img/tanya.webp';
 								<Image src={localseo} alt="Local SEO: Google Business Profile optimization and local search results" />
 							</div>
 							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
-								<h1><strong>Structured Order</strong></h1>
+								<h1><strong>Local SEO</strong></h1>
 								<p>
 									<span class="semibold">Navigation restructuring</span>, <span class="semibold">URL hierarchy refinement</span>, and <span class="semibold">layout corrections</span> fixes. Resolve
 									<span class="semibold">metadata conflicts</span>, <span class="semibold">sitemap issues</span>, and <strong
@@ -166,6 +152,22 @@ import tanya from '../img/tanya.webp';
 			</div>
 
 			<div class="services-grid trig-fade-up enable-trig">
+				<div class="services-card trig-target" style="--trig-delay: .4s;">
+					<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
+					<h2>Performance</h2>
+					<p>Fixing slow sites and mobile performance issues that affect user experience.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Core web vitals diagnostic</li>
+						<li><span class="check">✓</span> Mobile/responsive corrections</li>
+						<li><span class="check">✓</span> Image compression & WebP conversion</li>
+						<li><span class="check">✓</span> Lazy loading configuration</li>
+						<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
+						<li><span class="check">✓</span> Render-blocking resource reviews</li>
+						<li><span class="check">✓</span> Plugin audits</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
 				<div class="services-card trig-target" style="--trig-delay: 0s;">
 					<div class="service-icon">
 						<Image src={iconTechnical} alt="Technical SEO icon" />
@@ -198,22 +200,6 @@ import tanya from '../img/tanya.webp';
 						<li><span class="check">✓</span>Category, Hours, & service area verification</li>
 						<li><span class="check">✓</span>Business description alignment</li>
 						<li><span class="check">✓</span>Google Map embedding</li>
-					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
-				</div>
-
-				<div class="services-card trig-target" style="--trig-delay: .4s;">
-					<div class="service-icon"><Image src={performance} alt="Performance icon" /></div>
-					<h2>Performance</h2>
-					<p>Fixing slow sites and mobile performance issues that affect user experience.</p>
-					<ul class="service-features">
-						<li><span class="check">✓</span> Core web vitals diagnostic</li>
-						<li><span class="check">✓</span> Mobile/responsive corrections</li>
-						<li><span class="check">✓</span> Image compression & WebP conversion</li>
-						<li><span class="check">✓</span> Lazy loading configuration</li>
-						<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
-						<li><span class="check">✓</span> Render-blocking resource reviews</li>
-						<li><span class="check">✓</span> Plugin audits</li>
 					</ul>
 					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
 				</div>
@@ -304,7 +290,7 @@ import tanya from '../img/tanya.webp';
 					<div class="pricing-card single-issue">
 						<div class="flex">
 							<div class="cell small-18 medium-18 large-13">
-								<h3 class="txt-lrg">Single-Issue Fix</h3>
+								<h3 class="txt-xl">Single-Issue Fix</h3>
 								<p class="price-desc txt-drk">Perfect for broken forms, SSL warnings, mobile alignment issues, slow pages, or incorrect Google listing info.</p>
 							</div>
 							<div class="cell small-18 medium-18 large-5">
