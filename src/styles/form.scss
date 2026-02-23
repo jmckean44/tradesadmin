@@ -1,0 +1,439 @@
+@use 'variables' as var;
+
+$input-font: var.$font-sans-serif-med;
+$input-font-size: 0.9rem;
+$input-font-size-button: 1rem;
+$input-font-clr: var.$theme-clr-dark;
+$input-font-spacing: 0.5px;
+$input-background-clr: rgba(255, 255, 255, 0.9);
+$input-background-focus: rgba(16, 236, 0, 0.127);
+$input-boxshadow: 0 #ccc 5px;
+$input-button-clr: #fff;
+$input-button-border: 2px #fff solid;
+$input-border-radius: 3px;
+$input-border: 1px var.$theme-clr-dark solid;
+$input-span-bg: #fff;
+$input-padding: 0.8rem 0.75rem 0.8rem;
+
+$input-line-height: 1;
+
+$input-focus-border: 1px solid #fff;
+$input-focus-boxshadow: 0 0 5px #ccc;
+$input-min-height: 32px;
+$input-margin: 0 0 1rem;
+$input-error-clr: var.$theme-clr;
+$input-transition: all ease 0.5s;
+
+.errorMsg {
+	margin-top: -0.8rem;
+	margin-bottom: 1rem;
+}
+
+form > div {
+	position: relative;
+}
+
+// form div.error {
+// 	margin: 0rem 0 0.5rem;
+// 	padding: 0;
+// 	background-color: transparent;
+// 	font-size: 0.7rem;
+// 	font-style: italic;
+// 	text-transform: none;
+// 	font-weight: 600;
+// 	z-index: 1;
+// 	color: var.$theme-clr;
+// }
+
+form div.response {
+	font-family: var.$font-sans-serif-bold;
+	margin: 0;
+	padding: 0;
+	top: 0;
+	width: 100%;
+	line-height: 1.4;
+	color: var.$theme-clr-dark;
+	font-weight: 600;
+	text-transform: none;
+}
+
+form #result {
+	font-family: var.$font-sans-serif-bold;
+	line-height: 1.2;
+	margin-top: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+form h3 {
+	font-size: 1rem;
+}
+
+form .message {
+	font-weight: bold;
+}
+
+form div {
+	position: relative;
+}
+
+form span,
+form span.helperText {
+	position: absolute;
+	top: 7px;
+	right: 7px;
+	font-size: 12px;
+	line-height: $input-line-height;
+	font-weight: bold;
+	color: var.$theme-clr-dark;
+	text-transform: uppercase;
+	font-family: var.$font-sans-serif-semibold;
+	opacity: 0;
+	transition: $input-transition;
+}
+
+form input:focus + span,
+form textarea:focus + span,
+form input:focus ~ label + span {
+	opacity: 1;
+}
+
+form input ~ label + span {
+	opacity: 0;
+}
+
+.form-input-wrapper {
+	position: relative;
+}
+
+form .btn:hover:not(:disabled) {
+	background: var.$theme-clr;
+	transform: translateY(-1px);
+}
+
+form .btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* =============================
+	 LABELS
+================================ */
+
+label {
+	font-family: var.$font-sans-serif-med;
+}
+
+label {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	cursor: pointer;
+}
+
+form input:focus + span,
+form textarea:focus + span,
+form input:focus ~ label + span {
+	opacity: 1;
+	transition: $input-transition;
+}
+
+form label.error {
+	margin: -10px 0 1rem 0;
+	padding: 0;
+	background-color: transparent;
+	font-family: var.$font-sans-serif-semibold;
+	font-size: 9px;
+	z-index: 1;
+	color: #fff;
+	letter-spacing: 1px;
+}
+
+/* ====================================
+	 PLACEHOLDERS
+======================================= */
+input::placeholder {
+	color: var.$theme-clr-dark;
+}
+
+textarea::placeholder {
+	color: var.$theme-clr-dark;
+}
+
+[placeholder]:focus::-webkit-input-placeholder {
+	transition: opacity 0.2s 0.2s ease;
+	opacity: 0;
+}
+
+/* ====================================
+	 BUTTONS
+======================================= */
+button {
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #fff;
+}
+
+.btn {
+	font-size: 1rem;
+	font-family: var.$font-sans-serif-bold;
+	line-height: 1;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-decoration: none !important;
+	border: none;
+	border-radius: 3px;
+	padding: 0.75rem 1rem;
+	cursor: pointer;
+	position: relative;
+	background: var.$theme-clr-dark;
+	color: #fff !important;
+	cursor: pointer;
+	display: inline-block;
+	transition: all ease 0.3s;
+}
+
+button:hover,
+.btn:hover {
+	background: var.$theme-clr;
+	color: #fff !important;
+	transition: all ease 0.3s;
+}
+
+.btn.arrow {
+	background: var.$theme-clr !important;
+	//background-size: 10px !important;
+	transform: translateX(0px);
+	transition: all ease 0.3s;
+}
+
+.btn.arrow:hover {
+	padding-right: 2.5rem;
+	background: var.$highlight !important;
+	padding: 0.75rem 1rem 0.75rem 1rem;
+	//background-size: 10px !important;
+	transform: translateX(5px);
+	transition: all ease 0.3s;
+}
+
+/* =============================================
+	 INPUTS
+================================================ */
+input[type='button']:hover {
+	background: var.$theme-clr;
+	transition: $input-transition;
+}
+
+input::-webkit-date-and-time-value {
+	text-align: left;
+}
+
+input[type='text'],
+input[type='password'],
+input[type='date'],
+input[type='email'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='time'],
+input[type='url'],
+textarea {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding: $input-padding;
+	margin: $input-margin;
+	font-family: $input-font;
+	font-size: $input-font-size;
+	color: var.$theme-clr-dark;
+	-webkit-text-fill-color: var.$theme-clr-dark;
+	text-transform: uppercase;
+	background-color: $input-background-clr;
+	border-radius: $input-border-radius;
+	border: $input-border;
+	letter-spacing: $input-font-spacing;
+	line-height: $input-line-height;
+	transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+	appearance: none;
+}
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='date']:focus,
+input[type='email']:focus,
+input[type='number']:focus,
+input[type='search']:focus,
+input[type='tel']:focus,
+input[type='time']:focus,
+input[type='url']:focus,
+textarea:focus {
+	border: $input-border;
+	background: $input-background-focus;
+	outline: none;
+	color: var.$theme-clr;
+	-webkit-text-fill-color: var.$theme-clr-dark;
+	box-shadow: $input-focus-boxshadow;
+	transition: box-shadow 0.2s, border-color 0.2s ease-in-out;
+}
+
+input[type='submit'],
+input[type='button'] {
+	border-radius: $input-border-radius;
+}
+
+textarea {
+	max-width: 100%;
+	overflow: auto;
+	height: auto;
+	font-family: inherit;
+	margin: $input-margin;
+	font-family: $input-font;
+	background: $input-background-clr;
+	border-radius: $input-border-radius;
+}
+
+/* =============================================
+	 SELECT
+================================================ */
+select {
+	width: 100%;
+	//min-height: $input-min-height;
+	padding: $input-padding;
+	margin-bottom: 0.5rem;
+	font-size: $input-font-size;
+	text-transform: uppercase;
+	font-family: $input-font;
+	font-family: $input-font;
+	letter-spacing: $input-font-spacing;
+	color: var.$theme-clr-dark;
+	background-color: $input-background-clr;
+	border: $input-border;
+	border-radius: $input-border-radius;
+	appearance: none;
+	cursor: pointer;
+	background: url('../img/arrow-down.svg') no-repeat right 10px center;
+	background-size: 15px;
+}
+select:focus {
+	outline: none;
+	border: $input-border;
+	background-color: $input-background-focus;
+	box-shadow: $input-focus-boxshadow;
+	transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+}
+
+/* =============================
+	 CHECKBOXES
+================================ */
+input[type='checkbox'] {
+	margin: 0;
+	width: 1rem;
+	height: 1rem;
+	border-radius: 0.15em;
+	transform: translateY(-0.075em);
+	display: grid;
+	place-content: center;
+}
+
+input[type='checkbox']:checked {
+	background: var.$theme-clr;
+}
+
+input[type='checkbox']:focus {
+	box-shadow: $input-focus-boxshadow;
+}
+
+[type='checkbox'] + label {
+	display: inline-block;
+	margin-left: 0.5rem;
+	margin-right: 1rem;
+	margin-bottom: 0;
+}
+
+.checkbox-input {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	z-index: -1;
+}
+
+.checkbox-design {
+	width: 16px;
+	height: 16px;
+	background: var.$theme-clr;
+	position: relative;
+}
+
+.checkbox-design::before {
+	content: '';
+	display: block;
+	width: inherit;
+	height: inherit;
+	border-radius: inherit;
+	background: #ccc;
+	transform: scale(1);
+	transition: $input-transition;
+}
+
+.checkbox-input:checked + .checkbox-design::before {
+	transform: scale(0);
+	background: var.$theme-clr;
+}
+
+/* =============================
+	 INPUT RADIO
+================================ */
+.label {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	cursor: pointer;
+	transition: all ease 0.3s;
+}
+
+.radio-input {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 1px;
+	height: 1px;
+	opacity: 1;
+	z-index: -1;
+}
+
+.radio-design {
+	width: 16px;
+	height: 16px;
+	border-radius: 100%;
+	background: var.$theme-clr;
+	position: relative;
+	margin-bottom: 1rem;
+}
+
+.radio-design::before {
+	content: '';
+	display: block;
+	width: inherit;
+	height: inherit;
+	border-radius: inherit;
+	background: #fff;
+	transform: scale(0.8);
+	transition: 0.3s;
+}
+
+.radio-input:checked + .radio-design::before {
+	transform: scale(0);
+	background: var.$theme-clr;
+}
+
+.submit-button {
+	text-align: left;
+	margin-top: 1rem;
+}

@@ -1,0 +1,131 @@
+@use 'swiper/css';
+@use 'swiper/css/pagination';
+@use 'variables' as var;
+
+.swiper.swiper-testimonials {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	max-width: 100%;
+	margin: 3rem auto;
+	padding-bottom: 5rem;
+}
+
+.swiper-testimonials .swiper-slide {
+	background: rgba(0, 0, 0, 0.04);
+	border-radius: 10px;
+	//border: 1px #ddd solid;
+	padding: clamp(1.25rem, 2vw, 3rem) clamp(1.25rem, 2.5vw, 3rem) clamp(2rem, 5vw, 3rem);
+	text-align: left;
+	position: relative;
+	min-height: 220px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.swiper-testimonials .swiper-slide img {
+	max-width: 100%;
+	margin-bottom: 3rem;
+	border-radius: 3px;
+}
+
+.swiper-testimonials .swiper-slide p {
+	//text-indent: 0.5rem;
+	position: relative;
+	margin-bottom: 2rem;
+}
+
+.swiper-testimonials.quote {
+	color: var.$theme-clr;
+	font-family: var.$font-serif;
+	font-size: 3rem;
+	font-weight: 500;
+	line-height: 1;
+	width: 25px;
+	height: 20px;
+	position: absolute;
+	//border: 1px red solid;
+}
+
+.swiper-testimonials .quote.top {
+	left: 0;
+	top: 0;
+	transform: scaleX(-1);
+}
+
+.swiper-testimonials .quote.btm {
+	bottom: 0.25rem;
+	right: auto;
+}
+
+.swiper-testimonials .author {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var.$font-clr;
+	margin-top: auto;
+	margin-left: 0;
+	margin-right: auto;
+}
+
+#testimonials .author em {
+	font-size: 1rem;
+}
+
+#testimonials .author span {
+	font-size: 1rem;
+	font-weight: 400;
+	color: var.$font-clr;
+}
+
+.swiper-testimonials .swiper-pagination {
+	//position: relative;
+	padding: 1rem;
+	margin-bottom: -1rem;
+	width: 100%;
+	//border: 1px red solid;
+}
+
+.swiper-testimonials .swiper-pagination-bullet {
+	background: rgba(38, 38, 45, 0.1);
+	opacity: 1;
+	transition: all 0.3s ease;
+	height: 14px;
+	width: 14px;
+	border-radius: 7px;
+	cursor: pointer;
+}
+
+.swiper-testimonials .swiper-pagination-bullet-active,
+.swiper-testimonials .swiper-pagination-bullet:hover {
+	background: var.$theme-clr;
+	opacity: 1 !important;
+	transition: all 0.3s ease;
+}
+
+.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+	margin: 0 0.5rem !important;
+}
+
+/* ====================
+	 SWIPER TESTIMONIALS
+======================= */
+#testimonials {
+	background: var.$bg-clr;
+	padding-bottom: 50px;
+}
+
+#testimonials h5 {
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var.$theme-clr;
+	font-size: 1.1rem;
+	margin-bottom: 0.5rem;
+}
+
+.testimonials {
+	text-align: center;
+}
+
+.testimonials img {
+	max-width: 600px;
+}

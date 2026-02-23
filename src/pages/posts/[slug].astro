@@ -1,0 +1,301 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+	const blogPosts = await getCollection('blog');
+	return blogPosts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
+}
+
+interface BlogPostData {
+	title: string;
+	heroImage?: string;
+	date: Date;
+	author?: string;
+	tags: string[];
+	excerpt?: string;
+}
+
+interface BlogPost {
+	data: BlogPostData;
+	rendered?: { html: string };
+	body?: string;
+	slug: string;
+}
+
+const { post } = Astro.props as { post: BlogPost };
+---
+
+<Layout pageTitle={post.data.title} pageSiteTitles={`${post.data.title} - Blog`}>
+	<article class="blog-post">
+		<div class="container top-of-page">
+			<div class="flex padding-x">
+				<div class="cell small-18">
+					<!-- Post Header -->
+					<div class="post-header trig-fade-up enable-trig" data-trig-var="true">
+						{
+							post.data.heroImage && (
+								<div class="post-hero-image trig-target">
+									{typeof post.data.heroImage === 'string' ? <Image src={post.data.heroImage} alt={post.data.title} /> : <Image src={post.data.heroImage} alt={post.data.title} />}
+								</div>
+							)
+						}
+
+						<div class="back-to-news top">
+							<a href="/news/" class="back-btn">← Back to News</a>
+						</div>
+
+						<div class="post-meta">
+							<time datetime={post.data.date.toISOString()}>
+								{
+									post.data.date.toLocaleDateString('en-US', {
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric',
+									})
+								}
+							</time>
+							{post.data.author && <span class="author">by {post.data.author}</span>}
+						</div>
+
+						<div class="post-tags">
+							{post.data.tags.slice(0, 3).map((tag) => <span class="tag">{tag.trim()}</span>)}
+						</div>
+
+						<h1 class="post-title">{post.data.title}</h1>
+						<p class="post-excerpt">{post.data.excerpt}</p>
+					</div>
+
+					<!-- Post Content -->
+					<div class="post-content">
+						<div class="markdown-content" set:html={post.rendered?.html || post.body} />
+					</div>
+
+					<!-- Post Footer -->
+					<footer class="post-footer">
+						<div class="back-to-news">
+							<a href="/news/" class="back-btn">← Back to News</a>
+						</div>
+					</footer>
+				</div>
+			</div>
+		</div>
+	</article>
+</Layout>
+
+<style>
+	#responsive-design {
+		scroll-margin-top: 75px;
+	}
+
+	.blog-post {
+		margin: 0 auto;
+		max-width: 1000px;
+	}
+
+	.post-header {
+		margin-bottom: 0;
+	}
+
+	.post-meta {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+		margin-bottom: 20px;
+		margin-top: 100px;
+		font-size: 1rem;
+	}
+
+	.post-meta time {
+		font-weight: 500;
+	}
+
+	.author {
+		color: #999;
+		font-style: italic;
+	}
+
+	.post-title {
+		font-size: 3rem;
+		line-height: 1.2;
+		margin-bottom: 20px;
+		font-weight: 700;
+		text-align: left;
+	}
+
+	.post-excerpt {
+		margin-bottom: 1rem;
+	}
+
+	.post-hero-image {
+		margin-bottom: 0.5rem;
+		border-radius: 5px;
+		overflow: hidden;
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0);
+	}
+
+	.post-hero-image img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.post-tags {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
+		margin-bottom: 60px;
+	}
+
+	.tag {
+		background: var(--highlight-light);
+		color: white;
+		padding: 9px 10px 7px;
+		border-radius: 3px;
+		font-size: 0.9rem;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	.markdown-content {
+		max-width: none;
+	}
+
+	/* Style the rendered markdown content */
+	.post-content :global(h1),
+	.post-content :global(h2),
+	.post-content :global(h3) {
+		margin-top: 40px;
+		margin-bottom: 20px;
+		font-weight: 700;
+	}
+
+	.post-content :global(h1) {
+		font-size: 2.5rem;
+	}
+
+	.post-content :global(h2) {
+		font-size: 2rem;
+	}
+
+	.post-content :global(h3) {
+		font-size: 1.5rem;
+	}
+
+	.post-content :global(p) {
+		margin-bottom: 24px;
+	}
+
+	.post-content :global(ul),
+	.post-content :global(ol) {
+		margin-bottom: 24px;
+		padding-left: 0px;
+		margin-left: 2rem;
+		font-size: 1.2rem;
+	}
+
+	.post-content :global(ul) {
+		list-style-type: disc !important;
+	}
+
+	html.dark .post-content :global(ul),
+	html.dark .post-content :global(ol) {
+		color: #ccc;
+	}
+
+	.post-content :global(li) {
+		margin-bottom: 8px;
+	}
+
+	.post-content :global(blockquote) {
+		border-left: 4px solid var(--highlight);
+		padding: 20px 30px;
+		margin: 30px 0;
+		background: #f8f9fa;
+		border-radius: 0 8px 8px 0;
+		font-style: italic;
+		color: #555;
+	}
+
+	.post-content :global(code) {
+		background: #f8f9fa;
+		padding: 3px 8px;
+		border-radius: 4px;
+		font-family: 'Monaco', 'Menlo', monospace;
+		font-size: 0.9em;
+		color: #e91e63;
+	}
+
+	.post-content :global(pre) {
+		background: #282c34;
+		color: #abb2bf;
+		padding: 25px;
+		border-radius: 5px;
+		overflow-x: auto;
+		margin: 30px 0 100px;
+		line-height: 1.5;
+		font-size: 1.2rem;
+	}
+
+	.post-content :global(pre code) {
+		background: none;
+		padding: 0;
+		color: inherit;
+	}
+
+	.post-content :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: 5px;
+		margin: 30px 0;
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+	}
+
+	.post-content :global(a) {
+		text-decoration-line: underline;
+		text-decoration-style: dotted;
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 4px;
+		transition: color 0.3s ease;
+	}
+
+	.post-content :global(a:hover) {
+		color: var(--highlight);
+	}
+
+	.post-footer {
+		padding: 40px 0 40px;
+	}
+
+	.back-to-news.top {
+		display: inline-block;
+		float: right;
+	}
+
+	.back-to-news.top a {
+		font-size: 1rem;
+	}
+
+	.back-btn {
+		background: var(--theme-clr);
+		color: white;
+		padding: 10px 15px;
+		border-radius: 3px;
+		text-decoration: none;
+		transition: background 0.3s ease;
+	}
+
+	.back-btn:hover {
+		background: var(--dark);
+	}
+
+	html.dark .back-btn:hover {
+		background: var(--container-bg-dark);
+	}
+</style>

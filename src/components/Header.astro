@@ -1,0 +1,130 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1); // remove first "/"
+import { Image } from 'astro:assets';
+import logo from '../img/logo.svg';
+import wordmark from '../img/logo-wordmark.svg';
+//import ThemeIcon from '../components/ThemeIcon.astro';
+---
+
+<a class="skip-navigation" href="#main-content">Skip to main content</a>
+
+<header id="header">
+	<div>
+		<div id="logo">
+			<a href="/" aria-label="Logo" role="link" aria-label="link to homepage">
+				<Image src={logo} class="logo" alt="TradesAdmin logo" />
+			</a>
+		</div>
+		<nav id="nav-desktop">
+			<ul>
+				<li>
+					<a class={currentPath === 'services/' ? 'active' : ''} href="#services" data-astro-reload role="link" aria-label="link to SERVICES section">SERVICES</a>
+				</li>
+				<li>
+					<a class={currentPath === 'pricing/' ? 'active' : ''} href="#pricing" data-astro-reload role="link" aria-label="link to pricing section">PRICING</a>
+				</li>
+				<li>
+					<a class={currentPath === 'process/' ? 'active' : ''} href="#process" data-astro-reload role="link" aria-label="link to Process section">Process</a>
+				</li>
+				<li>
+					<a class={currentPath === 'testimonials/' ? 'active' : ''} href="#testimonials" data-astro-reload role="link" aria-label="link to TESTIMONIALS section">TESTIMONIALS</a>
+				</li>
+				<li>
+					<a class={currentPath === 'contact/' ? 'active' : ''} href="#contact" data-astro-reload role="link" aria-label="link to contact section">CONTACT</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+
+	<button class="nav-toggle" id="hamburger" aria-label="Open menu" aria-expanded="false" tabindex="0">
+		<span></span>
+		<!-- <span></span> -->
+		<span></span>
+	</button>
+</header>
+
+<div class="overlay-bg" id="mobile-overlay" aria-hidden="true">
+	<nav id="nav-mobile" class="mobile-menu" tabindex="-1">
+		<ul>
+			<li>
+				<a class={currentPath === 'services/' ? 'active' : ''} href="#services" data-astro-reload role="link" aria-label="link to SERVICES section">SERVICES</a>
+			</li>
+			<li>
+				<a class={currentPath === 'pricing/' ? 'active' : ''} href="#pricing" data-astro-reload role="link" aria-label="link to pricing section">PRICING</a>
+			</li>
+			<li>
+				<a class={currentPath === 'process/' ? 'active' : ''} href="#process" data-astro-reload role="link" aria-label="link to Process section">Process</a>
+			</li>
+			<li>
+				<a class={currentPath === 'testimonials/' ? 'active' : ''} href="#testimonials" data-astro-reload role="link" aria-label="link to TESTIMONIALS section">TESTIMONIALS</a>
+			</li>
+			<li>
+				<a class={currentPath === 'contact/' ? 'active' : ''} href="#contact" data-astro-reload role="link" aria-label="link to contact section">CONTACT</a>
+			</li>
+		</ul>
+	</nav>
+</div>
+
+<script is:inline>
+	// Mobile menu animation and toggle
+	document.addEventListener('DOMContentLoaded', function () {
+		const hamburger = document.getElementById('hamburger');
+		const overlay = document.getElementById('mobile-overlay');
+		const navMobile = document.getElementById('nav-mobile');
+		const links = navMobile.querySelectorAll('a');
+		function closeMenu() {
+			overlay.classList.remove('active');
+			hamburger.classList.remove('active');
+			overlay.setAttribute('aria-hidden', 'true');
+			hamburger.setAttribute('aria-expanded', 'false');
+		}
+		hamburger.addEventListener('click', function () {
+			const isOpen = overlay.classList.contains('active');
+			if (isOpen) {
+				closeMenu();
+			} else {
+				overlay.classList.add('active');
+				hamburger.classList.add('active');
+				hamburger.setAttribute('aria-expanded', 'true');
+				overlay.setAttribute('aria-hidden', 'false');
+				navMobile.focus();
+			}
+		});
+		links.forEach((link) => link.addEventListener('click', closeMenu));
+		// Close on resize above 800px
+		window.addEventListener('resize', function () {
+			if (window.innerWidth >= 800) closeMenu();
+		});
+	});
+</script>
+
+<!-- <div class="overlay">
+	<div id="hamburger">
+		<span></span>
+		<span></span>
+	</div>
+
+	<nav id="nav-mobile">
+		<ul>
+			<li>
+				<a class={currentPath === '' ? 'active' : ''} href="/" role="link" aria-label="link to Homepage">HOME</a>
+			</li>
+			<li>
+				<a class={currentPath === 'about/' ? 'active' : ''} href="/about/" role="link" aria-label="link to ABOUT page">ABOUT</a>
+			</li>
+			<li>
+				<a class={currentPath === 'services/' ? 'active' : ''} href="/services/" role="link" aria-label="link to floorplans page">SERVICES</a>
+			</li>
+			<li>
+				<a class={currentPath === 'features/' ? 'active' : ''} href="/features/" role="link" aria-label="link to FEATURES page">FEATURES</a>
+			</li>
+			<li>
+				<a class={currentPath === 'builder/' ? 'active' : ''} href="/builder/" role="link" aria-label="link to BUILDER page">BUILDER</a>
+			</li>
+			<li>
+				<a class={currentPath === 'contact/' ? 'active' : ''} href="/contact/" role="link" aria-label="link to contact page">CONTACT</a>
+			</li>
+		</ul>
+	</nav>
+</div> -->

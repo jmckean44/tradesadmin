@@ -1,0 +1,537 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PictureComponent from '../components/PictureComponent.astro';
+import { Image, Picture } from 'astro:assets';
+import '../styles/page-home.scss';
+import '../styles/swiper-intro.scss';
+import '../styles/swiper-testimonials.scss';
+import testimonials from '../img/testimonials.webp';
+import fortune from '../img/fortune.webp';
+import gia from '../img/gia.webp';
+import riverscape from '../img/riverscape.webp';
+import shiupong from '../img/shiupong.webp';
+import localseo from '../img/local-seo.webp';
+import technical from '../img/technical.webp';
+import performance from '../img/performance.webp';
+import audit from '../img/audit.webp';
+import hosting from '../img/hosting.webp';
+import iconHosting from '../img/icon-hosting.webp';
+import iconStructure from '../img/icon-structure.webp';
+import iconAudit from '../img/icon-audit.webp';
+import iconLocalseo from '../img/icon-local-seo.webp';
+import iconTechnical from '../img/icon-technical-seo.webp';
+import wyse from '../img/wyse.webp';
+import tanya from '../img/tanya.webp';
+---
+
+<Layout pageTitle="description" pageSiteTitles="">
+	<section id="intro">
+		<div class="container">
+			<div class="swiper swiper-intro">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-10">
+								<h1><strong>Web Admin Support</strong> for HVAC, Plumbing, Electrical, & Roofing Contractors</h1>
+							</div>
+							<div class="cell small-18 medium-8 center">
+								<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 center">
+								<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+							</div>
+							<div class="cell small-18 medium-10">
+								<h1><strong>Performance Optimization</strong></h1>
+								<p>
+									<strong>Core Web Vitals</strong> diagnostics, layout stabilization, and <strong>performance corrections</strong>.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center performance">
+								<Image src={performance} alt="Performance icon" />
+							</div>
+							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+								<h1><strong>Performance Optimization</strong></h1>
+								<p>
+									<strong>Core Web Vitals</strong> diagnostics, layout stabilization, and <strong>performance corrections</strong>.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-10">
+								<h1><strong>Technical SEO</strong></h1>
+								<p>
+									<strong>Metadata diagnostics</strong> and <strong>technical cleanup</strong> to ensure indexing clarity and <strong>structural consistency</strong>.
+								</p>
+							</div>
+							<div class="cell small-18 medium-8 center technical">
+								<lottie-player src="/website.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center local-seo">
+								<Image src={localseo} alt="Local SEO: Google Business Profile optimization and local search results" />
+							</div>
+							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+								<h1><strong>Structured Order</strong></h1>
+								<p>
+									<span class="semibold">Navigation restructuring</span>, <span class="semibold">URL hierarchy refinement</span>, and <span class="semibold">layout corrections</span> fixes. Resolve
+									<span class="semibold">metadata conflicts</span>, <span class="semibold">sitemap issues</span>, and <strong
+										><a href="https://business.google.com/" target="_blank" role="link" aria-label="offsite link to Google Business Profile">Google Business Profile</a></strong
+									> inconsistencies.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-10">
+								<h1>
+									<strong>Audits</strong> & <strong>Maintenance</strong>
+								</h1>
+								<p>A <strong>dedicated Web Admin</strong> for updates, backups, security, maintenance, and fixes.</p>
+							</div>
+							<div class="cell small-18 medium-8 audit">
+								<Image src={audit} alt="Website Audits, performance & Maintenance Illustration" />
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center hosting">
+								<Image src={hosting} class="hosting" alt="Hosting & Media Support Illustration" />
+							</div>
+							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+								<h1><strong>Hosting</strong> & <strong>Security</strong></h1>
+								<p>Technical support for web and email <strong>hosting </strong> and <strong>security</strong>.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+	</section>
+
+	<div class="cta"><a class="btn" href="#contact">Request a Technical Review</a></div>
+
+	<section id="services">
+		<div class="container top btm">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-11">
+					<div class="services-intro">
+						<p class="eyebrow">Services</p>
+						<h2>
+							<strong>Who This Is For</strong>
+						</h2>
+						<p class="txt-lrg">
+							<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing, and other service contractors</span> across the GTA.
+						</p>
+						<p class="txt-lrg">
+							If your business relies on inbound calls, Google Maps visibility, or online quoting, your website and local data must run cleanly, quickly, and consistently. We handle the technical
+							upkeep, fixes, and diagnostics that are often overlooked.
+						</p>
+					</div>
+				</div>
+				<div class="cell small-18 medium-7 gbp-video">
+					<video playsinline muted loop autoplay aria-label="Google Business Profile optimization and local search results illustration" poster="/gbp.webp">
+						<source data-src="/gbp.mp4" type="video/mp4" />
+					</video>
+				</div>
+			</div>
+
+			<div class="flex padding-x align-middle" id="what-we-fix">
+				<div class="cell small-18">
+					<h2>
+						<strong>What Gets Fixed</strong>
+					</h2>
+				</div>
+			</div>
+
+			<div class="services-grid trig-fade-up enable-trig">
+				<div class="services-card trig-target" style="--trig-delay: 0s;">
+					<div class="service-icon">
+						<Image src={iconTechnical} alt="Technical SEO icon" />
+					</div>
+					<h2>Technical SEO</h2>
+					<p>Ensuring Google can correctly understand and display your service pages.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span>Indexing diagnostics</li>
+						<li><span class="check">✓</span>Sitemap creation/correction</li>
+						<li><span class="check">✓</span>URL structure review</li>
+						<li><span class="check">✓</span>Metadata review and refinement</li>
+						<li><span class="check">✓</span>Canonical tags checks</li>
+						<li><span class="check">✓</span>Internal linking corrections</li>
+						<li><span class="check">✓</span>Schema/structured data validation</li>
+						<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .2s;">
+					<div class="service-icon">
+						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
+					</div>
+					<h2>Local Search Accuracy</h2>
+					<p>Keeping your business information accurate and consistent across platforms.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span>Google Business Profile setup</li>
+						<li><span class="check">✓</span>Name, Address, Phone consistency checks</li>
+						<li><span class="check">✓</span>Google Account and Analytics Setup</li>
+						<li><span class="check">✓</span>Category, Hours, & service area verification</li>
+						<li><span class="check">✓</span>Business description alignment</li>
+						<li><span class="check">✓</span>Google Map embedding</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .4s;">
+					<div class="service-icon"><Image src={performance} alt="Performance icon" /></div>
+					<h2>Performance</h2>
+					<p>Fixing slow sites and mobile performance issues that affect user experience.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Core web vitals diagnostic</li>
+						<li><span class="check">✓</span> Mobile/responsive corrections</li>
+						<li><span class="check">✓</span> Image compression & WebP conversion</li>
+						<li><span class="check">✓</span> Lazy loading configuration</li>
+						<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
+						<li><span class="check">✓</span> Render-blocking resource reviews</li>
+						<li><span class="check">✓</span> Plugin audits</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .6s;">
+					<div class="service-icon">
+						<Image src={iconStructure} alt="Structural Cleanup icon" />
+					</div>
+					<h2>Structural Cleanup</h2>
+					<p>Fixing layout, navigation, and content structure issues.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Proper page naming conventions</li>
+						<li><span class="check">✓</span> Simplifying navigation structure</li>
+						<li><span class="check">✓</span> Correcting mobile layout issues</li>
+						<li><span class="check">✓</span> Fixing spacing & alignment inconsistencies</li>
+						<li><span class="check">✓</span> Removing outdated styling conflicts</li>
+						<li><span class="check">✓</span> Fixing header/footer inconsistencies</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: 1s;">
+					<div class="service-icon">
+						<Image src={iconHosting} alt="Hosting icon" />
+					</div>
+					<h2>Hosting, DNS, Security</h2>
+					<p>Technical support for hosting and media management.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Web & Email hosting setup</li>
+						<li><span class="check">✓</span> DNS & Nameserver config</li>
+						<li><span class="check">✓</span> SSL certificate issues</li>
+						<li><span class="check">✓</span> Security monitoring</li>
+						<li><span class="check">✓</span> Domain Registration & Management</li>
+						<li><span class="check">✓</span> Website Backups & Restore Services</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .8s;">
+					<div class="service-icon">
+						<Image src={iconAudit} alt="Audits & Maintenance icon" />
+					</div>
+					<h2>Audits & Maintenance</h2>
+					<p>Technical checks to keep your site running reliably.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Scheduled updates</li>
+						<li><span class="check">✓</span> Backup verification</li>
+						<li><span class="check">✓</span> Small fixes, broken link checks, layout adjustments</li>
+						<li><span class="check">✓</span> WordPress version/plugin conflicts</li>
+						<li><span class="check">✓</span> Console error debugging</li>
+						<li><span class="check">✓</span> Form errors and testing</li>
+					</ul>
+					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="cta"><a class="btn" href="#contact">Request a Technical Review</a></div>
+
+	<div class="audit">
+		<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+	</div>
+
+	<section id="counter-container">
+		<div class="container top btm">
+			<div class="flex padding-x">
+				<div class="cell small-18">
+					<h2 class="center margin-btm-med">Most Commonly Found Technical Issues</h2>
+					<div id="counter">
+						<div class="trig-fade-up enable-trig center"><p><span>Outdated</span></p><h3 class="trig-target" style="--trig-delay: .0s;">Google<br />Business<br />Profile</h3></div>
+						<div class="trig-fade-up enable-trig center"><p><span>Slow</span></p><h3 class="trig-target" style="--trig-delay: .25s;">Mobile<br />Load<br />Speed</h3></div>
+						<div class="trig-fade-up enable-trig center"><p><span>Broken</span></p><h3 class="trig-target" style="--trig-delay: .5s;">Forms,<br />SSL,<br />Indexing</h3></div>
+						<div class="trig-fade-up enable-trig center"><p><span>Issues With</span></p><h3 class="trig-target" style="--trig-delay: .75s;">Layout,<br />Navigation,<br />Structure</h3></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="pricing">
+		<div class="container">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-8 pricing-content">
+					<h2>Pricing Overview</h2>
+					<p class="txt-lrg semibold">Work is scoped after a brief technical review. Pricing reflects site size, technical complexity, and the depth of corrections required.</p>
+					<p class="margin-btm-med txt-lrg">Most technical cleanup projects fall between $900–$1,400.</p>
+					<div class="pricing-card single-issue">
+						<div class="flex">
+							<div class="cell small-18 medium-18 large-13">
+								<h3 class="txt-lrg">Single-Issue Fix</h3>
+								<p class="price-desc txt-drk">
+									A flat-rate fix for a specific problem - such as a broken contact form, mobile alignment issue, SSL warning, slow loading page, or incorrect Google business details.
+								</p>
+							</div>
+							<div class="cell small-18 medium-18 large-5">
+								<div class="pricing-amount">
+									<span class="price"><em>flat</em> <sup>$</sup>149</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cell small-18 medium-10 pricing-container">
+					<div class="pricing-card">
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Technical & Local SEO</h3>
+								<p class="price-desc">
+									Corrections to indexing, metadata, canonical review, sitemap validation, and Google Business Profile alignment. <span
+										>Pricing depends on site size and the number of technical issues identified.</span
+									>
+								</p>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>900</span>
+								</div>
+							</div>
+						</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Performance Optimization</h3>
+								<p class="price-desc">
+									Load speed improvements, script and asset cleanup, and Core Web Vitals diagnostics for performance tuning to address bottlenecks. <span>Cost varies based on site complexity.</span>
+								</p>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>1,000</span>
+								</div>
+							</div>
+						</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Structural Cleanup</h3>
+								<p class="price-desc">
+									Navigation restructuring, theme and template consolidation, URL hierarchy refinement, and broader architecture corrections. <span>Cost varies based on site complexity.</span>
+								</p>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>1,200</span>
+								</div>
+							</div>
+						</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Audits & Maintenance</h3>
+								<p class="price-desc">
+									Ongoing updates, backups, monitoring, and corrective support to keep websites stable and secure. <span>Monthly pricing is based on update frequency and support level.</span>
+								</p>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>150</span>
+								</div>
+							</div>
+						</div>
+						<div class="flex">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Hosting Admin</h3>
+								<p class="price-desc">Hosting, DNS, and SSL configuration review, including migration support where needed. <span>Cost depends on server setup and hosting environment.</span></p>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>900</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="process">
+		<div class="container top btm">
+			<div class="flex padding-x">
+				<div class="cell small-18 enable-trig trig-fade-up">
+					<div class="center margin-btm-med trig-target" style="--trig-delay: 0s;">
+						<p class="eyebrow center">A Simple</p>
+						<h2 class="title">3-Step Process</h2>
+					</div>
+				</div>
+			</div>
+
+			<div class="process-timeline">
+				<div class="process-step trig-target" style="--trig-delay: 0s;">
+					<div class="step-number">1</div>
+					<div class="step-content">
+						<h3>Submit URL &<br />Describe the Issue</h3>
+						<p>Provide your website address and outline any concerns.</p>
+					</div>
+				</div>
+
+				<div class="process-step trig-target" style="--trig-delay: .2s;">
+					<div class="step-number">2</div>
+					<div class="step-content">
+						<h3>Technical<br />Findings & Scope</h3>
+						<p>You receive a clear, plain-English list of issues and a fixed-price estimate.</p>
+					</div>
+				</div>
+
+				<div class="process-step trig-target" style="--trig-delay: .4s;">
+					<div class="step-number">3</div>
+					<div class="step-content">
+						<h3>Approval &<br />Implementation</h3>
+						<p>Corrections are completed and deployed without disruption.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="cta"><a class="btn" href="#contact">Free Website Review</a></div>
+		</div>
+	</section>
+
+	<section id="testimonials">
+		<div class="container top">
+			<div class="flex padding-x align-middle enable-trig trig-fade-up">
+				<div class="cell small-18 medium-9 trig-target" style="--trig-delay: 0s;">
+					<p class="eyebrow">Testimonials</p>
+					<h2 class="sub-title">Client <strong>Comments</strong></h2>
+					<p>
+						<span class="semibold">TradesAdmin</span> supports small service business owners <strong>in the GTA</strong> through technical corrections, performance improvements, and ongoing maintenance.
+					</p>
+					<p class="semibold">Projects are managed with a focus on practical problem-solving and long-term stability.</p>
+				</div>
+				<div class="cell small-18 medium-9 testimonials">
+					<Image src={testimonials} alt="Client testimonials for TradesAdmin  website technical support services" />
+				</div>
+			</div>
+
+			<div class="swiper swiper-testimonials">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide">
+						<Image src={wyse} alt="Wyse Construction Group website" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> rebuilt our WordPress site, improved the overall performance and resolved the technical challenges we were experiencing, which made a noticeable difference
+							in our online visibility.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mireet</strong><br />
+							<span class="semibold">Wyse Construction</span><br />
+							<em class="reg">Accounting Manager</em>
+							<br />
+							<span><a target="_blank" href="https://wyseconstruction.ca" class="underline" role="link" aria-label="offsite link to wyseconstruction.ca">wyseconstruction.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={shiupong} alt="Shiupong corporate site" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							We had <span class="semibold">TradesAdmin</span> review our corporate site and are very pleased with how well the site is performing. They corrected several technical issues, explained everything
+							clearly, and are always accessible.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Carmen</strong><br />
+							<span class="semibold">Shiupong Group</span><br />
+							<em class="reg">National Account Manager</em><br />
+							<span><a target="_blank" href="https://shiupong.com" class="underline" role="link" aria-label="offsite link to shiupong.com">shiupong.com</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={riverscape} alt="Riverscape residential community project" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> significantly accelerated our site’s loading times and resolved persistent mobile layout issues, all without requiring a complete redesign. Their
+							targeted optimizations enhanced both user experience and site performance across devices.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mark</strong><br />
+							<span class="semibold">Upperview Homes</span><br />
+							<em class="reg">President & Owner</em><br />
+							<span><a target="_blank" href="https://riverscape.ca/" class="underline" role="link" aria-label="offsite link to riverscape.ca">riverscape.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={gia} alt="Gia Property Management" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> made the process of building our WordPress site easy, straightforward, and perfect for us to manage our own content. Our site functions great, and
+							is responsive. They corrected multiple technical issues, explained the root causes clearly, and restored our site stability.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mike</strong><br />
+							<span class="semibold">Gia Property Management</span><br />
+							<em class="reg">Co-Founder & Vice President</em>
+							<br />
+							<span><a target="_blank" href="https://giapm.ca/" class="underline" role="link" aria-label="offsite link to giapm.ca">giapm.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={fortune} alt="fortune district website" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> have continually been attentive with any technical questions or concerns that we had, responded quickly, and handled the job thoroughly. <span
+								class="quote btm">&rdquo;</span
+							>
+						</p>
+						<div class="author">
+							<strong>Kent</strong><br />
+							<span class="semibold">Fortune CCP - Pre-Delivery Inspections (PDI)</span><br />
+							<em class="reg">Founder & Owner</em>
+							<br />
+							<span><a target="_blank" href="https://fortuneccp.com" class="underline" role="link" aria-label="offsite link to fortuneccp.com">fortuneccp.com</a></span>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+	</section>
+
+	<script src="../scripts/swiper-intro.js"></script>
+	<script src="../scripts/swiper-testimonials.js"></script>
+	<script src="../scripts/nav-active-scroll.js"></script>
+	<script is:inline src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+	<script src="../scripts/lazyload-videos.js"></script>
+</Layout>
