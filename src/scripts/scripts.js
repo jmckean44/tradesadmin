@@ -4,12 +4,12 @@ document.addEventListener('astro:page-load', () => {
 	const urlInput = document.getElementById('url');
 	const form = document.getElementById('form');
 
-	// URL VALIDATION FOR .ca or .com
+	// URL VALIDATION FOR http(s):// and valid TLD
 	if (urlInput && form) {
 		form.addEventListener('submit', (e) => {
 			const urlValue = urlInput.value.trim();
-			// Accepts .ca or .com at the end, case-insensitive
-			if (!/(\.ca|\.com)$/i.test(urlValue)) {
+			// Accepts http:// or https:// and ends with .ca, .com, .org, .net, .edu, with optional trailing slash (case-insensitive)
+			if (!/^https?:\/\/.+\.(ca|com|org|net|edu)\/?$/i.test(urlValue)) {
 				urlInput.classList.add('is-invalid');
 				e.preventDefault();
 			} else {
