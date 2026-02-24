@@ -175,6 +175,7 @@ body {
 	line-height: 1.4;
 	margin: 0;
 	font-family: var.$font-sans-serif-reg;
+	color: var.$theme-clr-dark;
 	font-weight: normal;
 	font-size: min(max(1.5rem, 2vw), 20px);
 	height: 100%;
@@ -655,7 +656,18 @@ $container-padding-mobile: 1.25rem;
 .cta {
 	text-align: center;
 	margin: 0 auto;
-	padding: 0 $container-padding;
+}
+
+.cta.top {
+	padding: 50px $container-padding 0;
+}
+
+.cta.btm {
+	padding: 0 $container-padding 100px;
+}
+
+.cta.top.btm {
+	padding: 50px $container-padding 80px;
 }
 
 .cta .btn {

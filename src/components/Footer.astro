@@ -248,14 +248,14 @@ import gbp from '../img/gbp-mobile.webp';
 				return;
 			}
 
-			// 1a. Custom URL validation: must contain a dot and a suffix (.ca, .com, .org, etc.) max 3 chars
+			// 1a. Custom URL validation: must contain a dot and a suffix (.ca, .com, .org, etc.) max 3 chars, with or without http(s):// and trailing slash
 			const urlInput = form.querySelector('input[name="url"]');
 			const urlValue = urlInput.value.trim();
-			// Regex: must have a dot, then 2-3 letter suffix (e.g. .ca, .com, .org)
-			const urlSuffixPattern = /\.[a-zA-Z]{2,3}$/;
+			// Regex: must have a dot, then 2-3 letter suffix (e.g. .ca, .com, .org), optional http(s)://, optional trailing slash
+			const urlSuffixPattern = /^(https?:\/\/)?[\w.-]+\.[a-zA-Z]{2,}(\/)?$/;
 			if (!urlSuffixPattern.test(urlValue)) {
 				result.style.display = 'block';
-				result.innerHTML = 'Please provide a valid URL ending in .ca, .com, .org, etc.';
+				result.innerHTML = 'Please provide a valid URL (e.g. tradesadmin.ca, https://tradesadmin.ca, tradesadmin.ca/, https://tradesadmin.ca/).';
 				result.style.color = '#dc3545';
 				urlInput.focus();
 				return;

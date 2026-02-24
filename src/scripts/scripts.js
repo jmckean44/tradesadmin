@@ -4,19 +4,7 @@ document.addEventListener('astro:page-load', () => {
 	const urlInput = document.getElementById('url');
 	const form = document.getElementById('form');
 
-	// URL VALIDATION FOR http(s):// and valid TLD
-	if (urlInput && form) {
-		form.addEventListener('submit', (e) => {
-			const urlValue = urlInput.value.trim();
-			// Accepts http:// or https:// and ends with .ca, .com, .org, .net, .edu, with optional trailing slash (case-insensitive)
-			if (!/^https?:\/\/.+\.(ca|com|org|net|edu)\/?$/i.test(urlValue)) {
-				urlInput.classList.add('is-invalid');
-				e.preventDefault();
-			} else {
-				urlInput.classList.remove('is-invalid');
-			}
-		});
-	}
+	// URL validation handled in Footer.astro for consistency
 
 	// PHONE NUMBER VALIDATION (optional, only digits, max 12 digits)
 	if (phoneInput) {

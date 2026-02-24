@@ -14,7 +14,7 @@ header {
 	width: 100%;
 	z-index: 999999999;
 	transition: all 0.3s ease;
-	//padding: 1rem 0;
+	padding: 1rem 0;
 	background: var.$bg-clr;
 	border-top: 5px var.$theme-clr solid;
 	//border-bottom: 1px #ddd solid;
@@ -24,12 +24,17 @@ header {
 	 LOGO DESKTOP
 ============================ */
 #logo {
-	max-width: clamp(170px, 30vw, 250px);
-	transition: all 0.5s ease;
+	max-width: clamp(170px, 20vw, 250px);
+	transition: all 0.3s ease;
 	margin-left: 1.25rem;
+	margin-bottom: 0;
 	align-self: center;
 	opacity: 1;
 	cursor: pointer;
+}
+
+#logo img {
+	vertical-align: baseline;
 }
 
 @media (max-width: 800px) {
@@ -51,7 +56,7 @@ header > div {
 	top: 0;
 	height: 70px;
 	padding: 0;
-	transition: all 0.4s ease;
+	transition: all 0.3s ease;
 	border-bottom: 1px #ddd solid;
 	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
 }
@@ -64,15 +69,25 @@ header > div {
 #header.unpinned #logo,
 #header.pinned #logo {
 	max-width: 170px;
+	transition: all 0.3s ease;
 }
 
 @media (max-width: var.$mobile) {
+	#header {
+		height: 70px;
+	}
 	#header.unpinned,
 	#header.pinned {
 		padding: 0;
 		height: 70px;
-		transition: all 0.4s ease;
+		transition: all 0.3s ease;
 		border-bottom: 1px #ddd solid;
+	}
+	#logo {
+		max-width: 170px;
+	}
+	#logo img {
+		margin-top: 2px;
 	}
 }
 

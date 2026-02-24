@@ -21,7 +21,11 @@ import iconAudit from '../img/icon-audit.webp';
 import iconLocalseo from '../img/icon-local-seo.webp';
 import iconTechnical from '../img/icon-technical-seo.webp';
 import wyse from '../img/wyse.webp';
-import tanya from '../img/tanya.webp';
+import iconIssueSSL from '../img/icon-issue-ssl.svg';
+import iconIssueGBP from '../img/icon-issue-gbp.svg';
+import iconIssueSpeed from '../img/icon-issue-speed.svg';
+import iconIssueResponsive from '../img/icon-issue-responsive.svg';
+import iconIssueBroken from '../img/icon-issue-broken.svg';
 ---
 
 <Layout pageTitle="description" pageSiteTitles="">
@@ -116,14 +120,52 @@ import tanya from '../img/tanya.webp';
 		</div>
 	</section>
 
-	<div class="cta"><a class="btn" href="#contact">Request a Technical Review</a></div>
+	<div class="cta top"><a class="btn" href="#contact">Get a Free Website Speed Test</a></div>
 
-	<section id="services">
-		<div class="container top btm">
+	<section id="masonry-section">
+		<div class="container top">
+			<h2 class="margin-btm-med bold center">Common <span class="theme-clr">Technical Issues</span></h2>
+			<div class="masonry-grid trig-fade-up enable-trig">
+				<div class="masonry-item trig-target" style="--trig-delay: .0s;">
+					<p class="issue">Google & Indexing</p>
+					<h3>Outdated Google Business Profile, missing Analytics, no Search Console setup reduces visibility</h3>
+					<div><Image src={iconIssueGBP} alt="Google Business Profile icon" class="gbp" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .2s;">
+					<p class="issue">Performance & Speed</p>
+					<h3>Performance & Speed Issues, High Bounce Rates</h3>
+					<div><Image src={iconIssueSpeed} alt="Performance & Speed icon" class="speed" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
+					<p class="issue">Security & Updates</p>
+					<h3>Expired SSL certificates and outdated plugins can trigger warnings</h3>
+					<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .6s;">
+					<p class="issue">Structure & Navigation</p>
+					<h3>Navigation, layout & naming inconsistencies confuse users and harm SEO</h3>
+					<div><Image src={iconStructure} alt="Structure icon" class="structure" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
+					<p class="issue">Mobile & Responsiveness</p>
+					<h3>Non-Responsive Design, Poor Mobile Optimization</h3>
+					<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: 1.5s;">
+					<p class="issue">Broken Links & Forms</p>
+					<h3>404 "Page Not Found" damages trust and weakens search performance, missed opportunities for conversions</h3>
+					<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="services-intro">
+		<div class="container top">
 			<div class="flex padding-x align-middle">
 				<div class="cell small-18 medium-11">
 					<div class="services-intro">
-						<p class="eyebrow">Services</p>
+						<p class="eyebrow">Support</p>
 						<h2>
 							<strong>Who This Is For</strong>
 						</h2>
@@ -132,8 +174,9 @@ import tanya from '../img/tanya.webp';
 						</p>
 						<p class="txt-lrg">
 							If your business depends on <span class="semibold">inbound calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quoting</span>, your
-							website and local listings must load fast, function properly, and stay error-free. TradesAdmin handles the technical upkeep, diagnostics, and fixes that keep everything running smoothly.
+							website and local listings must load fast, function properly, and stay error-free.
 						</p>
+						<p class="txt-lrg">TradesAdmin handles the <span class="semibold">technical upkeep, diagnostics, and fixes</span> that keeps everything running smoothly.</p>
 					</div>
 				</div>
 				<div class="cell small-18 medium-7 gbp-video">
@@ -142,9 +185,14 @@ import tanya from '../img/tanya.webp';
 					</video>
 				</div>
 			</div>
+		</div>
+	</section>
 
+	<section id="services">
+		<div class="container btm">
 			<div class="flex padding-x align-middle" id="what-we-fix">
 				<div class="cell small-18">
+					<p class="eyebrow">Services</p>
 					<h2>
 						<strong>What Gets Fixed</strong>
 					</h2>
@@ -176,7 +224,7 @@ import tanya from '../img/tanya.webp';
 					<p>Ensuring Google can correctly understand and display your service pages.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span>Indexing diagnostics</li>
-						<li><span class="check">✓</span>Sitemap creation/correction</li>
+						<li><span class="check">✓</span>Sitemap creation/validation</li>
 						<li><span class="check">✓</span>URL structure review</li>
 						<li><span class="check">✓</span>Metadata review and refinement</li>
 						<li><span class="check">✓</span>Canonical tags checks</li>
@@ -258,27 +306,7 @@ import tanya from '../img/tanya.webp';
 		</div>
 	</section>
 
-	<div class="cta"><a class="btn" href="#contact">Submit your URL</a></div>
-
-	<div class="audit">
-		<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
-	</div>
-
-	<section id="counter-container">
-		<div class="container top btm">
-			<div class="flex padding-x">
-				<div class="cell small-18">
-					<h2 class="center margin-btm-med">Most Commonly Found Technical Issues</h2>
-					<div id="counter">
-						<div class="trig-fade-up enable-trig center"><p><span>Outdated</span></p><h3 class="trig-target" style="--trig-delay: .0s;">Google<br />Business<br />Profile</h3></div>
-						<div class="trig-fade-up enable-trig center"><p><span>Slow</span></p><h3 class="trig-target" style="--trig-delay: .25s;">Mobile<br />Load<br />Speed</h3></div>
-						<div class="trig-fade-up enable-trig center"><p><span>Broken</span></p><h3 class="trig-target" style="--trig-delay: .5s;">Forms,<br />SSL,<br />Indexing</h3></div>
-						<div class="trig-fade-up enable-trig center"><p><span>Issues With</span></p><h3 class="trig-target" style="--trig-delay: .75s;">Layout,<br />Navigation,<br />Structure</h3></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+	<div class="cta"><a class="btn" href="#contact">Get a Free Technical Review</a></div>
 
 	<section id="pricing">
 		<div class="container">
@@ -411,7 +439,7 @@ import tanya from '../img/tanya.webp';
 				</div>
 			</div>
 
-			<div class="cta"><a class="btn" href="#contact">Ask a Question</a></div>
+			<div class="cta top"><a class="btn" href="#contact">Ask a Question</a></div>
 		</div>
 	</section>
 

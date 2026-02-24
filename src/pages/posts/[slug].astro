@@ -40,7 +40,11 @@ const { post } = Astro.props as { post: BlogPost };
 						{
 							post.data.heroImage && (
 								<div class="post-hero-image trig-target">
-									{typeof post.data.heroImage === 'string' ? <Image src={post.data.heroImage} alt={post.data.title} /> : <Image src={post.data.heroImage} alt={post.data.title} />}
+									{typeof post.data.heroImage === 'string' ? (
+										<Image src={post.data.heroImage} alt={post.data.title} inferSize={true} />
+									) : (
+										<Image src={post.data.heroImage} alt={post.data.title} inferSize={true} />
+									)}
 								</div>
 							)
 						}

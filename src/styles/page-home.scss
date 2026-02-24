@@ -12,81 +12,110 @@
 /* =======================
 	 COUNTER
 ========================== */
-#counter-container {
-	padding: 0 1.25rem 0;
+.masonry-grid {
+	column-count: 3;
+	column-gap: 1.25rem;
+	transition: all 0.5s ease-in-out;
+	column-fill: initial;
 }
 
-#counter-container .container {
-	background: var.$theme-clr-dark;
-	//background: linear-gradient(180deg, var.$theme-clr-blue, 60%, var.$theme-clr-blue 100%);
-	border-radius: 10px;
-	padding: clamp(5rem, 5vw, 6rem) 1.5rem clamp(0rem, 2vw, 3rem);
-}
-
-#counter-container h2 {
-	text-transform: none;
-	font-family: var.$font-sans-serif-med;
-	color: #fff;
-	font-size: min(max(1.75rem, 2vw), 30px);
-	margin-bottom: 3rem !important;
-}
-
-#counter {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	column-gap: 2rem;
-	text-align: center;
+.masonry-item {
+	display: flex;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	height: 100%;
+	min-height: 300px;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
+	margin-bottom: 1.25rem;
+	border-radius: 10px;
+	background: var.$theme-clr-dark;
+	padding: clamp(1.5rem, 3vw, 3rem) clamp(1.25rem, 2vw, 1.5rem);
+	font-size: 1.1rem;
+	transition: box-shadow 0.3s;
 }
 
-#counter h3,
-#counter p {
-	text-align: center;
-	letter-spacing: 0;
-}
-
-#counter h3 {
-	font-weight: 300;
-	font-size: clamp(2rem, 3vw, 30px);
-	color: var.$highlight-light;
-	margin-bottom: 0;
-}
-
-#counter p {
-	line-height: 1.2;
-	font-size: 1.3rem;
+.masonry-item > div,
+.masonry-item h3,
+.masonry-item p {
+	text-align: center !important;
+	margin: 0 auto;
 	color: #fff;
-	max-width: 250px;
-	text-align: center;
-	margin: 0 auto 1rem;
+}
+
+.masonry-item h3 {
+	font-size: clamp(1.5rem, 2vw, 1.75rem);
+	line-height: 1.2;
+	font-family: var.$font-sans-serif-reg;
+	margin-bottom: 2rem;
+}
+
+.masonry-item p.issue {
+	font-size: 1.2rem;
+	line-height: 1.1;
 	font-family: var.$font-sans-serif-semibold;
+	margin-bottom: 1rem;
+	color: rgba(255, 255, 255, 0.8);
+	color: var.$theme-clr-light;
+	text-transform: uppercase;
 }
 
-#counter p span {
-	font-family: var.$font-sans-serif-reg;
+.masonry-item .gbp {
+	margin-top: 0;
+	max-width: 70px;
+}
+.masonry-item img {
+	max-width: 90px;
 }
 
-#counter-container .disclaimer {
-	font-family: var.$font-sans-serif-reg;
-	font-size: 0.9rem;
-	color: var.$note;
-	text-align: center;
-	font-style: italic;
-}
+// .masonry-item:first-child {
+// 	background: #1570b5;
+// }
+// .masonry-item:nth-child(2) {
+// 	background: #7411a3;
+// }
+// .masonry-item:nth-child(3) {
+// 	background: #9b0a45;
+// }
+// .masonry-item:nth(4) {
+// 	background: #9b0a45;
+// }
+// .masonry-item:nth-child(5) {
+// 	background: #6d6000;
+// }
+// .masonry-item:nth-child(6) {
+// 	background: #a31195;
+// }
+// .masonry-item:last-child {
+// 	background: #0c8708;
+// }
 
-@media (max-width: 1200px) {
-	#counter {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 1400px) {
+	.masonry-grid {
+		column-count: 3;
 	}
-	#counter h3 {
-		margin-bottom: 2rem;
+}
+
+@media (max-width: var.$tablet) {
+	.masonry-grid {
+		column-count: 2;
+	}
+	.masonry-item:nth-child(6) {
+		margin-top: 0;
 	}
 }
 
-@media (max-width: 640px) {
-	#counter {
-		grid-template-columns: repeat(1, minmax(0, 1fr));
+@media (max-width: var.$mobile-sm) {
+	.masonry-grid {
+		column-count: 1;
 	}
+}
+
+/* =======================
+	 SERVICES intro
+========================== */
+#services-intro .container.top {
+	padding: 50px 1.25rem 50px;
 }
 
 /* =======================
@@ -183,12 +212,8 @@
 }
 
 .gbp-video video {
-	margin: 0 auto;
+	margin: 0 auto 50px;
 }
-
-// .gbp-video video {
-// 	max-width: 80%;
-// }
 
 .learn-more {
 	color: var.$highlight;
@@ -227,7 +252,7 @@
 	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 	gap: 2rem;
 	position: relative;
-	margin-top: 3rem;
+	margin-top: 0;
 }
 
 .process-timeline::before {
@@ -281,7 +306,7 @@
 }
 
 #process h2 {
-	font-size: clamp(4rem, 5vw, 70px);
+	//font-size: clamp(4rem, 5vw, 70px);
 	line-height: 1;
 	margin-bottom: 0;
 }
@@ -352,7 +377,7 @@
 #pricing {
 	margin-top: 150px;
 	background: var.$bg-clr;
-	background: var.$theme-clr-dark;
+	background: var.$theme-clr-blue;
 }
 
 .pricing-container {
@@ -385,18 +410,21 @@
 }
 
 .pricing-content h2 {
-	color: var.$highlight-light;
+	color: #fff;
+	font-family: var.$font-sans-serif-bold;
 }
 
 .pricing-content p {
 	color: #fff;
 }
+
 .pricing-card h3 {
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 500;
 	color: var.$theme-clr;
 	margin-bottom: 0.5rem;
 }
+
 .pricing-amount {
 	font-size: 1.8rem;
 	text-align: right;

@@ -144,7 +144,7 @@
 	height: 4px;
 	background: var.$theme-clr-dark;
 	border-radius: 3px;
-	transition: all 0.35s cubic-bezier(0.77, 0, 0.18, 1);
+	transition: all 0.2s ease;
 }
 #hamburger span:nth-child(1) {
 	top: 14px;

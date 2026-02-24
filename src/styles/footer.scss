@@ -50,10 +50,12 @@
 	}
 	#contact .contact-mobile {
 		display: block;
-		max-width: 150px;
+		max-width: 125px;
 		margin-top: -150px;
 		margin-right: -18px;
 		float: right;
+		margin-bottom: 1.5rem;
+		//border: 1px red solid;
 	}
 }
 
