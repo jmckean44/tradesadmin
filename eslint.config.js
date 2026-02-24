@@ -1,34 +1,46 @@
 import astro from 'eslint-plugin-astro';
+import astroParser from 'astro-eslint-parser';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
 
-/** @type {import('eslint').Linter.Config} */
-export default {
-	env: {
-		browser: true,
-		es2021: true,
-		node: true,
-	},
-	extends: ['eslint:recommended', 'plugin:astro/recommended'],
-	plugins: ['astro'],
-	overrides: [
-		{
-			files: ['*.astro'],
-			parser: 'astro-eslint-parser',
+export default [
+	{
+		files: ['**/*.astro'],
+		languageOptions: {
+			parser: astroParser,
 			parserOptions: {
-				parser: '@typescript-eslint/parser',
+				parser: tsParser,
 				extraFileExtensions: ['.astro'],
 			},
-			rules: {
-				// Place Astro-specific rules here
+			globals: {
+				window: true,
+				document: true,
 			},
 		},
-		{
-			files: ['*.js', '*.ts'],
-			parser: '@typescript-eslint/parser',
-			extends: ['plugin:@typescript-eslint/recommended'],
-			plugins: ['@typescript-eslint'],
-			rules: {
-				// Place JS/TS rules here
+		plugins: {
+			astro,
+		},
+		rules: {
+			...astro.configs.recommended.rules,
+			// Place Astro-specific rules here
+		},
+	},
+	{
+		files: ['**/*.js', '**/*.ts'],
+		languageOptions: {
+			parser: tsParser,
+			globals: {
+				window: true,
+				document: true,
+				process: true,
 			},
 		},
-	],
-};
+		plugins: {
+			'@typescript-eslint': tsPlugin,
+		},
+		rules: {
+			...tsPlugin.configs.recommended.rules,
+			// Place JS/TS rules here
+		},
+	},
+];
