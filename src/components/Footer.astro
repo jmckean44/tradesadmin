@@ -2,13 +2,13 @@
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.slice(1); // remove first "/"
 const currentYear = new Date().getFullYear();
-import '../styles/form.scss';
-import '../styles/footer.scss';
 import { Image } from 'astro:assets';
-import logo from '../img/logo-icon.svg';
-import contact from '../img/google-seo.webp';
 import logoFooter from '../img/logo-footer.svg';
 import gbp from '../img/gbp-mobile.webp';
+import '../styles/form.scss';
+import '../styles/footer.scss';
+const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '';
+const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 ---
 
 <section id="contact">
@@ -20,11 +20,7 @@ import gbp from '../img/gbp-mobile.webp';
 					<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
 					<p class="margin-btm-med intro semibold">For a technical review of your website and search results, fill out and submit the form below.</p>
 
-					<form method="POST" id="form" class="needs-validation" data-astro-reload novalidate>
-						<input type="hidden" name="access_key" value="0224cc0e-9b23-4249-9fd9-a41db82e01cb" />
-						<input type="checkbox" class="hidden" style="display:none" name="botcheck" />
-						<input type="hidden" name="subject" value="Submission from tradesadmin.ca" />
-
+					<form method="POST" id="form" data-api-path={apiPath} class="needs-validation" data-astro-reload novalidate>
 						<div>
 							<label for="company" class="visually-hidden">Company Name</label>
 							<input type="text" name="company" id="company" placeholder="Company Name *" required="" />
@@ -60,8 +56,11 @@ import gbp from '../img/gbp-mobile.webp';
 							<span class="helperText">Details</span>
 						</div>
 
-						<div class="h-captcha" data-theme="light" data-captcha="true"></div>
 						<div id="result"></div>
+						<div class="margin-top-sm">
+							<div class="g-recaptcha" data-sitekey={recaptchaSiteKey}></div>
+							<script is:inline src="https://www.google.com/recaptcha/api.js" async defer></script>
+						</div>
 						<button type="submit" class="btn arrow">SUBMIT</button>
 					</form>
 				</div>
@@ -162,127 +161,83 @@ import gbp from '../img/gbp-mobile.webp';
 <script src="../scripts/scripts.js"></script>
 <!-- <script src="../scripts/lenis.js"></script> -->
 
-<style type="text/scss">
-	.invalid-feedback,
-	.empty-feedback {
-		display: none;
-	}
-	#result {
-		color: #ff5000 !important;
-	}
-
-	.was-validated :placeholder-shown:invalid ~ .empty-feedback,
-	.was-validated :not(:placeholder-shown):invalid ~ .invalid-feedback {
-		display: block;
-		font-size: 0.9rem;
-		font-family: 'Barlow Semi Condensed', sans-serif;
-		margin-bottom: 1.5rem;
-		margin-top: -12px;
-		text-transform: none;
-	}
-
-	.is-invalid,
-	.was-validated :invalid {
-		border-color: #ff6000;
-	}
-	.h-captcha iframe {
-		width: 100%;
-	}
-</style>
-
-<script is:inline src="https://web3forms.com/client/script.js" async defer></script>
-
 <script is:inline>
-	// Main form logic with comments for clarity
 	document.addEventListener('astro:page-load', () => {
 		const form = document.getElementById('form');
 		const result = document.getElementById('result');
+		if (!form || !result) return;
 
-		// Helper: Check if form is valid using native HTML validation
 		function isFormValid(form) {
 			form.classList.add('was-validated');
 			return form.checkValidity();
 		}
 
-		// Helper: Check if hCaptcha is completed
-		function isCaptchaCompleted(form) {
-			const hCaptchaInput = form.querySelector('textarea[name=h-captcha-response]');
-			return hCaptchaInput && hCaptchaInput.value;
+		function getRecaptchaToken(form) {
+			const el = form.querySelector('textarea[name="g-recaptcha-response"]');
+			return el?.value?.trim() || '';
 		}
 
-		// Helper: Submit form data via fetch
 		async function submitForm(form, result) {
 			const formData = new FormData(form);
-			const object = Object.fromEntries(formData);
-			const json = JSON.stringify(object);
+			const endpoint = form.dataset.apiPath || '/api/tech-review/';
+			const recaptchaToken = getRecaptchaToken(form);
 
+			const payload = {
+				company: String(formData.get('company') || '').trim(),
+				email: String(formData.get('email') || '').trim(),
+				url: String(formData.get('url') || '').trim(),
+				phone: String(formData.get('phone') || '').trim(),
+				message: String(formData.get('details') || '').trim(),
+				recaptchaToken,
+			};
+
+			result.style.display = 'block';
+			result.style.color = '#ff4000';
 			result.innerHTML = 'Sending...';
+
 			try {
-				const response = await fetch('https://api.web3forms.com/submit', {
+				const response = await fetch(endpoint, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Accept: 'application/json',
-					},
-					body: json,
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload),
 				});
-				const data = await response.json();
-				result.innerHTML = data.message;
-			} catch (error) {
-				result.innerHTML = 'Something went wrong!';
+
+				const data = await response.json().catch(() => ({}));
+				if (!response.ok) {
+					throw new Error(data?.error || `Request failed (${response.status})`);
+				}
+
+				result.style.color = '#16a34a';
+				result.innerHTML = data?.message || 'Thanks. Your request was submitted.';
+				form.reset();
+				if (window.grecaptcha) window.grecaptcha.reset();
+			} catch (err) {
+				result.style.color = '#dc3545';
+				result.innerHTML = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 			}
-			form.reset();
-			form.classList.remove('was-validated');
+
 			setTimeout(() => {
 				result.style.display = 'none';
-			}, 5000);
+			}, 10000);
 		}
 
-		// Main submit event handler
-		form.addEventListener('submit', function (e) {
+		form.addEventListener('submit', (e) => {
 			e.preventDefault();
 
-			// 1. Validate form fields
 			if (!isFormValid(form)) {
-				form.querySelectorAll(':invalid')[0].focus();
+				form.querySelectorAll(':invalid')[0]?.focus();
 				return;
 			}
 
-			// 1a. Custom URL validation: must contain a dot and a suffix (.ca, .com, .org, etc.) max 3 chars, with or without http(s):// and trailing slash
-			const urlInput = form.querySelector('input[name="url"]');
-			const urlValue = urlInput.value.trim();
-			// Regex: must have a dot, then 2-3 letter suffix (e.g. .ca, .com, .org), optional http(s)://, optional trailing slash
-			const urlSuffixPattern = /^(https?:\/\/)?[\w.-]+\.[a-zA-Z]{2,}(\/)?$/;
-			if (!urlSuffixPattern.test(urlValue)) {
+			const token = getRecaptchaToken(form);
+			if (!token) {
 				result.style.display = 'block';
-				result.innerHTML = 'Please provide a valid URL (e.g. tradesadmin.ca, https://tradesadmin.ca, tradesadmin.ca/, https://tradesadmin.ca/).';
 				result.style.color = '#dc3545';
-				urlInput.focus();
+				result.innerHTML = 'Please complete the reCAPTCHA.';
 				return;
 			}
 
-			// 2. Validate hCaptcha
-			if (!isCaptchaCompleted(form)) {
-				result.innerHTML = 'Please complete the captcha.';
-				result.style.color = '#dc3545';
-				return;
-			}
-
-			// 3. Submit form if all validations pass
 			submitForm(form, result);
 		});
-	});
-</script>
-<script is:inline>
-	const formCaptcha = document.getElementById('form');
-
-	formCaptcha.addEventListener('submit', function (e) {
-		const hCaptcha = formCaptcha.querySelector('textarea[name=h-captcha-response]').value;
-
-		if (!hCaptcha) {
-			e.preventDefault();
-			result.innerHTML = 'Please complete the captcha.';
-			return;
-		}
 	});
 </script>

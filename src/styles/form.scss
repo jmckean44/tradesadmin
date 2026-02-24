@@ -437,3 +437,15 @@ input[type='checkbox']:focus {
 	text-align: left;
 	margin-top: 1rem;
 }
+
+/* =============================
+	 INPUT RADIO
+================================ */
+.grecaptcha-badge {
+	z-index: 99;
+}
+
+.g-recaptcha {
+	transform: scale(0.7);
+	transform-origin: 0 0;
+}
