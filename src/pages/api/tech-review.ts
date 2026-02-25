@@ -27,6 +27,24 @@ type Review = {
 	tbt: string;
 };
 
+type ReviewPreview = {
+	available: boolean;
+	scores: {
+		performance: number | null;
+		seo: number | null;
+		accessibility: number | null;
+		bestPractices: number | null;
+	};
+	vitals: {
+		lcp: string;
+		interactive: string;
+		tbt: string;
+		cls: string;
+	};
+	recommendedFixes: string[];
+	reviewError?: string;
+};
+
 function getEnv(name: string): string {
 	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
 	return String(value).trim();
@@ -44,6 +62,71 @@ function pct(score: number | null | undefined): number | null {
 
 function escapeHtml(value: string): string {
 	return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+}
+
+function firstNumber(value: string): number | null {
+	const match = String(value || '').match(/[\d.]+/);
+	if (!match) return null;
+	const parsed = Number(match[0]);
+	return Number.isFinite(parsed) ? parsed : null;
+}
+
+function buildReviewPreview(review: Review | null, reviewError: string): ReviewPreview {
+	if (!review) {
+		return {
+			available: false,
+			scores: {
+				performance: null,
+				seo: null,
+				accessibility: null,
+				bestPractices: null,
+			},
+			vitals: {
+				lcp: 'N/A',
+				interactive: 'N/A',
+				tbt: 'N/A',
+				cls: 'N/A',
+			},
+			recommendedFixes: ['Run a full technical review with us and we will send a prioritized fix list.'],
+			reviewError: reviewError || undefined,
+		};
+	}
+
+	const lcpSeconds = firstNumber(review.lcp);
+	const interactiveSeconds = firstNumber(review.interactive);
+	const tbtMs = firstNumber(review.tbt);
+	const clsValue = firstNumber(review.cls);
+
+	const recommendedFixes: string[] = [];
+
+	if ((review.performance ?? 100) < 80) recommendedFixes.push('Improve page speed by compressing large images, reducing third-party scripts, and enabling stronger caching.');
+	if (lcpSeconds != null && lcpSeconds > 2.5) recommendedFixes.push('Reduce LCP by optimizing above-the-fold content and preloading your main hero image/font.');
+	if (interactiveSeconds != null && interactiveSeconds > 5) recommendedFixes.push('Improve interactivity by deferring non-critical JavaScript and splitting heavy bundles.');
+	if (tbtMs != null && tbtMs > 200) recommendedFixes.push('Lower Total Blocking Time by removing unused JavaScript and delaying long-running scripts.');
+	if ((review.bestPractices ?? 100) < 90) recommendedFixes.push('Address best-practice issues like console errors, deprecated APIs, and insecure resource requests.');
+	if (clsValue != null && clsValue > 0.1) recommendedFixes.push('Stabilize layout by reserving space for media/embeds and avoiding late-loading content shifts.');
+	if ((review.seo ?? 100) < 90) recommendedFixes.push('Strengthen SEO signals by refining meta tags, headings, crawlability, and structured data.');
+
+	if (!recommendedFixes.length) {
+		recommendedFixes.push('Overall technical baseline is strong. Keep monitoring Core Web Vitals and plugin/script changes monthly.');
+	}
+
+	return {
+		available: true,
+		scores: {
+			performance: review.performance,
+			seo: review.seo,
+			accessibility: review.accessibility,
+			bestPractices: review.bestPractices,
+		},
+		vitals: {
+			lcp: review.lcp,
+			interactive: review.interactive,
+			tbt: review.tbt,
+			cls: review.cls,
+		},
+		recommendedFixes: recommendedFixes.slice(0, 4),
+	};
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
@@ -215,7 +298,7 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const isDev = import.meta.env.DEV || process.env.NODE_ENV !== 'production';
+		const isDev = import.meta.env.DEV;
 		const body = await parseRequestBody(request);
 
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
@@ -345,6 +428,7 @@ export const POST: APIRoute = async ({ request }) => {
 			review,
 			reviewError,
 		});
+		const reportFilename = `technical-review-${new URL(url).hostname}.pdf`;
 
 		await withTimeout(
 			transporter.sendMail({
@@ -355,7 +439,7 @@ export const POST: APIRoute = async ({ request }) => {
 				html,
 				attachments: [
 					{
-						filename: `technical-review-${new URL(url).hostname}.pdf`,
+						filename: reportFilename,
 						content: pdfBuffer,
 						contentType: 'application/pdf',
 					},
@@ -365,7 +449,19 @@ export const POST: APIRoute = async ({ request }) => {
 			'SMTP send',
 		);
 
-		return new Response(JSON.stringify({ ok: true, message: 'Submitted successfully.' }), { status: 200 });
+		return new Response(
+			JSON.stringify({
+				ok: true,
+				message: 'Submitted successfully.',
+				preview: buildReviewPreview(review, reviewError),
+				report: {
+					filename: reportFilename,
+					mimeType: 'application/pdf',
+					contentBase64: pdfBuffer.toString('base64'),
+				},
+			}),
+			{ status: 200 },
+		);
 	} catch (err) {
 		console.error('tech-review route error:', err);
 		return new Response(JSON.stringify({ error: 'Failed to submit.' }), { status: 500 });

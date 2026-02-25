@@ -61,6 +61,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 						</div>
 
 						<p id="result" style="display:none;"></p>
+						<div id="review-preview" class="review-preview" style="display:none;"></div>
 						<button type="submit" class="btn arrow">SUBMIT</button>
 					</form>
 
@@ -179,11 +180,13 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 	document.addEventListener('astro:page-load', () => {
 		const form = document.getElementById('form');
 		const result = document.getElementById('result');
+		const reviewPreview = document.getElementById('review-preview');
 		const urlInput = document.getElementById('url');
 
-		if (!form || !result || !urlInput) return;
+		if (!form || !result || !urlInput || !reviewPreview) return;
 
 		let submitted = false;
+		let reviewDownloadUrl = '';
 
 		function normalizeUrl(value) {
 			const raw = String(value || '').trim();
@@ -256,6 +259,95 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 			return form.checkValidity();
 		}
 
+		function escapeHtml(value) {
+			return String(value ?? '')
+				.replaceAll('&', '&amp;')
+				.replaceAll('<', '&lt;')
+				.replaceAll('>', '&gt;')
+				.replaceAll('"', '&quot;')
+				.replaceAll("'", '&#39;');
+		}
+
+		function scoreRow(label, value) {
+			const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+			const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
+			return `
+				<div class="review-score-row">
+					<div class="review-score-head"><strong>${label}</strong><span>${shown}</span></div>
+					<progress max="100" value="${safeValue}" aria-label="${label} score"></progress>
+				</div>
+			`;
+		}
+
+		function base64ToBlobUrl(base64, mimeType) {
+			if (!base64) return '';
+			try {
+				const binary = atob(String(base64));
+				const length = binary.length;
+				const bytes = new Uint8Array(length);
+				for (let i = 0; i < length; i += 1) bytes[i] = binary.charCodeAt(i);
+				return URL.createObjectURL(new Blob([bytes], { type: mimeType || 'application/pdf' }));
+			} catch {
+				return '';
+			}
+		}
+
+		function renderReviewPreview(preview, report) {
+			if (!preview || typeof preview !== 'object') {
+				if (reviewDownloadUrl) {
+					URL.revokeObjectURL(reviewDownloadUrl);
+					reviewDownloadUrl = '';
+				}
+				reviewPreview.style.display = 'none';
+				reviewPreview.innerHTML = '';
+				return;
+			}
+
+			const scores = preview.scores || {};
+			const vitals = preview.vitals || {};
+			const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
+
+			const scoreHtml = [
+				scoreRow('Performance', Number(scores.performance)),
+				scoreRow('SEO', Number(scores.seo)),
+				scoreRow('Accessibility', Number(scores.accessibility)),
+				scoreRow('Best Practices', Number(scores.bestPractices)),
+			].join('');
+
+			const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
+
+			if (reviewDownloadUrl) {
+				URL.revokeObjectURL(reviewDownloadUrl);
+				reviewDownloadUrl = '';
+			}
+
+			const downloadUrl = base64ToBlobUrl(report?.contentBase64, report?.mimeType);
+			if (downloadUrl) reviewDownloadUrl = downloadUrl;
+
+			const downloadHtml = downloadUrl ? `<a class="btn" href="${downloadUrl}" download="${escapeHtml(report?.filename || 'technical-review.pdf')}">Download Full Report (PDF)</a>` : '';
+
+			reviewPreview.innerHTML = `
+				<div class="review-preview-card">
+					<h3>Quick Technical Snapshot</h3>
+					<p class="review-subtitle">Initial automated scan of your submitted site.</p>
+					<div class="review-score-grid">${scoreHtml}</div>
+					<div class="review-vitals">
+						<p><strong>LCP:</strong> ${escapeHtml(vitals.lcp || 'N/A')}</p>
+						<p><strong>Interactive:</strong> ${escapeHtml(vitals.interactive || 'N/A')}</p>
+						<p><strong>TBT:</strong> ${escapeHtml(vitals.tbt || 'N/A')}</p>
+						<p><strong>CLS:</strong> ${escapeHtml(vitals.cls || 'N/A')}</p>
+					</div>
+					<div class="review-fixes">
+						<h4>Recommended Fixes</h4>
+						${fixesHtml}
+					</div>
+					${downloadHtml ? `<div class="review-download">${downloadHtml}</div>` : ''}
+				</div>
+			`;
+
+			reviewPreview.style.display = 'block';
+		}
+
 		async function submitForm() {
 			const formData = new FormData(form);
 			const endpoint = form.dataset.apiPath || '/api/tech-review/';
@@ -271,6 +363,12 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 
 			result.style.display = 'block';
 			result.textContent = 'Sending...';
+			if (reviewDownloadUrl) {
+				URL.revokeObjectURL(reviewDownloadUrl);
+				reviewDownloadUrl = '';
+			}
+			reviewPreview.style.display = 'none';
+			reviewPreview.innerHTML = '';
 
 			try {
 				const response = await fetch(endpoint, {
@@ -296,6 +394,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 				}
 
 				result.textContent = data?.message || 'Thanks. Your request was submitted.';
+				renderReviewPreview(data?.preview, data?.report);
 
 				form.reset();
 				form.classList.remove('was-validated');
@@ -310,6 +409,12 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 
 				if (window.turnstile) window.turnstile.reset();
 			} catch (err) {
+				if (reviewDownloadUrl) {
+					URL.revokeObjectURL(reviewDownloadUrl);
+					reviewDownloadUrl = '';
+				}
+				reviewPreview.style.display = 'none';
+				reviewPreview.innerHTML = '';
 				result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 			}
 		}
