@@ -1,0 +1,217 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/page-results.scss';
+---
+
+<Layout pageTitle="Scan Results" pageSiteTitles="">
+	<section id="scan-results">
+		<div class="container top btm">
+			<div class="flex padding-x">
+				<div class="cell small-18">
+					<div class="results-intro">
+						<h1 class="center">Scan Results</h1>
+						<p class="center txt-lrg">
+							This is a <span class="semibold">preview of how your site is <span class="underline">performing</span></span> and can be <a
+								href="#download"
+								class="underline semibold"
+								role="link"
+								aria-label="bookmark link to download report button">downloaded</a
+							> as a PDF report, below.
+							<p class="center txt-lrg">
+								For a deeper review of what needs attention,<br />call <span class="semibold">416-986-1059</span> or email <span class="semibold"
+									><a href="mailto:hello@tradesadmin.ca" role="link" aria-label="Email Trades Admin">hello@tradesadmin.ca</a></span
+								>.
+							</p>
+						</p>
+					</div>
+					<div id="results-root"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script is:inline>
+		document.addEventListener('astro:page-load', () => {
+			const root = document.getElementById('results-root');
+			if (!root) return;
+
+			function parseScore(value) {
+				if (value === null || value === undefined || value === '') return null;
+				const parsed = Number(value);
+				return Number.isFinite(parsed) ? parsed : null;
+			}
+
+			function escapeHtml(value) {
+				return String(value ?? '')
+					.replaceAll('&', '&amp;')
+					.replaceAll('<', '&lt;')
+					.replaceAll('>', '&gt;')
+					.replaceAll('"', '&quot;')
+					.replaceAll("'", '&#39;');
+			}
+
+			function parseMetricNumber(metric, rawValue) {
+				if (rawValue === null || rawValue === undefined || rawValue === '') return null;
+				const normalized = String(rawValue).toLowerCase().replace(/,/g, '').trim();
+				const match = normalized.match(/-?\d*\.?\d+/);
+				if (!match) return null;
+				const number = Number(match[0]);
+				if (!Number.isFinite(number)) return null;
+
+				if (metric === 'cls') return number;
+				if (metric === 'tbt') {
+					if (normalized.includes('s') && !normalized.includes('ms')) return number * 1000;
+					return number;
+				}
+
+				if (metric === 'lcp' || metric === 'interactive') {
+					if (normalized.includes('ms')) return number / 1000;
+					return number;
+				}
+
+				return null;
+			}
+
+			function classifyVital(metric, rawValue) {
+				const numericValue = parseMetricNumber(metric, rawValue);
+				if (numericValue === null) {
+					return { status: 'is-na', label: 'N/A' };
+				}
+
+				if (metric === 'lcp') {
+					if (numericValue <= 2.5) return { status: 'is-good', label: 'Good' };
+					if (numericValue <= 4) return { status: 'is-average', label: 'Needs Improvement' };
+					return { status: 'is-poor', label: 'Poor' };
+				}
+
+				if (metric === 'tbt') {
+					if (numericValue <= 200) return { status: 'is-good', label: 'Good' };
+					if (numericValue <= 600) return { status: 'is-average', label: 'Needs Improvement' };
+					return { status: 'is-poor', label: 'Poor' };
+				}
+
+				if (metric === 'cls') {
+					if (numericValue <= 0.1) return { status: 'is-good', label: 'Good' };
+					if (numericValue <= 0.25) return { status: 'is-average', label: 'Needs Improvement' };
+					return { status: 'is-poor', label: 'Poor' };
+				}
+
+				if (metric === 'interactive') {
+					if (numericValue <= 3.8) return { status: 'is-good', label: 'Good' };
+					if (numericValue <= 7.3) return { status: 'is-average', label: 'Needs Improvement' };
+					return { status: 'is-poor', label: 'Poor' };
+				}
+
+				return { status: 'is-na', label: 'N/A' };
+			}
+
+			function vitalCard(metric, label, value) {
+				const shown = value ? escapeHtml(value) : 'N/A';
+				const classification = classifyVital(metric, value);
+				return `
+					<div class="review-vital-card ${classification.status}">
+						<p class="review-vital-label">${label}</p>
+						<p class="review-vital-value">${shown}</p>
+						<p class="review-vital-status">${classification.label}</p>
+					</div>
+				`;
+			}
+
+			function scoreRow(label, value) {
+				const hasValue = typeof value === 'number' && Number.isFinite(value);
+				const safeValue = hasValue ? Math.max(0, Math.min(100, value)) : 0;
+				const shown = hasValue ? `${safeValue}` : 'N/A';
+				const scoreClass = hasValue && safeValue >= 90 ? 'is-good' : hasValue && safeValue >= 50 ? 'is-average' : hasValue ? 'is-poor' : 'is-na';
+				return `
+					<div class="review-score-item ${scoreClass}">
+						<div class="review-score-circle" style="--score:${safeValue}" role="img" aria-label="${label} score ${shown}">
+							<span>${shown}</span>
+						</div>
+						<strong>${label}</strong>
+					</div>
+				`;
+			}
+
+			function base64ToBlobUrl(base64, mimeType) {
+				if (!base64) return '';
+				try {
+					const binary = atob(String(base64));
+					const length = binary.length;
+					const bytes = new Uint8Array(length);
+					for (let i = 0; i < length; i += 1) bytes[i] = binary.charCodeAt(i);
+					return URL.createObjectURL(new Blob([bytes], { type: mimeType || 'application/pdf' }));
+				} catch {
+					return '';
+				}
+			}
+
+			let payload = null;
+			try {
+				payload = JSON.parse(sessionStorage.getItem('scanResultPayload') || 'null');
+			} catch {
+				payload = null;
+			}
+
+			if (!payload?.preview) {
+				root.innerHTML = `
+					<div class="review-preview-card">
+						<h3>No recent scan results found</h3>
+						<p class="review-subtitle">Run a new free scan from the homepage to view results here.</p>
+						<a href="/" class="btn">Go to Homepage</a>
+					</div>
+				`;
+				return;
+			}
+
+			const preview = payload.preview || {};
+			const report = payload.report || {};
+			const scores = preview.scores || {};
+			const vitals = preview.vitals || {};
+			const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
+			const reviewUnavailableMessage =
+				preview.available === false
+					? `<p class="review-subtitle">Live scan data is currently unavailable${preview.reviewError ? ` (${escapeHtml(preview.reviewError)})` : ''}. Showing fallback guidance.</p>`
+					: '';
+
+			const scoreHtml = [
+				scoreRow('Performance', parseScore(scores.performance)),
+				scoreRow('SEO', parseScore(scores.seo)),
+				scoreRow('Accessibility', parseScore(scores.accessibility)),
+				scoreRow('Best Practices', parseScore(scores.bestPractices)),
+			].join('');
+
+			const vitalsHtml = [
+				vitalCard('lcp', 'LCP', vitals.lcp),
+				vitalCard('tbt', 'TBT', vitals.tbt),
+				vitalCard('cls', 'CLS', vitals.cls),
+				vitalCard('interactive', 'Interactive', vitals.interactive),
+			].join('');
+
+			const fixesHtml = fixes.length ? `<ol>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>` : '<p>No recommended fixes returned.</p>';
+
+			const downloadUrl = base64ToBlobUrl(report?.contentBase64, report?.mimeType);
+			const downloadHtml = downloadUrl
+				? `<div class="cta" id="download"><a class="btn" href="${downloadUrl}" download="${escapeHtml(report?.filename || 'technical-review.pdf')}">Download Full Report <span>(PDF)</span></a></div>`
+				: '';
+
+			root.innerHTML = `
+				<div class="review-preview-card">
+					<h3>Quick Technical Snapshot</h3>
+					<p class="review-subtitle">Initial automated scan of your submitted site.</p>
+					${reviewUnavailableMessage}
+					<div class="review-score-grid">${scoreHtml}</div>
+					<div class="review-vitals">${vitalsHtml}</div>
+					<div class="review-fixes">
+						<h4>Recommended Fixes</h4>
+						${fixesHtml}
+					</div>
+					${downloadHtml ? `<div class="review-download">${downloadHtml}</div>` : ''}
+				</div>
+			`;
+
+			if (downloadUrl) {
+				window.addEventListener('beforeunload', () => URL.revokeObjectURL(downloadUrl), { once: true });
+			}
+		});
+	</script>
+</Layout>

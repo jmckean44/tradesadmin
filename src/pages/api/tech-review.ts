@@ -60,6 +60,22 @@ function pct(score: number | null | undefined): number | null {
 	return score == null ? null : Math.round(score * 100);
 }
 
+function reviewFromLhrLike(lhr: { categories?: Record<string, { score?: number | null }>; audits?: Record<string, { displayValue?: string }> }): Review {
+	const categories = lhr.categories ?? {};
+	const audits = lhr.audits ?? {};
+
+	return {
+		performance: pct(categories.performance?.score),
+		seo: pct(categories.seo?.score),
+		accessibility: pct(categories.accessibility?.score),
+		bestPractices: pct(categories['best-practices']?.score),
+		lcp: audits['largest-contentful-paint']?.displayValue ?? 'N/A',
+		cls: audits['cumulative-layout-shift']?.displayValue ?? 'N/A',
+		interactive: audits['interactive']?.displayValue ?? 'N/A',
+		tbt: audits['total-blocking-time']?.displayValue ?? 'N/A',
+	};
+}
+
 function escapeHtml(value: string): string {
 	return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
@@ -215,6 +231,29 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 }
 
 async function runReview(url: string): Promise<Review> {
+	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<Review> {
+		const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
+		endpoint.searchParams.set('url', targetUrl);
+		endpoint.searchParams.set('category', 'performance');
+		endpoint.searchParams.append('category', 'seo');
+		endpoint.searchParams.append('category', 'accessibility');
+		endpoint.searchParams.append('category', 'best-practices');
+		endpoint.searchParams.set('strategy', 'mobile');
+
+		const response = await fetch(endpoint.toString());
+		if (!response.ok) throw new Error(`PageSpeed API failed (${response.status})`);
+
+		const payload = (await response.json()) as {
+			lighthouseResult?: {
+				categories?: Record<string, { score?: number | null }>;
+				audits?: Record<string, { displayValue?: string }>;
+			};
+		};
+
+		if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
+		return reviewFromLhrLike(payload.lighthouseResult);
+	}
+
 	const [{ default: lighthouse }, { launch }] = await Promise.all([import('lighthouse'), import('chrome-launcher')]);
 	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
 
@@ -231,17 +270,13 @@ async function runReview(url: string): Promise<Review> {
 
 		if (!runnerResult?.lhr) throw new Error('Lighthouse returned no report');
 
-		const { categories, audits } = runnerResult.lhr;
-		return {
-			performance: pct(categories.performance?.score),
-			seo: pct(categories.seo?.score),
-			accessibility: pct(categories.accessibility?.score),
-			bestPractices: pct(categories['best-practices']?.score),
-			lcp: audits['largest-contentful-paint']?.displayValue ?? 'N/A',
-			cls: audits['cumulative-layout-shift']?.displayValue ?? 'N/A',
-			interactive: audits['interactive']?.displayValue ?? 'N/A',
-			tbt: audits['total-blocking-time']?.displayValue ?? 'N/A',
-		};
+		return reviewFromLhrLike(runnerResult.lhr);
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		if (message.includes('standalone-flow-template.html') || message.includes('ENOENT')) {
+			return runReviewWithPageSpeedInsights(url);
+		}
+		throw err;
 	} finally {
 		if (chrome) await chrome.kill();
 	}

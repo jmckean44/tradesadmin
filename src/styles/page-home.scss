@@ -483,28 +483,61 @@
 	}
 }
 
-/* =======================
-	 LIGHTHOUSE
-========================== */
-.lighthouse-bg {
-	max-width: 250px;
-	margin: 0 auto;
-	pointer-events: none;
+/* =================================
+	 FORM
+==================================== */
+#contact {
+	position: relative;
 }
 
-.lighthouse-progress {
-	transform: rotate(-90deg);
-	transform-origin: 50% 50%;
-	stroke-dasharray: 339.292;
-	stroke-dashoffset: 339.292;
-	transition: stroke-dashoffset 2s cubic-bezier(0.4, 1, 0.6, 1);
+#contact .container.top.btm {
+	max-width: 1000px;
 }
 
-.lighthouse-bg.in-view .lighthouse-progress {
-	stroke-dashoffset: 23.93; // 90% (adjust as needed)
+#contact #form-container {
+	margin: 0.5rem 0 0;
+	max-width: 400px;
 }
-@keyframes lighthouse-progress {
-	to {
-		stroke-dashoffset: 23.93; /* 98% progress (adjust as needed) */
+
+#contact #form-container form {
+	width: 100%;
+}
+@media (max-width: 700px) {
+	#contact #form-container {
+		max-width: 100%;
+		margin: 0.5rem 0 0;
+	}
+	#contact #form-container p.intro {
+		max-width: 65%;
+	}
+}
+
+@media (min-width: 701px) {
+	#contact .contact-mobile {
+		display: none;
+	}
+	#contact .contact-desktop {
+		display: inline-block;
+		text-align: right;
+		margin-top: -50px;
+		//border: 1px red solid;
+	}
+	#contact .contact-desktop img {
+		max-width: 225px;
+	}
+}
+
+@media (max-width: var.$mobile) {
+	#contact .contact-desktop {
+		display: none;
+	}
+	#contact .contact-mobile {
+		display: block;
+		max-width: 125px;
+		margin-top: -150px;
+		margin-right: -18px;
+		float: right;
+		margin-bottom: 1.5rem;
+		//border: 1px red solid;
 	}
 }

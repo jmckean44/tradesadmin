@@ -3,8 +3,10 @@ import Layout from '../layouts/Layout.astro';
 //import PictureComponent from '../components/PictureComponent.astro';
 import { Image, Picture } from 'astro:assets';
 import '../styles/page-home.scss';
+import '../styles/form.scss';
 import '../styles/swiper-intro.scss';
 import '../styles/swiper-testimonials.scss';
+import gbp from '../img/gbp-mobile.webp';
 import testimonials from '../img/testimonials.webp';
 import fortune from '../img/fortune.webp';
 import gia from '../img/gia.webp';
@@ -24,6 +26,10 @@ import iconIssueGBP from '../img/icon-issue-gbp.svg';
 import iconIssueSpeed from '../img/icon-issue-speed.svg';
 import iconIssueResponsive from '../img/icon-issue-responsive.svg';
 import iconIssueBroken from '../img/icon-issue-broken.svg';
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
+const resultsPath = `${import.meta.env.BASE_URL}results/`;
 ---
 
 <Layout pageTitle="description" pageSiteTitles="">
@@ -538,6 +544,376 @@ import iconIssueBroken from '../img/icon-issue-broken.svg';
 			</div>
 		</div>
 	</section>
+
+	<section id="contact">
+		<div class="container top btm">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-10">
+					<div id="form-container trig-fade-right enable-trig">
+						<h2>Free Scan</h2>
+						<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
+						<p class="margin-btm-med intro semibold">Get a quick technical snapshot of your website with recommended fixes for your website and search visibility.</p>
+
+						<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
+							<div>
+								<label for="company" class="visually-hidden">Company Name</label>
+								<input type="text" name="company" id="company" placeholder="Company Name *" required />
+								<span class="helperText">Company Name</span>
+								<div class="empty-feedback invalid-feedback">Please provide your company name</div>
+							</div>
+
+							<div>
+								<label for="url" class="visually-hidden">URL</label>
+								<input type="text" name="url" id="url" placeholder="URL *" required inputmode="url" autocomplete="url" />
+								<span class="helperText">URL</span>
+								<div class="empty-feedback invalid-feedback">Please provide your URL</div>
+								<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
+							</div>
+
+							<div>
+								<label for="email_address" class="visually-hidden">Email</label>
+								<input type="email" name="email" id="email_address" placeholder="Email *" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" />
+								<span class="helperText">Email</span>
+								<div class="empty-feedback">Please provide your email address</div>
+								<div class="invalid-feedback">Please provide a valid email address</div>
+							</div>
+
+							<div>
+								<label for="phone" class="visually-hidden">Phone</label>
+								<input type="tel" name="phone" id="phone" placeholder="Phone" />
+								<span class="helperText">Phone</span>
+							</div>
+
+							<div>
+								<label for="details" class="visually-hidden">Details</label>
+								<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
+								<span class="helperText">Details</span>
+							</div>
+
+							<div class="margin-top-sm">
+								<div id="turnstile-container" class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
+							</div>
+
+							<p id="result" style="display:none;"></p>
+							<div id="review-preview" class="review-preview" style="display:none;"></div>
+							<button type="submit" class="btn arrow">RUN FREE SCAN</button>
+						</form>
+
+						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+					</div>
+				</div>
+				<div class="cell small-18 medium-8 trig-fade-right enable-trig contact-desktop">
+					<Image src={gbp} class="trig-target" alt="TradesAdmin Contact" />
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script is:inline>
+		document.addEventListener('astro:page-load', () => {
+			const widgets = document.querySelectorAll('.cf-turnstile');
+			if (widgets.length > 1) {
+				widgets.forEach((el, i) => {
+					if (i > 0) el.remove();
+				});
+			}
+		});
+	</script>
+
+	<script is:inline>
+		document.addEventListener('astro:page-load', () => {
+			const form = document.getElementById('form');
+			const result = document.getElementById('result');
+			const reviewPreview = document.getElementById('review-preview');
+			const urlInput = document.getElementById('url');
+
+			if (!form || !result || !urlInput || !reviewPreview) return;
+
+			let submitted = false;
+			let reviewDownloadUrl = '';
+
+			function normalizeUrl(value) {
+				const raw = String(value || '').trim();
+				if (!raw) return '';
+				return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+			}
+
+			function isValidUrlLoose(value) {
+				const normalized = normalizeUrl(value);
+				if (!normalized) return false;
+				try {
+					const u = new URL(normalized);
+					return Boolean(u.hostname && u.hostname.includes('.'));
+				} catch {
+					return false;
+				}
+			}
+
+			function updateUrlValidity() {
+				const raw = urlInput.value.trim();
+				if (!raw) {
+					urlInput.setCustomValidity('');
+					return;
+				}
+				urlInput.setCustomValidity(isValidUrlLoose(raw) ? '' : 'Please provide a valid URL');
+			}
+
+			function getTurnstileToken() {
+				const fieldToken = form.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() || form.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() || '';
+
+				if (fieldToken) return fieldToken;
+
+				if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+					try {
+						return String(window.turnstile.getResponse() || '').trim();
+					} catch {
+						return '';
+					}
+				}
+
+				return '';
+			}
+
+			function isFormField(el) {
+				return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
+			}
+
+			function updateFieldState(field, force = false) {
+				if (!isFormField(field)) return;
+
+				if (field.id === 'url') updateUrlValidity();
+
+				const touched = field.dataset.touched === 'true';
+				if (!force && !touched) {
+					field.classList.remove('is-valid', 'is-invalid');
+					return;
+				}
+
+				field.classList.toggle('is-invalid', !field.checkValidity());
+				field.classList.toggle('is-valid', field.checkValidity());
+			}
+
+			function validateAllFields() {
+				form.classList.add('was-validated');
+				updateUrlValidity();
+
+				const fields = form.querySelectorAll('input, textarea, select');
+				fields.forEach((f) => updateFieldState(f, true));
+
+				return form.checkValidity();
+			}
+
+			function escapeHtml(value) {
+				return String(value ?? '')
+					.replaceAll('&', '&amp;')
+					.replaceAll('<', '&lt;')
+					.replaceAll('>', '&gt;')
+					.replaceAll('"', '&quot;')
+					.replaceAll("'", '&#39;');
+			}
+
+			function scoreRow(label, value) {
+				const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+				const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
+				return `
+					<div class="review-score-row">
+						<div class="review-score-head"><strong>${label}</strong><span>${shown}</span></div>
+						<progress max="100" value="${safeValue}" aria-label="${label} score"></progress>
+					</div>
+				`;
+			}
+
+			function base64ToBlobUrl(base64, mimeType) {
+				if (!base64) return '';
+				try {
+					const binary = atob(String(base64));
+					const length = binary.length;
+					const bytes = new Uint8Array(length);
+					for (let i = 0; i < length; i += 1) bytes[i] = binary.charCodeAt(i);
+					return URL.createObjectURL(new Blob([bytes], { type: mimeType || 'application/pdf' }));
+				} catch {
+					return '';
+				}
+			}
+
+			function renderReviewPreview(preview, report) {
+				if (!preview || typeof preview !== 'object') {
+					if (reviewDownloadUrl) {
+						URL.revokeObjectURL(reviewDownloadUrl);
+						reviewDownloadUrl = '';
+					}
+					reviewPreview.style.display = 'none';
+					reviewPreview.innerHTML = '';
+					return;
+				}
+
+				const scores = preview.scores || {};
+				const vitals = preview.vitals || {};
+				const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
+
+				const scoreHtml = [
+					scoreRow('Performance', Number(scores.performance)),
+					scoreRow('SEO', Number(scores.seo)),
+					scoreRow('Accessibility', Number(scores.accessibility)),
+					scoreRow('Best Practices', Number(scores.bestPractices)),
+				].join('');
+
+				const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
+
+				if (reviewDownloadUrl) {
+					URL.revokeObjectURL(reviewDownloadUrl);
+					reviewDownloadUrl = '';
+				}
+
+				const downloadUrl = base64ToBlobUrl(report?.contentBase64, report?.mimeType);
+				if (downloadUrl) reviewDownloadUrl = downloadUrl;
+
+				const downloadHtml = downloadUrl ? `<a class="btn" href="${downloadUrl}" download="${escapeHtml(report?.filename || 'technical-review.pdf')}">Download Full Report (PDF)</a>` : '';
+
+				reviewPreview.innerHTML = `
+					<div class="review-preview-card">
+						<h3>Quick Technical Snapshot</h3>
+						<p class="review-subtitle">Initial automated scan of your submitted site.</p>
+						<div class="review-score-grid">${scoreHtml}</div>
+						<div class="review-vitals">
+							<p><strong>LCP:</strong> ${escapeHtml(vitals.lcp || 'N/A')}</p>
+							<p><strong>Interactive:</strong> ${escapeHtml(vitals.interactive || 'N/A')}</p>
+							<p><strong>TBT:</strong> ${escapeHtml(vitals.tbt || 'N/A')}</p>
+							<p><strong>CLS:</strong> ${escapeHtml(vitals.cls || 'N/A')}</p>
+						</div>
+						<div class="review-fixes">
+							<h4>Recommended Fixes</h4>
+							${fixesHtml}
+						</div>
+						${downloadHtml ? `<div class="review-download">${downloadHtml}</div>` : ''}
+					</div>
+				`;
+
+				reviewPreview.style.display = 'block';
+			}
+
+			async function submitForm() {
+				const formData = new FormData(form);
+				const endpoint = form.dataset.apiPath || '/api/tech-review/';
+				const resultPage = form.dataset.resultsPath || '/results/';
+
+				const payload = {
+					company: String(formData.get('company') || '').trim(),
+					email: String(formData.get('email') || '').trim(),
+					url: normalizeUrl(String(formData.get('url') || '').trim()),
+					phone: String(formData.get('phone') || '').trim(),
+					message: String(formData.get('details') || formData.get('message') || '').trim(),
+					turnstileToken: getTurnstileToken(),
+				};
+
+				result.style.display = 'block';
+				result.textContent = 'Sending...';
+				if (reviewDownloadUrl) {
+					URL.revokeObjectURL(reviewDownloadUrl);
+					reviewDownloadUrl = '';
+				}
+				reviewPreview.style.display = 'none';
+				reviewPreview.innerHTML = '';
+
+				try {
+					const response = await fetch(endpoint, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(payload),
+					});
+
+					const text = await response.text();
+					console.log('API status/body:', response.status, text);
+					let data = {};
+					if (text) {
+						try {
+							data = JSON.parse(text);
+						} catch {
+							data = {};
+						}
+					}
+
+					if (!response.ok) {
+						const serverMessage = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
+						throw new Error(serverMessage);
+					}
+
+					result.textContent = data?.message || 'Thanks. Your request was submitted.';
+
+					try {
+						sessionStorage.setItem(
+							'scanResultPayload',
+							JSON.stringify({
+								preview: data?.preview || null,
+								report: data?.report || null,
+								timestamp: Date.now(),
+							}),
+						);
+						window.location.assign(resultPage);
+						return;
+					} catch {
+						renderReviewPreview(data?.preview, data?.report);
+					}
+
+					form.reset();
+					form.classList.remove('was-validated');
+					form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
+						el.classList.remove('is-valid', 'is-invalid');
+					});
+					form.querySelectorAll('[data-touched]').forEach((el) => {
+						el.removeAttribute('data-touched');
+					});
+					urlInput.setCustomValidity('');
+					submitted = false;
+
+					if (window.turnstile) window.turnstile.reset();
+				} catch (err) {
+					if (reviewDownloadUrl) {
+						URL.revokeObjectURL(reviewDownloadUrl);
+						reviewDownloadUrl = '';
+					}
+					reviewPreview.style.display = 'none';
+					reviewPreview.innerHTML = '';
+					result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+				}
+			}
+
+			form.addEventListener(
+				'blur',
+				(e) => {
+					const field = e.target;
+					if (!isFormField(field)) return;
+					field.dataset.touched = 'true';
+					updateFieldState(field, submitted);
+				},
+				true,
+			);
+
+			form.addEventListener('input', (e) => {
+				const field = e.target;
+				if (!isFormField(field)) return;
+				updateFieldState(field, submitted);
+			});
+
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				submitted = true;
+
+				if (!validateAllFields()) {
+					form.querySelector(':invalid')?.focus();
+					return;
+				}
+
+				if (!getTurnstileToken()) {
+					result.style.display = 'block';
+					result.textContent = 'Please complete the verification.';
+					return;
+				}
+
+				submitForm();
+			});
+		});
+	</script>
 
 	<script src="../scripts/swiper-intro.js"></script>
 	<script src="../scripts/swiper-testimonials.js"></script>

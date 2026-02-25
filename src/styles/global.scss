@@ -456,25 +456,26 @@ ul.bullets {
 // 	background: none;
 // }
 
-.btn a {
+.btn {
+	font-size: 1rem;
 	font-family: var.$font-sans-serif-bold;
-	font-size: 1.4rem;
 	line-height: 1;
 	letter-spacing: 1px;
 	text-transform: uppercase;
-	text-decoration: none;
+	text-decoration: none !important;
 	border: none;
-	border-radius: var.$bdr-radius-med;
-	padding: 1rem 1.5rem;
+	border-radius: 3px !important;
+	padding: 0.75rem 1rem;
 	cursor: pointer;
 	position: relative;
-	background: var.$theme-clr;
+	background: var.$theme-clr-dark;
 	color: #fff !important;
 	cursor: pointer;
-	display: block;
+	display: inline-block;
+	transition: all ease 0.3s;
 }
 
-.btn a:hover {
+.btn:hover {
 	background: var.$theme-clr;
 	color: #fff;
 }
@@ -482,10 +483,6 @@ ul.bullets {
 .btn svg {
 	max-width: 30px;
 	float: right;
-}
-
-.btn a:hover {
-	background: var.$font-clr;
 }
 
 /* =================================
@@ -513,15 +510,12 @@ section {
 	position: relative;
 }
 
-$container-padding: 1.25rem;
-$container-padding-mobile: 1.25rem;
-
 .container.images img {
 	border: 1px #f2f2f2 solid;
 }
 
 .container {
-	padding: 0 $container-padding;
+	padding: 0 var.$container-padding;
 	max-width: var.$container-width;
 	margin: 0 auto;
 	width: 100%;
@@ -537,15 +531,15 @@ $container-padding-mobile: 1.25rem;
 // }
 
 .container.top {
-	padding: 125px $container-padding 0;
+	padding: 125px var.$container-padding 0;
 }
 
 .container.btm {
-	padding: 0 $container-padding 125px;
+	padding: 0 var.$container-padding 125px;
 }
 
 .container.top.btm {
-	padding: 125px $container-padding;
+	padding: 125px var.$container-padding;
 }
 
 .bg-clr-drk {
@@ -564,15 +558,15 @@ $container-padding-mobile: 1.25rem;
 
 @media (max-width: 800px) {
 	.container.top {
-		padding: 100px $container-padding 0;
+		padding: 100px var.$container-padding 0;
 	}
 
 	.container.btm {
-		padding: 0 $container-padding 100px;
+		padding: 0 var.$container-padding 100px;
 	}
 
 	.container.top.btm {
-		padding: 100px $container-padding;
+		padding: 100px var.$container-padding;
 	}
 }
 
@@ -609,8 +603,9 @@ $container-padding-mobile: 1.25rem;
 
 .center {
 	text-align: center !important;
-	margin: 0 auto !important;
+	margin: 0 auto;
 	display: block !important;
+	//border: 1px red solid;
 }
 
 .width-med {
@@ -656,19 +651,19 @@ $container-padding-mobile: 1.25rem;
 .cta {
 	text-align: center;
 	margin: 0 auto;
-	padding: 0 $container-padding;
+	padding: 0 var.$container-padding;
 }
 
 .cta.top {
-	padding: 50px $container-padding 0;
+	padding: 50px var.$container-padding 0;
 }
 
 .cta.btm {
-	padding: 0 $container-padding 100px;
+	padding: 0 var.$container-padding 100px;
 }
 
 .cta.top.btm {
-	padding: 50px $container-padding 80px;
+	padding: 50px var.$container-padding 80px;
 }
 
 .cta .btn {

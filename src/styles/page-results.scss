@@ -1,0 +1,240 @@
+@use 'variables.scss' as var;
+
+#scan-results .container.top {
+	padding: clamp(150px, 20vw, 200px) var.$container-padding 0;
+	max-width: 1000px;
+}
+
+#results-root {
+	margin-top: 4rem;
+}
+
+.results-intro {
+	margin: 0 auto;
+	max-width: 600px;
+	text-align: center;
+}
+
+.results-intro p {
+	margin-bottom: 1rem;
+}
+
+.review-preview {
+	margin: 0 0 1.5rem;
+}
+
+.review-preview-card {
+	border: 1px #ddd solid;
+	border-radius: 10px;
+	padding: 3rem 1.5rem 2rem;
+	background: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+h1.center {
+	margin-bottom: 2rem !important;
+}
+
+.review-preview-card h3 {
+	margin: 0 0 1rem;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.review-subtitle {
+	margin: 0 0 3rem;
+	line-height: 1.3;
+	text-align: center;
+}
+
+.review-score-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.review-score-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0;
+	margin-bottom: 0;
+	padding: 2rem 1.5rem;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background: rgba(111, 119, 201, 0.06);
+}
+
+.review-score-item strong {
+	font-family: var.$font-sans-serif-semibold;
+	line-height: 1.15;
+	text-align: center;
+	font-size: 1.25rem;
+}
+
+.review-score-circle {
+	--score-color: #{var.$theme-clr};
+	--ring-bg: rgba(41, 54, 86, 0.16);
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var.$font-sans-serif-bold;
+	font-size: 1rem;
+	background: conic-gradient(var(--score-color) calc(var(--score, 0) * 1%), var(--ring-bg) 0);
+}
+
+.review-score-circle::before {
+	content: '';
+	position: absolute;
+	inset: 8px;
+	border-radius: 50%;
+	background: #fff;
+}
+
+.review-score-circle span {
+	position: relative;
+	z-index: 1;
+	font-size: 2rem;
+	font-family: var.$font-sans-serif-semibold;
+	line-height: 1;
+}
+
+.review-score-item.is-good .review-score-circle {
+	--score-color: #{var.$highlight};
+}
+
+.review-score-item.is-average .review-score-circle {
+	--score-color: #{var.$theme-clr-light};
+}
+
+.review-score-item.is-poor .review-score-circle {
+	--score-color: #{var.$theme-clr};
+}
+
+.review-score-item.is-na .review-score-circle {
+	--score-color: #{var.$note};
+}
+
+.review-vitals {
+	padding-top: 1.25rem;
+	margin-top: 0.5rem;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin: 0 auto 5rem;
+	max-width: 600px;
+}
+
+.review-vital-card {
+	border: 1px solid rgba(41, 54, 86, 0.18);
+	border-top: 5px solid var.$note;
+	border-radius: 5px;
+	padding: 1.5rem;
+	background: #fff;
+	margin-bottom: 0;
+}
+
+.review-vital-label,
+.review-vital-value,
+.review-vital-status {
+	margin: 0;
+}
+
+.review-vital-label {
+	font-size: 1.2rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	font-family: var.$font-sans-serif-med;
+	color: var.$theme-clr-dark;
+	text-align: center;
+}
+
+.review-vital-value {
+	font-size: 1.5rem;
+	font-family: var.$font-sans-serif-semibold;
+	line-height: 1.1;
+	margin-top: 0.2rem;
+	text-align: center;
+}
+
+.review-vital-status {
+	margin-top: 1rem;
+	font-size: 1rem;
+	font-family: var.$font-sans-serif-semibold;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: var.$note-drk;
+	text-align: center;
+}
+
+.review-vital-card.is-good .review-vital-status {
+	color: var.$highlight;
+}
+
+.review-vital-card.is-average .review-vital-status {
+	color: var.$font-clr;
+}
+
+.review-vital-card.is-good {
+	border-top-color: var.$highlight;
+}
+
+.review-vital-card.is-average {
+	border-top-color: var.$theme-clr;
+}
+
+.review-vital-card.is-poor {
+	border-top-color: var.$theme-clr;
+}
+
+.review-vital-card.is-na {
+	border-top-color: var.$note;
+}
+
+@media (max-width: 700px) {
+	.review-vitals {
+		grid-template-columns: 1fr;
+	}
+}
+
+.review-fixes {
+	margin-top: 0.75rem;
+}
+
+.review-fixes h4 {
+	margin: 0 auto 2rem;
+	font-size: 2rem;
+	text-align: center;
+}
+
+.review-fixes ol {
+	margin: 0 auto;
+	padding-left: 1.5rem;
+	list-style: decimal;
+	list-style-position: outside;
+	font-size: 1.2rem;
+	line-height: 1.35;
+	max-width: 650px;
+	font-family: var.$font-sans-serif-med;
+}
+
+.review-fixes ol li {
+	margin-bottom: 1rem;
+}
+
+.review-download {
+	margin: 4rem auto;
+	max-width: 500px;
+	text-align: center;
+	font-family: var.$font-sans-serif-semibold;
+}
+
+.review-download span {
+	font-family: var.$font-sans-serif-reg;
+}

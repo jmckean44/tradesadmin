@@ -1,65 +1,6 @@
 @use 'variables.scss' as var;
 
 /* =================================
-	 FORM
-==================================== */
-#contact {
-	position: relative;
-}
-
-#contact .container.top.btm {
-	max-width: 1000px;
-}
-
-#contact #form-container {
-	margin: 0.5rem 0 0;
-	max-width: 400px;
-}
-
-#contact #form-container form {
-	width: 100%;
-}
-@media (max-width: 700px) {
-	#contact #form-container {
-		max-width: 100%;
-		margin: 0.5rem 0 0;
-	}
-	#contact #form-container p.intro {
-		max-width: 65%;
-	}
-}
-
-@media (min-width: 701px) {
-	#contact .contact-mobile {
-		display: none;
-	}
-	#contact .contact-desktop {
-		display: inline-block;
-		text-align: right;
-		margin-top: -50px;
-		//border: 1px red solid;
-	}
-	#contact .contact-desktop img {
-		max-width: 225px;
-	}
-}
-
-@media (max-width: var.$mobile) {
-	#contact .contact-desktop {
-		display: none;
-	}
-	#contact .contact-mobile {
-		display: block;
-		max-width: 125px;
-		margin-top: -150px;
-		margin-right: -18px;
-		float: right;
-		margin-bottom: 1.5rem;
-		//border: 1px red solid;
-	}
-}
-
-/* =================================
    FOOTER
 ==================================== */
 footer svg {
@@ -78,6 +19,10 @@ footer a:link:hover {
 #site-footer {
 	background: var.$theme-clr-dark;
 	color: #b7bac4;
+}
+
+.container.top {
+	padding: 80px var.$container-padding 0;
 }
 
 .footer-brand {

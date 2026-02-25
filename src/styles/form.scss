@@ -35,84 +35,6 @@ form #result {
 	margin-bottom: 1.5rem;
 }
 
-.review-preview {
-	margin: 0 0 1.5rem;
-}
-
-.review-preview-card {
-	border: 1px solid var.$theme-clr-dark;
-	background: rgba(255, 255, 255, 0.9);
-	padding: 1rem;
-	border-radius: 3px;
-	color: var.$theme-clr-dark;
-}
-
-.review-preview-card h3 {
-	margin: 0 0 0.35rem;
-	font-size: 1.05rem;
-}
-
-.review-subtitle {
-	margin: 0 0 0.85rem;
-	font-size: 0.92rem;
-	line-height: 1.3;
-}
-
-.review-score-grid {
-	display: grid;
-	gap: 0.55rem;
-	margin-bottom: 0.8rem;
-}
-
-.review-score-row progress {
-	width: 100%;
-	height: 0.6rem;
-}
-
-.review-score-head {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	font-size: 0.9rem;
-	margin-bottom: 0.15rem;
-}
-
-.review-vitals {
-	border-top: 1px solid rgba(0, 0, 0, 0.15);
-	padding-top: 0.6rem;
-	margin-top: 0.5rem;
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.35rem 0.75rem;
-	font-size: 0.88rem;
-}
-
-.review-vitals p {
-	margin: 0;
-}
-
-.review-fixes {
-	border-top: 1px solid rgba(0, 0, 0, 0.15);
-	margin-top: 0.75rem;
-	padding-top: 0.65rem;
-}
-
-.review-fixes h4 {
-	margin: 0 0 0.4rem;
-	font-size: 0.92rem;
-}
-
-.review-fixes ul {
-	margin: 0;
-	padding-left: 1rem;
-	font-size: 0.88rem;
-	line-height: 1.35;
-}
-
-.review-download {
-	margin-top: 0.9rem;
-}
-
 form h3 {
 	font-size: 1rem;
 }
@@ -249,7 +171,7 @@ button {
 	text-transform: uppercase;
 	text-decoration: none !important;
 	border: none;
-	border-radius: 3px;
+	border-radius: 3px !important;
 	padding: 0.75rem 1rem;
 	cursor: pointer;
 	position: relative;
