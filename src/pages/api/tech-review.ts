@@ -1,6 +1,4 @@
 import type { APIRoute } from 'astro';
-import lighthouse from 'lighthouse';
-import { launch } from 'chrome-launcher';
 import nodemailer from 'nodemailer';
 import PDFDocument from 'pdfkit';
 
@@ -134,13 +132,15 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 }
 
 async function runReview(url: string): Promise<Review> {
-	let chrome: Awaited<ReturnType<typeof launch>> | undefined;
+	const [{ default: lighthouse }, { launch }] = await Promise.all([import('lighthouse'), import('chrome-launcher')]);
+	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
 
 	try {
 		chrome = await launch({ chromeFlags: ['--headless', '--no-sandbox'] });
+		const chromePort = chrome.port;
 
 		const runnerResult = await lighthouse(url, {
-			port: chrome.port,
+			port: chromePort,
 			output: 'json',
 			logLevel: 'error',
 			onlyCategories: ['performance', 'seo', 'accessibility', 'best-practices'],

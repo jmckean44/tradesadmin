@@ -99,19 +99,19 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 				<div class="footer-section">
 					<ul class="footer-links">
 						<li>
-							<a class={currentPath === 'services/' ? 'active' : ''} href="#services" data-astro-reload role="link" aria-label="link to SERVICES section">SERVICES</a>
+							<a class={currentPath === 'services/' ? 'active' : ''} href="#services" role="link" aria-label="link to SERVICES section">SERVICES</a>
 						</li>
 						<li>
-							<a class={currentPath === 'services/' ? 'active' : ''} href="#pricing" data-astro-reload role="link" aria-label="link to pricing section">PRICING</a>
+							<a class={currentPath === 'services/' ? 'active' : ''} href="#pricing" role="link" aria-label="link to pricing section">PRICING</a>
 						</li>
 						<li>
-							<a class={currentPath === 'services/' ? 'active' : ''} href="#process" data-astro-reload role="link" aria-label="link to Process section">Process</a>
+							<a class={currentPath === 'services/' ? 'active' : ''} href="#process" role="link" aria-label="link to Process section">Process</a>
 						</li>
 						<li>
-							<a class={currentPath === 'services/' ? 'active' : ''} href="#testimonials" data-astro-reload role="link" aria-label="link to TESTIMONIALS section">TESTIMONIALS</a>
+							<a class={currentPath === 'services/' ? 'active' : ''} href="#testimonials" role="link" aria-label="link to TESTIMONIALS section">TESTIMONIALS</a>
 						</li>
 						<li>
-							<a class={currentPath === 'contact/' ? 'active' : ''} href="#contact" data-astro-reload role="link" aria-label="link to contact section">CONTACT</a>
+							<a class={currentPath === 'contact/' ? 'active' : ''} href="#contact" role="link" aria-label="link to contact section">CONTACT</a>
 						</li>
 					</ul>
 
@@ -281,10 +281,19 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 
 				const text = await response.text();
 				console.log('API status/body:', response.status, text);
-				if (!response.ok) throw new Error(text || `Request failed (${response.status})`);
+				let data = {};
+				if (text) {
+					try {
+						data = JSON.parse(text);
+					} catch {
+						data = {};
+					}
+				}
 
-				const data = await response.json().catch(() => ({}));
-				if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
+				if (!response.ok) {
+					const serverMessage = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
+					throw new Error(serverMessage);
+				}
 
 				result.textContent = data?.message || 'Thanks. Your request was submitted.';
 
