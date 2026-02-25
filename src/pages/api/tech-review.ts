@@ -375,7 +375,7 @@ export const POST: APIRoute = async ({ request }) => {
 									message: smtpErr?.message,
 								},
 						  }
-						: { error: 'Failed to submit.' },
+						: { error: 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.' },
 				),
 				{ status: 500 },
 			);
@@ -464,6 +464,6 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 	} catch (err) {
 		console.error('tech-review route error:', err);
-		return new Response(JSON.stringify({ error: 'Failed to submit.' }), { status: 500 });
+		return new Response(JSON.stringify({ error: 'Unexpected server error while processing your request.' }), { status: 500 });
 	}
 };

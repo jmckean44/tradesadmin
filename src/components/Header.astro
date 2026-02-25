@@ -66,39 +66,6 @@ import wordmark from '../img/logo-wordmark.svg';
 	</nav>
 </div>
 
-<script is:inline>
-	// Mobile menu animation and toggle
-	document.addEventListener('DOMContentLoaded', function () {
-		const hamburger = document.getElementById('hamburger');
-		const overlay = document.getElementById('mobile-overlay');
-		const navMobile = document.getElementById('nav-mobile');
-		const links = navMobile.querySelectorAll('a');
-		function closeMenu() {
-			overlay.classList.remove('active');
-			hamburger.classList.remove('active');
-			overlay.setAttribute('aria-hidden', 'true');
-			hamburger.setAttribute('aria-expanded', 'false');
-		}
-		hamburger.addEventListener('click', function () {
-			const isOpen = overlay.classList.contains('active');
-			if (isOpen) {
-				closeMenu();
-			} else {
-				overlay.classList.add('active');
-				hamburger.classList.add('active');
-				hamburger.setAttribute('aria-expanded', 'true');
-				overlay.setAttribute('aria-hidden', 'false');
-				navMobile.focus();
-			}
-		});
-		links.forEach((link) => link.addEventListener('click', closeMenu));
-		// Close on resize above 800px
-		window.addEventListener('resize', function () {
-			if (window.innerWidth >= 800) closeMenu();
-		});
-	});
-</script>
-
 <!-- <div class="overlay">
 	<div id="hamburger">
 		<span></span>

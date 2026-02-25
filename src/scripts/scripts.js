@@ -134,20 +134,55 @@ document.addEventListener('astro:page-load', () => {
 });
 
 // MOBILE NAV
-document.addEventListener('asto: page-load', () => {
+function initMobileNav() {
 	const hamburger = document.getElementById('hamburger');
 	const overlay = document.getElementById('mobile-overlay');
+	const navMobile = document.getElementById('nav-mobile');
+
+	if (!hamburger || !overlay || !navMobile) return;
+
+	if (hamburger.dataset.navBound === 'true') return;
+	hamburger.dataset.navBound = 'true';
+
+	const closeMenu = () => {
+		overlay.classList.remove('active');
+		hamburger.classList.remove('active');
+		hamburger.setAttribute('aria-expanded', 'false');
+		overlay.setAttribute('aria-hidden', 'true');
+	};
+
+	const openMenu = () => {
+		overlay.classList.add('active');
+		hamburger.classList.add('active');
+		hamburger.setAttribute('aria-expanded', 'true');
+		overlay.setAttribute('aria-hidden', 'false');
+		navMobile.focus();
+	};
 
 	hamburger.addEventListener('click', () => {
-		overlay.classList.toggle('active');
-		hamburger.setAttribute('aria-expanded', overlay.classList.contains('active'));
+		const isOpen = overlay.classList.contains('active');
+		if (isOpen) closeMenu();
+		else openMenu();
 	});
 
-	// Optional: close menu when clicking outside nav or on a link
 	overlay.addEventListener('click', (e) => {
-		if (e.target === overlay || e.target.tagName === 'A') {
-			overlay.classList.remove('active');
-			hamburger.setAttribute('aria-expanded', 'false');
-		}
+		if (e.target === overlay) closeMenu();
 	});
-});
+
+	navMobile.addEventListener('click', (e) => {
+		const target = e.target;
+		if (target instanceof HTMLAnchorElement) closeMenu();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && overlay.classList.contains('active')) closeMenu();
+	});
+
+	window.addEventListener('resize', () => {
+		if (window.innerWidth >= 800) closeMenu();
+	});
+
+	closeMenu();
+}
+
+document.addEventListener('astro:page-load', initMobileNav);
