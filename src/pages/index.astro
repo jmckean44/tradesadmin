@@ -126,39 +126,41 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 	<div class="cta top"><a class="btn" href="#contact">Get a Free Website Speed Test</a></div>
 
+	br
+
 	<section id="masonry-section">
 		<div class="container top">
 			<h2 class="margin-btm-med bold center">Common <span class="theme-clr">Technical Issues</span></h2>
 			<div class="masonry-grid trig-fade-up enable-trig">
+				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
+					<p class="issue">Broken Links & Forms</p>
+					<h3>Broken forms and "404 Page Not Found" damages trust and search results, causing missed potential customer opportunities</h3>
+					<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
+					<p class="issue">Security & Updates</p>
+					<h3>Expired SSL certificates, HTTP issues, and outdated plugins can trigger warnings</h3>
+					<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
+				</div>
 				<div class="masonry-item trig-target" style="--trig-delay: .0s;">
 					<p class="issue">Google & Indexing</p>
-					<h3>Outdated Google Business Profile, missing Analytics, no Search Console setup reduces visibility</h3>
+					<h3>Outdated Google Business Profile, missing analytics, no Search Console setup reduces visibility</h3>
 					<div><Image src={iconIssueGBP} alt="Google Business Profile icon" class="gbp" /></div>
 				</div>
 				<div class="masonry-item trig-target" style="--trig-delay: .2s;">
 					<p class="issue">Performance & Speed</p>
-					<h3>Performance & Speed Issues, High Bounce Rates</h3>
+					<h3>Poor performance scores and page load times can contribute to higher bounce rates</h3>
 					<div><Image src={iconIssueSpeed} alt="Performance & Speed icon" class="speed" /></div>
-				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
-					<p class="issue">Security & Updates</p>
-					<h3>Expired SSL certificates and outdated plugins can trigger warnings</h3>
-					<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
 				</div>
 				<div class="masonry-item trig-target" style="--trig-delay: .6s;">
 					<p class="issue">Structure & Navigation</p>
-					<h3>Navigation, layout & naming inconsistencies confuse users and harm SEO</h3>
+					<h3>Navigation, layout, and naming inconsistencies can be confusing and affect SEO</h3>
 					<div><Image src={iconStructure} alt="Structure icon" class="structure" /></div>
 				</div>
 				<div class="masonry-item trig-target" style="--trig-delay: .8s;">
-					<p class="issue">Mobile & Responsiveness</p>
-					<h3>Non-Responsive Design, Poor Mobile Optimization</h3>
+					<p class="issue">Responsiveness & Mobile</p>
+					<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience for visitors</h3>
 					<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
-				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
-					<p class="issue">Broken Links & Forms</p>
-					<h3>404 "Page Not Found" damages trust and weakens search performance, missed opportunities for conversions</h3>
-					<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
 				</div>
 			</div>
 		</div>
@@ -179,6 +181,9 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<p class="txt-lrg">
 							If your business depends on <span class="semibold">inbound calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quoting</span>, your
 							website and local listings must load fast, function properly, and stay error-free.
+						</p>
+						<p class="txt-lrg">
+							In cases where <span class="semibold">your website is incomplete or not functioning</span>, a fast one-page starter site can be set up to replace the placeholder or broken page.
 						</p>
 						<p class="txt-lrg">TradesAdmin handles the <span class="semibold">technical upkeep, diagnostics, and fixes</span> that keeps everything running smoothly.</p>
 					</div>
@@ -206,13 +211,14 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			<div class="services-grid trig-fade-up enable-trig">
 				<div class="services-card trig-target" style="--trig-delay: 0s;">
 					<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
-					<h2>Performance</h2>
-					<p>Fixing slow sites and mobile performance issues that affect user experience.</p>
+					<h2>Performance & Technical Fixes</h2>
+					<p>Slow site and mobile performance issue fixes.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span> Core web vitals diagnostic</li>
 						<li><span class="check">✓</span> Mobile/responsive corrections</li>
 						<li><span class="check">✓</span> Image compression & WebP conversion</li>
 						<li><span class="check">✓</span> Lazy loading configuration</li>
+						<li><span class="check">✓</span> Layout shift and stability fixes</li>
 						<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
 						<li><span class="check">✓</span> Render-blocking resource reviews</li>
 						<li><span class="check">✓</span> Plugin audits</li>
@@ -222,11 +228,12 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 				<div class="services-card trig-target" style="--trig-delay: .2s;">
 					<div class="service-icon">
-						<Image src={iconTechnical} alt="Technical SEO icon" />
+						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
 					</div>
-					<h2>Technical SEO</h2>
+					<h2>Technical SEO & Indexing</h2>
 					<p>Ensuring Google can correctly understand and display your service pages.</p>
 					<ul class="service-features">
+						<li><span class="check">✓</span>Google Business Profile, Search Console, & Analytics setup</li>
 						<li><span class="check">✓</span>Indexing diagnostics</li>
 						<li><span class="check">✓</span>Sitemap creation/validation</li>
 						<li><span class="check">✓</span>URL structure review</li>
@@ -239,29 +246,12 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
 				</div>
 
-				<div class="services-card trig-target" style="--trig-delay: .4s;">
-					<div class="service-icon">
-						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
-					</div>
-					<h2>Local Search Accuracy</h2>
-					<p>Keeping your business information accurate and consistent across platforms.</p>
-					<ul class="service-features">
-						<li><span class="check">✓</span>Google Business Profile setup</li>
-						<li><span class="check">✓</span>Name, Address, Phone consistency checks</li>
-						<li><span class="check">✓</span>Google Account and Analytics Setup</li>
-						<li><span class="check">✓</span>Category, Hours, & service area verification</li>
-						<li><span class="check">✓</span>Business description alignment</li>
-						<li><span class="check">✓</span>Google Map embedding</li>
-					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
-				</div>
-
 				<div class="services-card trig-target" style="--trig-delay: .6s;">
 					<div class="service-icon">
-						<Image src={iconStructure} alt="Structural Cleanup icon" />
+						<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
 					</div>
-					<h2>Structural Cleanup</h2>
-					<p>Fixing layout, navigation, and content structure issues.</p>
+					<h2>Structure & Functional Corrections</h2>
+					<p>Fixing broken layouts, navigation, forms, and technical inconsistencies.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span> Proper page naming conventions</li>
 						<li><span class="check">✓</span> Simplifying navigation structure</li>
@@ -269,16 +259,19 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Fixing spacing & alignment inconsistencies</li>
 						<li><span class="check">✓</span> Removing outdated styling conflicts</li>
 						<li><span class="check">✓</span> Fixing header/footer inconsistencies</li>
+						<li><span class="check">✓</span> Form errors and submission issues</li>
+						<li><span class="check">✓</span> Broken links (404/500)</li>
+						<li><span class="check">✓</span> Console error debugging</li>
 					</ul>
 					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
 				</div>
 
 				<div class="services-card trig-target" style="--trig-delay: .8s;">
 					<div class="service-icon">
-						<Image src={iconHosting} alt="Hosting icon" />
+						<Image src={iconHosting} alt="Maintenance, Hosting & Support icon" />
 					</div>
-					<h2>Hosting, DNS, Security</h2>
-					<p>Technical support for hosting and media management.</p>
+					<h2>Maintenance, Hosting & Support</h2>
+					<p>Technical support for hosting, DNS, SSL certificates, backups, updates, and technical upkeep.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span> Web & Email hosting setup</li>
 						<li><span class="check">✓</span> DNS & Nameserver config</li>
@@ -286,23 +279,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Security monitoring</li>
 						<li><span class="check">✓</span> Domain Registration & Management</li>
 						<li><span class="check">✓</span> Website Backups & Restore Services</li>
-					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
-				</div>
-
-				<div class="services-card trig-target" style="--trig-delay: 1s;">
-					<div class="service-icon">
-						<Image src={iconAudit} alt="Audits & Maintenance icon" />
-					</div>
-					<h2>Audits & Maintenance</h2>
-					<p>Technical checks to keep your site running reliably.</p>
-					<ul class="service-features">
-						<li><span class="check">✓</span> Scheduled updates</li>
-						<li><span class="check">✓</span> Backup verification</li>
-						<li><span class="check">✓</span> Small fixes, broken link checks, layout adjustments</li>
-						<li><span class="check">✓</span> WordPress version/plugin conflicts</li>
-						<li><span class="check">✓</span> Console error debugging</li>
-						<li><span class="check">✓</span> Form errors and testing</li>
+						<li><span class="check">✓</span> General technical support and fixes</li>
 					</ul>
 					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
 				</div>
@@ -313,7 +290,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 	<div class="cta"><a class="btn" href="#contact">Get a Free Technical Review</a></div>
 
 	<section id="pricing">
-		<div class="container">
+		<div class="container top">
 			<div class="flex padding-x align-middle">
 				<div class="cell small-18 medium-8 pricing-content">
 					<h2>Pricing Overview</h2>
@@ -323,7 +300,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<div class="flex">
 							<div class="cell small-18 medium-18 large-13">
 								<h3 class="txt-xl">Single-Issue Fix</h3>
-								<p class="price-desc txt-drk">Perfect for broken forms, SSL warnings, mobile alignment issues, slow pages, or incorrect Google listing info.</p>
+								<p class="price-desc txt-drk">For isolated technical issues such as SSL errors, broken forms, layout problems, or 404/500 page errors.</p>
 							</div>
 							<div class="cell small-18 medium-18 large-5">
 								<div class="pricing-amount">
@@ -335,27 +312,10 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				</div>
 				<div class="cell small-18 medium-10 pricing-container">
 					<div class="pricing-card">
+						<p class="pricing-includes">Pricing includes the items listed above, and more, but depends on site size and the number of technical issues identified.</p>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-11">
-								<h3>Technical & Local SEO</h3>
-								<p class="price-desc">
-									Corrections to indexing, metadata, canonical review, sitemap validation, and Google Business Profile alignment. <span
-										>Pricing depends on site size and the number of technical issues identified.</span
-									>
-								</p>
-							</div>
-							<div class="cell small-18 medium-18 large-7">
-								<div class="pricing-amount">
-									<span class="price"><em>from</em> <sup>$</sup>900</span>
-								</div>
-							</div>
-						</div>
-						<div class="flex line-btm">
-							<div class="cell small-18 medium-18 large-11">
-								<h3>Performance Optimization</h3>
-								<p class="price-desc">
-									Load speed improvements, script and asset cleanup, and Core Web Vitals diagnostics for performance tuning to address bottlenecks. <span>Cost varies based on site complexity.</span>
-								</p>
+								<h3>Performance & Technical Fixes</h3>
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
@@ -365,10 +325,17 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-11">
-								<h3>Structural Cleanup</h3>
-								<p class="price-desc">
-									Navigation restructuring, theme and template consolidation, URL hierarchy refinement, and broader architecture corrections. <span>Cost varies based on site complexity.</span>
-								</p>
+								<h3>Technical SEO & Indexing</h3>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>900</span>
+								</div>
+							</div>
+						</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Structure & Functional Corrections</h3>
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
@@ -378,25 +345,21 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-11">
-								<h3>Audits & Maintenance</h3>
-								<p class="price-desc">
-									Ongoing updates, backups, monitoring, and corrective support to keep websites stable and secure. <span>Monthly pricing is based on update frequency and support level.</span>
-								</p>
+								<h3>Maintenance, Hosting & Support</h3>
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
-									<span class="price"><em>from</em> <sup>$</sup>150</span>
+									<span class="price"><em>from</em> <sup>$</sup>150/month</span>
 								</div>
 							</div>
 						</div>
 						<div class="flex">
 							<div class="cell small-18 medium-18 large-11">
-								<h3>Hosting Admin</h3>
-								<p class="price-desc">Hosting, DNS, and SSL configuration review, including migration support where needed. <span>Cost depends on server setup and hosting environment.</span></p>
+								<h3>Landing Page Starter Site</h3>
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
-									<span class="price"><em>from</em> <sup>$</sup>900</span>
+									<span class="price"><em>from</em> <sup>$</sup>499</span>
 								</div>
 							</div>
 						</div>
@@ -524,7 +487,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 					</div>
 					<div class="swiper-slide">
-						<Image src={fortune} alt="fortune district website" />
+						<Image src={fortune} alt="Fortune District website" />
 						<p>
 							<span class="quote top">&rdquo;</span>
 							<span class="semibold">TradesAdmin</span> have continually been attentive with any technical questions or concerns that we had, responded quickly, and handled the job thoroughly. <span
@@ -548,11 +511,12 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 	<section id="contact">
 		<div class="container top btm">
 			<div class="flex padding-x align-middle">
-				<div class="cell small-18 medium-10">
+				<div class="cell small-18 medium-11">
 					<div id="form-container trig-fade-right enable-trig">
-						<h2>Free Scan</h2>
+						<h2>Free Website Scan</h2>
 						<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
-						<p class="margin-btm-med intro semibold">Get a quick technical snapshot of your website with recommended fixes for your website and search visibility.</p>
+						<p class="semibold txt-lrg">Get a free technical review of your website with recommended fixes by filling out and submitting the form below.</p>
+						<p class="margin-btm-med intro txt-lrg">If you do not have a website, feel free to send a message for a free consultation to help you get started.</p>
 
 						<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
 							<div>
@@ -564,9 +528,8 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 							<div>
 								<label for="url" class="visually-hidden">URL</label>
-								<input type="text" name="url" id="url" placeholder="URL *" required inputmode="url" autocomplete="url" />
-								<span class="helperText">URL</span>
-								<div class="empty-feedback invalid-feedback">Please provide your URL</div>
+								<input type="text" name="url" id="url" placeholder="Website (optional)" inputmode="url" autocomplete="url" />
+								<span class="helperText">Website (optional)</span>
 								<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
 							</div>
 
@@ -602,7 +565,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 					</div>
 				</div>
-				<div class="cell small-18 medium-8 trig-fade-right enable-trig contact-desktop">
+				<div class="cell small-18 medium-7 trig-fade-right enable-trig contact-desktop">
 					<Image src={gbp} class="trig-target" alt="TradesAdmin Contact" />
 				</div>
 			</div>

@@ -371,15 +371,17 @@ export const POST: APIRoute = async ({ request }) => {
 		const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
 		const message = typeof body.message === 'string' ? body.message.trim() : '';
 
-		if (!company || !email || !rawUrl) {
-			return new Response(JSON.stringify({ error: 'Company, email, and URL are required.' }), { status: 400 });
+		if (!company || !email) {
+			return new Response(JSON.stringify({ error: 'Company and email are required.' }), { status: 400 });
 		}
 
-		const url = normalizeUrl(rawUrl);
-		try {
-			new URL(url);
-		} catch {
-			return new Response(JSON.stringify({ error: 'Invalid URL.' }), { status: 400 });
+		const url = rawUrl ? normalizeUrl(rawUrl) : '';
+		if (url) {
+			try {
+				new URL(url);
+			} catch {
+				return new Response(JSON.stringify({ error: 'Invalid URL.' }), { status: 400 });
+			}
 		}
 
 		const transporter = nodemailer.createTransport({
@@ -418,11 +420,15 @@ export const POST: APIRoute = async ({ request }) => {
 
 		let review: Review | null = null;
 		let reviewError = '';
-		try {
-			review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
-		} catch (err) {
-			console.error('Review failed:', err);
-			reviewError = err instanceof Error ? err.message : 'Unknown Lighthouse error';
+		if (!url) {
+			reviewError = 'No URL provided.';
+		} else {
+			try {
+				review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+			} catch (err) {
+				console.error('Review failed:', err);
+				reviewError = err instanceof Error ? err.message : 'Unknown Lighthouse error';
+			}
 		}
 
 		const reviewHtml = review
@@ -441,12 +447,13 @@ export const POST: APIRoute = async ({ request }) => {
             `
 			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
+		const displayUrl = url || 'N/A';
 		const html = `
             <h2>New Contact Submission</h2>
             <ul>
                 <li><strong>Company:</strong> ${escapeHtml(company)}</li>
                 <li><strong>Email:</strong> ${escapeHtml(email)}</li>
-                <li><strong>URL:</strong> ${escapeHtml(url)}</li>
+				<li><strong>URL:</strong> ${escapeHtml(displayUrl)}</li>
                 ${phone ? `<li><strong>Phone:</strong> ${escapeHtml(phone)}</li>` : ''}
                 ${message ? `<li><strong>Message:</strong> ${escapeHtml(message)}</li>` : ''}
             </ul>
@@ -457,13 +464,13 @@ export const POST: APIRoute = async ({ request }) => {
 		const pdfBuffer = await buildReviewPdfBuffer({
 			company,
 			email,
-			url,
+			url: displayUrl,
 			phone,
 			message,
 			review,
 			reviewError,
 		});
-		const reportFilename = `technical-review-${new URL(url).hostname}.pdf`;
+		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
 
 		await withTimeout(
 			transporter.sendMail({

@@ -127,7 +127,7 @@
 
 #services .services-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 2rem;
 	margin-top: 1.5rem;
 }
@@ -225,9 +225,9 @@
 	text-decoration: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: var.$mobile) {
 	#services .services-grid {
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: 1fr;
 		gap: 1.5rem;
 	}
 	#services .services-card.media .media-columns {
@@ -380,6 +380,10 @@
 	background: var.$theme-clr-blue;
 }
 
+#pricing .container.top {
+	padding: 100px var.$container-padding 0;
+}
+
 .pricing-container {
 	position: relative;
 	text-align: right;
@@ -418,10 +422,13 @@
 	color: #fff;
 }
 
+.pricing-card.single-issue h3 {
+	color: var.$theme-clr;
+}
+
 .pricing-card h3 {
 	font-size: 1.3rem;
 	font-weight: 500;
-	color: var.$theme-clr;
 	margin-bottom: 0.5rem;
 }
 
@@ -442,18 +449,10 @@
 	font-size: 1rem;
 }
 
-.price-desc {
-	display: block;
-	//font-size: 1rem;
-	font-family: var.$font-sans-serif-med;
-	line-height: 1.4;
-	font-weight: 400;
-	margin-bottom: 0;
-}
-
-.price-desc span {
+.pricing-includes {
+	line-height: 1.3;
 	font-family: var.$font-sans-serif-reg;
-	color: var.$note-drk;
+	margin-bottom: 2rem;
 }
 
 .price {
@@ -468,13 +467,10 @@
 	font-style: normal;
 }
 
-@media (max-width: var.$tablet) {
-	.pricing-amount {
-		text-align: left;
-	}
-}
-
 @media (max-width: var.$mobile) {
+	#pricing .container.top {
+		padding: 0 var.$container-padding 0;
+	}
 	.pricing-content {
 		padding-top: 100px;
 	}
