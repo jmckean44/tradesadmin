@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import netlify from '@astrojs/netlify';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import icon from 'astro-icon';
@@ -24,7 +24,5 @@ export default defineConfig({
 		responsiveStyles: true,
 		layout: 'full-width',
 	},
-	adapter: node({
-		mode: 'standalone',
-	}),
+	adapter: netlify(),
 });
