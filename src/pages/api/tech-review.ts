@@ -4,11 +4,18 @@ import { launch } from 'chrome-launcher';
 import nodemailer from 'nodemailer';
 import PDFDocument from 'pdfkit';
 
-type RecaptchaVerifyResponse = {
+type TurnstileVerifyResponse = {
 	success: boolean;
-	challenge_ts?: string;
-	hostname?: string;
 	'error-codes'?: string[];
+	hostname?: string;
+	action?: string;
+	cdata?: string;
+};
+
+type TurnstileVerificationResult = {
+	success: boolean;
+	errorCodes: string[];
+	hostname?: string;
 };
 
 type Review = {
@@ -21,6 +28,11 @@ type Review = {
 	interactive: string;
 	tbt: string;
 };
+
+function getEnv(name: string): string {
+	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
+	return String(value).trim();
+}
 
 function normalizeUrl(input: string): string {
 	const value = (input || '').trim();
@@ -36,24 +48,89 @@ function escapeHtml(value: string): string {
 	return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
-async function verifyRecaptchaToken(token: string, remoteIp?: string): Promise<boolean> {
-	const secret = process.env.RECAPTCHA_SECRET_KEY;
-	if (!secret || !token) return false;
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+	let timer: ReturnType<typeof setTimeout> | undefined;
 
-	const params = new URLSearchParams();
-	params.append('secret', secret);
-	params.append('response', token);
-	if (remoteIp) params.append('remoteip', remoteIp);
-
-	const resp = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		body: params.toString(),
+	const timeoutPromise = new Promise<T>((_, reject) => {
+		timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
 	});
 
-	if (!resp.ok) return false;
-	const data = (await resp.json()) as RecaptchaVerifyResponse;
-	return data.success === true;
+	return Promise.race([promise, timeoutPromise]).finally(() => {
+		if (timer) clearTimeout(timer);
+	}) as Promise<T>;
+}
+
+async function parseRequestBody(request: Request): Promise<Record<string, unknown>> {
+	const contentType = (request.headers.get('content-type') || '').toLowerCase();
+
+	if (contentType.includes('application/json')) {
+		const raw = await request.text();
+		if (!raw.trim()) return {};
+		try {
+			const parsed = JSON.parse(raw);
+			return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+		} catch {
+			return {};
+		}
+	}
+
+	if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+		const form = await request.formData().catch(() => null);
+		if (!form) return {};
+
+		const out: Record<string, unknown> = {};
+		for (const [key, value] of form.entries()) {
+			out[key] = typeof value === 'string' ? value : value.name;
+		}
+		return out;
+	}
+
+	return {};
+}
+
+async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<TurnstileVerificationResult> {
+	const secret = getEnv('TURNSTILE_SECRET_KEY');
+	if (!secret || !token) {
+		return {
+			success: false,
+			errorCodes: ['missing-input-secret-or-response'],
+		};
+	}
+
+	const form = new URLSearchParams();
+	form.append('secret', secret);
+	form.append('response', token);
+	if (remoteIp) form.append('remoteip', remoteIp);
+
+	const resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: form.toString(),
+	});
+
+	if (!resp.ok) {
+		return {
+			success: false,
+			errorCodes: ['siteverify-http-error'],
+		};
+	}
+
+	const data = (await resp.json()) as TurnstileVerifyResponse;
+
+	if (!data.success) {
+		console.error('Turnstile verify failed:', {
+			errorCodes: data['error-codes'],
+			hostname: data.hostname,
+			tokenPresent: Boolean(token),
+			secretPresent: Boolean(secret),
+		});
+	}
+
+	return {
+		success: data.success === true,
+		errorCodes: data['error-codes'] ?? [],
+		hostname: data.hostname,
+	};
 }
 
 async function runReview(url: string): Promise<Review> {
@@ -61,6 +138,7 @@ async function runReview(url: string): Promise<Review> {
 
 	try {
 		chrome = await launch({ chromeFlags: ['--headless', '--no-sandbox'] });
+
 		const runnerResult = await lighthouse(url, {
 			port: chrome.port,
 			output: 'json',
@@ -86,29 +164,36 @@ async function runReview(url: string): Promise<Review> {
 	}
 }
 
-function buildReviewPdfBuffer(input: { company: string; email: string; url: string; phone: string; message: string; review: Review | null }): Promise<Buffer> {
+function buildReviewPdfBuffer(input: { company: string; email: string; url: string; phone: string; message: string; review: Review | null; reviewError?: string }): Promise<Buffer> {
 	return new Promise((resolve, reject) => {
 		const doc = new PDFDocument({ margin: 40 });
 		const chunks: Uint8Array[] = [];
 
-		doc.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+		doc.on('data', (chunk: Buffer) => {
+			chunks.push(Uint8Array.from(chunk));
+		});
 		doc.on('end', () => resolve(Buffer.concat(chunks)));
 		doc.on('error', reject);
 
 		doc.fontSize(18).text('Technical Review', { underline: true });
 		doc.moveDown();
+
 		doc.fontSize(12).text(`Company: ${input.company}`);
 		doc.text(`Email: ${input.email}`);
 		doc.text(`URL: ${input.url}`);
 		if (input.phone) doc.text(`Phone: ${input.phone}`);
 		if (input.message) doc.text(`Message: ${input.message}`);
-		doc.moveDown();
 
+		doc.moveDown();
 		doc.fontSize(14).text('Review Results', { underline: true });
 		doc.moveDown(0.5);
 
 		if (!input.review) {
 			doc.fontSize(12).text('Technical review unavailable.');
+			if (input.reviewError) {
+				doc.moveDown(0.5);
+				doc.fontSize(10).text(`Reason: ${input.reviewError}`);
+			}
 		} else {
 			doc.fontSize(12).text(`Performance: ${input.review.performance ?? 'N/A'}`);
 			doc.text(`SEO: ${input.review.seo ?? 'N/A'}`);
@@ -130,16 +215,36 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const body = await request.json().catch(() => ({} as Record<string, unknown>));
+		const isDev = import.meta.env.DEV || process.env.NODE_ENV !== 'production';
+		const body = await parseRequestBody(request);
 
-		const recaptchaToken = (typeof body.recaptchaToken === 'string' && body.recaptchaToken.trim()) || (typeof body['g-recaptcha-response'] === 'string' && body['g-recaptcha-response'].trim()) || '';
+		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
 
 		const forwardedFor = request.headers.get('x-forwarded-for') || '';
 		const remoteIp = forwardedFor.split(',')[0]?.trim() || undefined;
 
-		const isHuman = await verifyRecaptchaToken(recaptchaToken, remoteIp);
-		if (!isHuman) {
-			return new Response(JSON.stringify({ error: 'Invalid reCAPTCHA.' }), { status: 400 });
+		const verification = await verifyTurnstileToken(turnstileToken, remoteIp);
+		if (!verification.success) {
+			return new Response(
+				JSON.stringify(
+					isDev
+						? {
+								error: 'Invalid verification.',
+								turnstile: {
+									errorCodes: verification.errorCodes,
+									hostname: verification.hostname,
+									tokenPresent: Boolean(turnstileToken),
+									secretPresent: Boolean(getEnv('TURNSTILE_SECRET_KEY')),
+									contentType: request.headers.get('content-type') || '',
+									bodyKeys: Object.keys(body),
+									turnstileTokenType: typeof body.turnstileToken,
+									turnstileTokenLength: typeof body.turnstileToken === 'string' ? body.turnstileToken.length : 0,
+								},
+						  }
+						: { error: 'Invalid verification.' },
+				),
+				{ status: 400 },
+			);
 		}
 
 		const company = typeof body.company === 'string' ? body.company.trim() : '';
@@ -159,11 +264,47 @@ export const POST: APIRoute = async ({ request }) => {
 			return new Response(JSON.stringify({ error: 'Invalid URL.' }), { status: 400 });
 		}
 
-		let review: Review | null = null;
+		const transporter = nodemailer.createTransport({
+			host: getEnv('SMTP_HOST'),
+			port: getEnv('SMTP_PORT') ? parseInt(getEnv('SMTP_PORT'), 10) : 587,
+			secure: getEnv('SMTP_SECURE') === 'true',
+			connectionTimeout: 15000,
+			greetingTimeout: 15000,
+			socketTimeout: 20000,
+			auth: {
+				user: getEnv('SMTP_USER'),
+				pass: getEnv('SMTP_PASS'),
+			},
+		});
+
 		try {
-			review = await runReview(url);
+			await withTimeout(transporter.verify(), 10000, 'SMTP verify');
+		} catch (err) {
+			const smtpErr = err as { code?: string; responseCode?: number; message?: string };
+			return new Response(
+				JSON.stringify(
+					isDev
+						? {
+								error: 'SMTP authentication/config failed.',
+								smtp: {
+									code: smtpErr?.code,
+									responseCode: smtpErr?.responseCode,
+									message: smtpErr?.message,
+								},
+						  }
+						: { error: 'Failed to submit.' },
+				),
+				{ status: 500 },
+			);
+		}
+
+		let review: Review | null = null;
+		let reviewError = '';
+		try {
+			review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
 		} catch (err) {
 			console.error('Review failed:', err);
+			reviewError = err instanceof Error ? err.message : 'Unknown Lighthouse error';
 		}
 
 		const reviewHtml = review
@@ -180,7 +321,7 @@ export const POST: APIRoute = async ({ request }) => {
                     <li><strong>Total Blocking Time:</strong> ${review.tbt}</li>
                 </ul>
             `
-			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>`;
+			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
 		const html = `
             <h2>New Contact Submission</h2>
@@ -202,32 +343,27 @@ export const POST: APIRoute = async ({ request }) => {
 			phone,
 			message,
 			review,
+			reviewError,
 		});
 
-		const transporter = nodemailer.createTransport({
-			host: process.env.SMTP_HOST,
-			port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
-			secure: process.env.SMTP_SECURE === 'true',
-			auth: {
-				user: process.env.SMTP_USER,
-				pass: process.env.SMTP_PASS,
-			},
-		});
-
-		await transporter.sendMail({
-			from: process.env.SMTP_FROM || process.env.SMTP_USER,
-			to: process.env.CONTACT_TO || process.env.SMTP_USER,
-			replyTo: email,
-			subject: `New submission: ${company}`,
-			html,
-			attachments: [
-				{
-					filename: `technical-review-${new URL(url).hostname}.pdf`,
-					content: pdfBuffer,
-					contentType: 'application/pdf',
-				},
-			],
-		});
+		await withTimeout(
+			transporter.sendMail({
+				from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+				to: getEnv('CONTACT_TO') || getEnv('SMTP_USER'),
+				replyTo: email,
+				subject: `New submission: ${company}`,
+				html,
+				attachments: [
+					{
+						filename: `technical-review-${new URL(url).hostname}.pdf`,
+						content: pdfBuffer,
+						contentType: 'application/pdf',
+					},
+				],
+			}),
+			25000,
+			'SMTP send',
+		);
 
 		return new Response(JSON.stringify({ ok: true, message: 'Submitted successfully.' }), { status: 200 });
 	} catch (err) {

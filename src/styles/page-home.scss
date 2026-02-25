@@ -396,7 +396,7 @@
 	//background: #fff;
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	padding: 40px 5% 22px;
+	padding: 40px clamp(1.25rem, 5%, 2rem) 22px;
 	width: 100%;
 	margin-top: 35px;
 	z-index: 2;
@@ -404,7 +404,7 @@
 
 .pricing-card.single-issue {
 	background: #fff;
-	padding: 30px 5% 22px;
+	padding: 30px clamp(1.25rem, 5%, 2rem) 22px;
 	//border: 2px #fff solid;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }

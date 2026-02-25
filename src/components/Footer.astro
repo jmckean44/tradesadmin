@@ -7,7 +7,7 @@ import logoFooter from '../img/logo-footer.svg';
 import gbp from '../img/gbp-mobile.webp';
 import '../styles/form.scss';
 import '../styles/footer.scss';
-const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '';
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 ---
 
@@ -20,49 +20,51 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 					<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
 					<p class="margin-btm-med intro semibold">For a technical review of your website and search results, fill out and submit the form below.</p>
 
-					<form method="POST" id="form" data-api-path={apiPath} class="needs-validation" data-astro-reload novalidate>
+					<form method="POST" id="form" data-api-path={apiPath} class="needs-validation" novalidate>
 						<div>
 							<label for="company" class="visually-hidden">Company Name</label>
-							<input type="text" name="company" id="company" placeholder="Company Name *" required="" />
+							<input type="text" name="company" id="company" placeholder="Company Name *" required />
 							<span class="helperText">Company Name</span>
 							<div class="empty-feedback invalid-feedback">Please provide your company name</div>
 						</div>
 
 						<div>
 							<label for="url" class="visually-hidden">URL</label>
-							<input type="text" name="url" id="url" placeholder="URL *" required="" />
+							<input type="text" name="url" id="url" placeholder="URL *" required inputmode="url" autocomplete="url" />
 							<span class="helperText">URL</span>
 							<div class="empty-feedback invalid-feedback">Please provide your URL</div>
-							<div class="invalid-feedback text-red-400 text-sm mt-1">URL must end with .ca or .com</div>
+							<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
 						</div>
 
 						<div>
-							<label for="email" class="visually-hidden">Email</label>
-							<input type="email" name="email" id="email_address" placeholder="Email *" required />
+							<label for="email_address" class="visually-hidden">Email</label>
+							<input type="email" name="email" id="email_address" placeholder="Email *" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" />
 							<span class="helperText">Email</span>
-							<div class="empty-feedback text-red-400 text-sm mt-1">Please provide your email address</div>
-							<div class="invalid-feedback text-red-400 text-sm mt-1">Please provide a valid email address</div>
+							<div class="empty-feedback">Please provide your email address</div>
+							<div class="invalid-feedback">Please provide a valid email address</div>
 						</div>
+
 						<div>
 							<label for="phone" class="visually-hidden">Phone</label>
 							<input type="tel" name="phone" id="phone" placeholder="Phone" />
 							<span class="helperText">Phone</span>
-							<div class="empty-feedback text-red-400 text-sm mt-1">Please provide your phone number</div>
-							<div class="invalid-feedback text-red-400 text-sm mt-1">Please provide a valid phone number</div>
 						</div>
+
 						<div>
 							<label for="details" class="visually-hidden">Details</label>
 							<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
 							<span class="helperText">Details</span>
 						</div>
 
-						<div id="result"></div>
 						<div class="margin-top-sm">
-							<div class="g-recaptcha" data-sitekey={recaptchaSiteKey}></div>
-							<script is:inline src="https://www.google.com/recaptcha/api.js" async defer></script>
+							<div id="turnstile-container" class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
 						</div>
+
+						<p id="result" style="display:none;"></p>
 						<button type="submit" class="btn arrow">SUBMIT</button>
 					</form>
+
+					<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 				</div>
 			</div>
 			<div class="cell small-18 medium-8 trig-fade-right enable-trig contact-desktop">
@@ -118,7 +120,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
 								<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path>
 							</svg>
-							<a href="mailto:hello@tradesadmin.ca">hello@tradesadmin.ca</a>
+							<a href="mailto:hello@tradesadmin.ca">hello@TradesAdmin.ca</a>
 						</div>
 						<div class="contact-item">
 							<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -163,37 +165,112 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 
 <script is:inline>
 	document.addEventListener('astro:page-load', () => {
+		// Remove accidental duplicates if present
+		const widgets = document.querySelectorAll('.cf-turnstile');
+		if (widgets.length > 1) {
+			widgets.forEach((el, i) => {
+				if (i > 0) el.remove();
+			});
+		}
+	});
+</script>
+
+<script is:inline>
+	document.addEventListener('astro:page-load', () => {
 		const form = document.getElementById('form');
 		const result = document.getElementById('result');
-		if (!form || !result) return;
+		const urlInput = document.getElementById('url');
 
-		function isFormValid(form) {
+		if (!form || !result || !urlInput) return;
+
+		let submitted = false;
+
+		function normalizeUrl(value) {
+			const raw = String(value || '').trim();
+			if (!raw) return '';
+			return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+		}
+
+		function isValidUrlLoose(value) {
+			const normalized = normalizeUrl(value);
+			if (!normalized) return false;
+			try {
+				const u = new URL(normalized);
+				return Boolean(u.hostname && u.hostname.includes('.'));
+			} catch {
+				return false;
+			}
+		}
+
+		function updateUrlValidity() {
+			const raw = urlInput.value.trim();
+			if (!raw) {
+				urlInput.setCustomValidity(''); // required handles empty
+				return;
+			}
+			urlInput.setCustomValidity(isValidUrlLoose(raw) ? '' : 'Please provide a valid URL');
+		}
+
+		function getTurnstileToken() {
+			const fieldToken = form.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() || form.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() || '';
+
+			if (fieldToken) return fieldToken;
+
+			if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+				try {
+					return String(window.turnstile.getResponse() || '').trim();
+				} catch {
+					return '';
+				}
+			}
+
+			return '';
+		}
+
+		function isFormField(el) {
+			return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
+		}
+
+		function updateFieldState(field, force = false) {
+			if (!isFormField(field)) return;
+
+			if (field.id === 'url') updateUrlValidity();
+
+			const touched = field.dataset.touched === 'true';
+			if (!force && !touched) {
+				field.classList.remove('is-valid', 'is-invalid');
+				return;
+			}
+
+			field.classList.toggle('is-invalid', !field.checkValidity());
+			field.classList.toggle('is-valid', field.checkValidity());
+		}
+
+		function validateAllFields() {
 			form.classList.add('was-validated');
+			updateUrlValidity();
+
+			const fields = form.querySelectorAll('input, textarea, select');
+			fields.forEach((f) => updateFieldState(f, true));
+
 			return form.checkValidity();
 		}
 
-		function getRecaptchaToken(form) {
-			const el = form.querySelector('textarea[name="g-recaptcha-response"]');
-			return el?.value?.trim() || '';
-		}
-
-		async function submitForm(form, result) {
+		async function submitForm() {
 			const formData = new FormData(form);
 			const endpoint = form.dataset.apiPath || '/api/tech-review/';
-			const recaptchaToken = getRecaptchaToken(form);
 
 			const payload = {
 				company: String(formData.get('company') || '').trim(),
 				email: String(formData.get('email') || '').trim(),
-				url: String(formData.get('url') || '').trim(),
+				url: normalizeUrl(String(formData.get('url') || '').trim()),
 				phone: String(formData.get('phone') || '').trim(),
-				message: String(formData.get('details') || '').trim(),
-				recaptchaToken,
+				message: String(formData.get('details') || formData.get('message') || '').trim(),
+				turnstileToken: getTurnstileToken(),
 			};
 
 			result.style.display = 'block';
-			result.style.color = '#ff4000';
-			result.innerHTML = 'Sending...';
+			result.textContent = 'Sending...';
 
 			try {
 				const response = await fetch(endpoint, {
@@ -202,42 +279,65 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 					body: JSON.stringify(payload),
 				});
 
+				const text = await response.text();
+				console.log('API status/body:', response.status, text);
+				if (!response.ok) throw new Error(text || `Request failed (${response.status})`);
+
 				const data = await response.json().catch(() => ({}));
-				if (!response.ok) {
-					throw new Error(data?.error || `Request failed (${response.status})`);
-				}
+				if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
 
-				result.style.color = '#16a34a';
-				result.innerHTML = data?.message || 'Thanks. Your request was submitted.';
+				result.textContent = data?.message || 'Thanks. Your request was submitted.';
+
 				form.reset();
-				if (window.grecaptcha) window.grecaptcha.reset();
-			} catch (err) {
-				result.style.color = '#dc3545';
-				result.innerHTML = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
-			}
+				form.classList.remove('was-validated');
+				form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
+					el.classList.remove('is-valid', 'is-invalid');
+				});
+				form.querySelectorAll('[data-touched]').forEach((el) => {
+					el.removeAttribute('data-touched');
+				});
+				urlInput.setCustomValidity('');
+				submitted = false;
 
-			setTimeout(() => {
-				result.style.display = 'none';
-			}, 10000);
+				if (window.turnstile) window.turnstile.reset();
+			} catch (err) {
+				result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+			}
 		}
+
+		form.addEventListener(
+			'blur',
+			(e) => {
+				const field = e.target;
+				if (!isFormField(field)) return;
+				field.dataset.touched = 'true';
+				updateFieldState(field, submitted);
+			},
+			true,
+		);
+
+		form.addEventListener('input', (e) => {
+			const field = e.target;
+			if (!isFormField(field)) return;
+			updateFieldState(field, submitted);
+		});
 
 		form.addEventListener('submit', (e) => {
 			e.preventDefault();
+			submitted = true;
 
-			if (!isFormValid(form)) {
-				form.querySelectorAll(':invalid')[0]?.focus();
+			if (!validateAllFields()) {
+				form.querySelector(':invalid')?.focus();
 				return;
 			}
 
-			const token = getRecaptchaToken(form);
-			if (!token) {
+			if (!getTurnstileToken()) {
 				result.style.display = 'block';
-				result.style.color = '#dc3545';
-				result.innerHTML = 'Please complete the reCAPTCHA.';
+				result.textContent = 'Please complete the verification.';
 				return;
 			}
 
-			submitForm(form, result);
+			submitForm();
 		});
 	});
 </script>

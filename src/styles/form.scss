@@ -24,37 +24,8 @@ $input-margin: 0 0 1rem;
 $input-error-clr: var.$theme-clr;
 $input-transition: all ease 0.5s;
 
-.errorMsg {
-	margin-top: -0.8rem;
-	margin-bottom: 1rem;
-}
-
 form > div {
 	position: relative;
-}
-
-// form div.error {
-// 	margin: 0rem 0 0.5rem;
-// 	padding: 0;
-// 	background-color: transparent;
-// 	font-size: 0.7rem;
-// 	font-style: italic;
-// 	text-transform: none;
-// 	font-weight: 600;
-// 	z-index: 1;
-// 	color: var.$theme-clr;
-// }
-
-form div.response {
-	font-family: var.$font-sans-serif-bold;
-	margin: 0;
-	padding: 0;
-	top: 0;
-	width: 100%;
-	line-height: 1.4;
-	color: var.$theme-clr-dark;
-	font-weight: 600;
-	text-transform: none;
 }
 
 form #result {
@@ -66,14 +37,6 @@ form #result {
 
 form h3 {
 	font-size: 1rem;
-}
-
-form .message {
-	font-weight: bold;
-}
-
-form div {
-	position: relative;
 }
 
 form span,
@@ -101,10 +64,6 @@ form input ~ label + span {
 	opacity: 0;
 }
 
-.form-input-wrapper {
-	position: relative;
-}
-
 form .btn:hover:not(:disabled) {
 	background: var.$theme-clr;
 	transform: translateY(-1px);
@@ -116,9 +75,50 @@ form .btn:disabled {
 }
 
 /* =============================
+	 VALIDATION
+================================ */
+#form .empty-feedback,
+#form .invalid-feedback,
+#form .valid-feedback {
+	display: none;
+}
+
+.empty-feedback,
+.invalid-feedback {
+	color: var.$theme-clr;
+	margin: -10px 0 1.2rem 0;
+	line-height: 1.2;
+	padding: 0;
+	background-color: transparent;
+	font-family: var.$font-sans-serif-med;
+	font-size: 0.95rem;
+	z-index: 1;
+}
+
+/* empty required fields */
+#form.was-validated :is(input, textarea, select):required:invalid:placeholder-shown ~ .empty-feedback,
+#form :is(input, textarea, select).is-invalid:placeholder-shown ~ .empty-feedback {
+	display: block;
+}
+
+/* non-empty but invalid format/pattern */
+#form.was-validated :is(input, textarea, select):invalid:not(:placeholder-shown) ~ .invalid-feedback,
+#form :is(input, textarea, select).is-invalid:not(:placeholder-shown) ~ .invalid-feedback {
+	display: block;
+}
+
+/* Result message area used by submitForm */
+#result {
+	display: none;
+	margin-top: 0.75rem;
+	font-size: 1.2rem;
+	font-family: var.$font-sans-serif-semibold;
+	color: var.$theme-clr;
+}
+
+/* =============================
 	 LABELS
 ================================ */
-
 label {
 	font-family: var.$font-sans-serif-med;
 }
@@ -136,17 +136,6 @@ form textarea:focus + span,
 form input:focus ~ label + span {
 	opacity: 1;
 	transition: $input-transition;
-}
-
-form label.error {
-	margin: -10px 0 1rem 0;
-	padding: 0;
-	background-color: transparent;
-	font-family: var.$font-sans-serif-semibold;
-	font-size: 9px;
-	z-index: 1;
-	color: #fff;
-	letter-spacing: 1px;
 }
 
 /* ====================================
@@ -224,18 +213,10 @@ input[type='button']:hover {
 	transition: $input-transition;
 }
 
-input::-webkit-date-and-time-value {
-	text-align: left;
-}
-
 input[type='text'],
-input[type='password'],
-input[type='date'],
 input[type='email'],
 input[type='number'],
-input[type='search'],
 input[type='tel'],
-input[type='time'],
 input[type='url'],
 textarea {
 	display: block;
@@ -257,13 +238,9 @@ textarea {
 	appearance: none;
 }
 input[type='text']:focus,
-input[type='password']:focus,
-input[type='date']:focus,
 input[type='email']:focus,
 input[type='number']:focus,
-input[type='search']:focus,
 input[type='tel']:focus,
-input[type='time']:focus,
 input[type='url']:focus,
 textarea:focus {
 	border: $input-border;
@@ -289,163 +266,4 @@ textarea {
 	font-family: $input-font;
 	background: $input-background-clr;
 	border-radius: $input-border-radius;
-}
-
-/* =============================================
-	 SELECT
-================================================ */
-select {
-	width: 100%;
-	//min-height: $input-min-height;
-	padding: $input-padding;
-	margin-bottom: 0.5rem;
-	font-size: $input-font-size;
-	text-transform: uppercase;
-	font-family: $input-font;
-	font-family: $input-font;
-	letter-spacing: $input-font-spacing;
-	color: var.$theme-clr-dark;
-	background-color: $input-background-clr;
-	border: $input-border;
-	border-radius: $input-border-radius;
-	appearance: none;
-	cursor: pointer;
-	background: url('../img/arrow-down.svg') no-repeat right 10px center;
-	background-size: 15px;
-}
-select:focus {
-	outline: none;
-	border: $input-border;
-	background-color: $input-background-focus;
-	box-shadow: $input-focus-boxshadow;
-	transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
-}
-
-/* =============================
-	 CHECKBOXES
-================================ */
-input[type='checkbox'] {
-	margin: 0;
-	width: 1rem;
-	height: 1rem;
-	border-radius: 0.15em;
-	transform: translateY(-0.075em);
-	display: grid;
-	place-content: center;
-}
-
-input[type='checkbox']:checked {
-	background: var.$theme-clr;
-}
-
-input[type='checkbox']:focus {
-	box-shadow: $input-focus-boxshadow;
-}
-
-[type='checkbox'] + label {
-	display: inline-block;
-	margin-left: 0.5rem;
-	margin-right: 1rem;
-	margin-bottom: 0;
-}
-
-.checkbox-input {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 1px;
-	height: 1px;
-	opacity: 0;
-	z-index: -1;
-}
-
-.checkbox-design {
-	width: 16px;
-	height: 16px;
-	background: var.$theme-clr;
-	position: relative;
-}
-
-.checkbox-design::before {
-	content: '';
-	display: block;
-	width: inherit;
-	height: inherit;
-	border-radius: inherit;
-	background: #ccc;
-	transform: scale(1);
-	transition: $input-transition;
-}
-
-.checkbox-input:checked + .checkbox-design::before {
-	transform: scale(0);
-	background: var.$theme-clr;
-}
-
-/* =============================
-	 INPUT RADIO
-================================ */
-.label {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	cursor: pointer;
-	transition: all ease 0.3s;
-}
-
-.radio-input {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	margin: 0 auto;
-	width: 1px;
-	height: 1px;
-	opacity: 1;
-	z-index: -1;
-}
-
-.radio-design {
-	width: 16px;
-	height: 16px;
-	border-radius: 100%;
-	background: var.$theme-clr;
-	position: relative;
-	margin-bottom: 1rem;
-}
-
-.radio-design::before {
-	content: '';
-	display: block;
-	width: inherit;
-	height: inherit;
-	border-radius: inherit;
-	background: #fff;
-	transform: scale(0.8);
-	transition: 0.3s;
-}
-
-.radio-input:checked + .radio-design::before {
-	transform: scale(0);
-	background: var.$theme-clr;
-}
-
-.submit-button {
-	text-align: left;
-	margin-top: 1rem;
-}
-
-/* =============================
-	 INPUT RADIO
-================================ */
-.grecaptcha-badge {
-	z-index: 99;
-}
-
-.g-recaptcha {
-	transform: scale(0.7);
-	transform-origin: 0 0;
 }

@@ -7,7 +7,7 @@ import icon from 'astro-icon';
 export default defineConfig({
 	site: 'https://tradesadmin.ca',
 	trailingSlash: 'always',
-	output: 'static',
+	output: 'server',
 	//outDir: 'dist',
 	prefetch: true,
 	integrations: [
