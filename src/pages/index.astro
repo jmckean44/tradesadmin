@@ -566,7 +566,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
 
 			let submitted = false;
-			let reviewDownloadUrl = '';
 
 			function normalizeUrl(value) {
 				const raw = String(value || '').trim();
@@ -734,25 +733,8 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				`;
 			}
 
-			function base64ToBlobUrl(base64, mimeType) {
-				if (!base64) return '';
-				try {
-					const binary = atob(String(base64));
-					const length = binary.length;
-					const bytes = new Uint8Array(length);
-					for (let i = 0; i < length; i += 1) bytes[i] = binary.charCodeAt(i);
-					return URL.createObjectURL(new Blob([bytes], { type: mimeType || 'application/pdf' }));
-				} catch {
-					return '';
-				}
-			}
-
-			function renderReviewPreview(preview, report) {
+			function renderReviewPreview(preview) {
 				if (!preview || typeof preview !== 'object') {
-					if (reviewDownloadUrl) {
-						URL.revokeObjectURL(reviewDownloadUrl);
-						reviewDownloadUrl = '';
-					}
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';
 					return;
@@ -771,16 +753,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 				const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
 
-				if (reviewDownloadUrl) {
-					URL.revokeObjectURL(reviewDownloadUrl);
-					reviewDownloadUrl = '';
-				}
-
-				const downloadUrl = base64ToBlobUrl(report?.contentBase64, report?.mimeType);
-				if (downloadUrl) reviewDownloadUrl = downloadUrl;
-
-				const downloadHtml = downloadUrl ? `<a class="btn" href="${downloadUrl}" download="${escapeHtml(report?.filename || 'technical-review.pdf')}">Download Full Report (PDF)</a>` : '';
-
 				reviewPreview.innerHTML = `
 					<div class="review-preview-card">
 						<h3>Quick Technical Snapshot</h3>
@@ -796,7 +768,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<h4>Recommended Fixes</h4>
 							${fixesHtml}
 						</div>
-						${downloadHtml ? `<div class="review-download">${downloadHtml}</div>` : ''}
 					</div>
 				`;
 
@@ -819,10 +790,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 				result.style.display = 'block';
 				result.textContent = 'Scanning...';
-				if (reviewDownloadUrl) {
-					URL.revokeObjectURL(reviewDownloadUrl);
-					reviewDownloadUrl = '';
-				}
 				reviewPreview.style.display = 'none';
 				reviewPreview.innerHTML = '';
 
@@ -853,20 +820,26 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 					result.textContent = data?.message || 'Thanks. Your request was submitted.';
 
+					const payloadForStorage = {
+						preview: data?.preview || null,
+						notion: data?.notion || null,
+						timestamp: Date.now(),
+					};
+
+					let persistedForResults = false;
 					try {
-						sessionStorage.setItem(
-							'scanResultPayload',
-							JSON.stringify({
-								preview: data?.preview || null,
-								report: data?.report || null,
-								timestamp: Date.now(),
-							}),
-						);
+						sessionStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
+						persistedForResults = true;
+					} catch {
+						persistedForResults = false;
+					}
+
+					if (persistedForResults) {
 						window.location.assign(resultPage);
 						return;
-					} catch {
-						renderReviewPreview(data?.preview, data?.report);
 					}
+
+					renderReviewPreview(data?.preview);
 
 					form.reset();
 					form.classList.remove('was-validated');
@@ -881,10 +854,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 					if (window.turnstile) window.turnstile.reset();
 				} catch (err) {
-					if (reviewDownloadUrl) {
-						URL.revokeObjectURL(reviewDownloadUrl);
-						reviewDownloadUrl = '';
-					}
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';
 					result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';

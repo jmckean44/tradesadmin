@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
-import PDFDocument from 'pdfkit';
 
 type TurnstileVerifyResponse = {
 	success: boolean;
@@ -593,51 +592,6 @@ async function runReview(url: string): Promise<Review> {
 	}
 }
 
-function buildReviewPdfBuffer(input: { company: string; email: string; url: string; phone: string; message: string; review: Review | null; reviewError?: string }): Promise<Buffer> {
-	return new Promise((resolve, reject) => {
-		const doc = new PDFDocument({ margin: 40 });
-		const chunks: Uint8Array[] = [];
-
-		doc.on('data', (chunk: Buffer) => {
-			chunks.push(Uint8Array.from(chunk));
-		});
-		doc.on('end', () => resolve(Buffer.concat(chunks)));
-		doc.on('error', reject);
-
-		doc.fontSize(18).text('Technical Review', { underline: true });
-		doc.moveDown();
-
-		doc.fontSize(12).text(`Company: ${input.company}`);
-		doc.text(`Email: ${input.email}`);
-		doc.text(`URL: ${input.url}`);
-		if (input.phone) doc.text(`Phone: ${input.phone}`);
-		if (input.message) doc.text(`Message: ${input.message}`);
-
-		doc.moveDown();
-		doc.fontSize(14).text('Review Results', { underline: true });
-		doc.moveDown(0.5);
-
-		if (!input.review) {
-			doc.fontSize(12).text('Technical review unavailable.');
-			if (input.reviewError) {
-				doc.moveDown(0.5);
-				doc.fontSize(10).text(`Reason: ${input.reviewError}`);
-			}
-		} else {
-			doc.fontSize(12).text(`Performance: ${input.review.performance ?? 'N/A'}`);
-			doc.text(`SEO: ${input.review.seo ?? 'N/A'}`);
-			doc.text(`Accessibility: ${input.review.accessibility ?? 'N/A'}`);
-			doc.text(`Best Practices: ${input.review.bestPractices ?? 'N/A'}`);
-			doc.text(`LCP: ${input.review.lcp}`);
-			doc.text(`CLS: ${input.review.cls}`);
-			doc.text(`Interactive: ${input.review.interactive}`);
-			doc.text(`Total Blocking Time: ${input.review.tbt}`);
-		}
-
-		doc.end();
-	});
-}
-
 export const GET: APIRoute = async () => {
 	return new Response(JSON.stringify({ ok: true, route: '/api/tech-review/' }), { status: 200 });
 };
@@ -806,17 +760,11 @@ export const POST: APIRoute = async ({ request }) => {
             ${reviewHtml}
         `;
 
-		const pdfBuffer = await buildReviewPdfBuffer({
-			company,
-			email,
-			url: displayUrl,
-			phone,
-			message,
-			review,
-			reviewError,
-		});
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
 		const preview = buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview);
+		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
+		let notionSynced = false;
+		let notionError = '';
 
 		try {
 			await logSubmissionToNotion({
@@ -830,8 +778,10 @@ export const POST: APIRoute = async ({ request }) => {
 				review,
 				reviewError,
 			});
+			notionSynced = true;
 		} catch (notionErr) {
 			console.error('Notion sync failed:', notionErr);
+			notionError = notionErr instanceof Error ? notionErr.message : String(notionErr);
 		}
 
 		await withTimeout(
@@ -851,10 +801,10 @@ export const POST: APIRoute = async ({ request }) => {
 				ok: true,
 				message: 'Submitted successfully.',
 				preview,
-				report: {
-					filename: reportFilename,
-					mimeType: 'application/pdf',
-					contentBase64: pdfBuffer.toString('base64'),
+				notion: {
+					configured: notionConfigured,
+					synced: notionConfigured ? notionSynced : false,
+					error: isDev && notionError ? notionError : undefined,
 				},
 			}),
 			{ status: 200 },
