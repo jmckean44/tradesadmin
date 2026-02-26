@@ -13,11 +13,9 @@ import gia from '../img/gia.webp';
 import riverscape from '../img/riverscape.webp';
 import shiupong from '../img/shiupong.webp';
 import localseo from '../img/local-seo.webp';
-import audit from '../img/audit.webp';
-import hosting from '../img/hosting.webp';
+import hosting from '../img/icon-audit.webp';
 import iconHosting from '../img/icon-hosting.webp';
 import iconStructure from '../img/icon-structure.webp';
-import iconAudit from '../img/icon-audit.webp';
 import iconLocalseo from '../img/icon-local-seo.webp';
 import iconTechnical from '../img/icon-technical-seo.webp';
 import wyse from '../img/wyse.webp';
@@ -55,7 +53,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
 								<h1><strong>Performance Optimization</strong></h1>
 								<p>
-									<strong>Core Web Vitals</strong> diagnostics, layout stabilization, and <strong>performance corrections</strong>.
+									<span class="semibold">Core Web Vitals</span> diagnostics, layout stabilization, and <span class="semibold">performance corrections</span>.
 								</p>
 							</div>
 						</div>
@@ -65,25 +63,23 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<div class="flex padding-x align-middle">
 							<div class="cell small-18 medium-10">
 								<h1><strong>Technical SEO & Indexing</strong></h1>
-								<p>Ensuring Google can correctly understand and display your service pages.</p>
+								<p>Ensuring your <span class="semibold">business shows up correctly</span> when people search for your services <span class="semibold">"near me".</span></p>
 							</div>
 							<div class="cell small-18 medium-8 center technical">
-								<lottie-player src="/website.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+								<Image src={localseo} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
 							</div>
 						</div>
 					</div>
 
 					<div class="swiper-slide">
 						<div class="flex padding-x align-middle">
-							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center local-seo">
-								<Image src={localseo} alt="Local SEO: Google Business Profile optimization and local search results" />
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center structure">
+								<Image src={iconStructure} alt="Structure icon" class="structure" />
 							</div>
 							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
-								<h1><strong>Structure & Functional Corrections</strong></h1>
+								<h1><strong>Structural & Functional Corrections</strong></h1>
 								<p>
-									Fixing <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other <span class="semibold"
-										>technical inconsistencies</span
-									>.
+									Fixing <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other technical inconsistencies.
 								</p>
 							</div>
 						</div>
@@ -95,10 +91,10 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 								<h1>
 									<strong>Maintenance, Hosting & Support</strong>
 								</h1>
-								<p>Technical support for hosting, DNS, SSL certificates, security, and more.</p>
+								<p>Technical support for <span class="semibold">hosting, DNS, SSL certificates, security,</span> and more.</p>
 							</div>
-							<div class="cell small-18 medium-8 audit">
-								<Image src={audit} alt="Website Audits, performance & Maintenance Illustration" />
+							<div class="cell small-18 medium-8 hosting">
+								<Image src={hosting} alt="Website Hosting, Maintenance & Support Illustration" />
 							</div>
 						</div>
 					</div>
@@ -114,7 +110,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 	<section id="masonry-section">
 		<div class="container top">
-			<h2 class="margin-btm-med bold center">Common <span class="theme-clr">Technical Issues</span></h2>
+			<h2 class="margin-btm-med center">Common Technical Issues</h2>
 			<div class="masonry-grid trig-fade-up enable-trig">
 				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
 					<p class="issue">Broken Links & Forms</p>
@@ -156,20 +152,15 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				<div class="cell small-18 medium-11">
 					<div class="services-intro">
 						<p class="eyebrow">Support</p>
-						<h2>
-							<strong>Who This Is For</strong>
-						</h2>
+						<h2>Who This Is For</h2>
 						<p class="txt-lrg">
-							<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing, and other service contractors</span> across the GTA.
+							<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing,</span> and other <span class="semibold">service contractors</span> across the
+							GTA.
 						</p>
 						<p class="txt-lrg">
-							If your business depends on <span class="semibold">inbound calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quoting</span>, your
-							website and local listings must load fast, function properly, and stay error-free.
+							If your business depends on <span class="semibold">phone calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quote requests</span>, your
+							website should load fast, work properly, and stay error-free.
 						</p>
-						<p class="txt-lrg">
-							In cases where <span class="semibold">your website is incomplete or not functioning</span>, a fast one-page starter site can be set up to replace the placeholder or broken page.
-						</p>
-						<p class="txt-lrg">TradesAdmin handles the <span class="semibold">technical upkeep, diagnostics, and fixes</span> that keeps everything running smoothly.</p>
 					</div>
 				</div>
 				<div class="cell small-18 medium-7 gbp-video">
@@ -186,9 +177,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			<div class="flex padding-x align-middle" id="what-we-fix">
 				<div class="cell small-18">
 					<p class="eyebrow">Services</p>
-					<h2>
-						<strong>What Gets Fixed</strong>
-					</h2>
+					<h2>What Gets Fixed</h2>
 				</div>
 			</div>
 
@@ -207,7 +196,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Render-blocking resource reviews</li>
 						<li><span class="check">✓</span> Plugin audits</li>
 					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" style="--trig-delay: .2s;">
@@ -215,7 +204,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
 					</div>
 					<h2>Technical SEO & Indexing</h2>
-					<p>Ensuring Google can correctly understand and display your service pages.</p>
+					<p>Ensure Google can correctly understand and display your service pages.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span>Google Business Profile, Search Console, & Analytics setup</li>
 						<li><span class="check">✓</span>Indexing diagnostics</li>
@@ -227,14 +216,14 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span>Schema/structured data validation</li>
 						<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
 					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" style="--trig-delay: .4s;">
 					<div class="service-icon">
 						<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
 					</div>
-					<h2>Structure & Functional Corrections</h2>
+					<h2>Structural & Functional Corrections</h2>
 					<p>Fixing broken layouts, navigation, forms, and technical inconsistencies.</p>
 					<ul class="service-features">
 						<li><span class="check">✓</span> Proper page naming conventions</li>
@@ -247,7 +236,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Broken links (404/500)</li>
 						<li><span class="check">✓</span> Console error debugging</li>
 					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" style="--trig-delay: .6s;">
@@ -265,7 +254,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Website Backups & Restore Services</li>
 						<li><span class="check">✓</span> General technical support and fixes</li>
 					</ul>
-					<a href="#contact" class="learn-more slide-right">Request a Review &darr;</a>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 			</div>
 		</div>
@@ -274,43 +263,43 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 	<div class="cta"><a class="btn" href="#contact">Get a Free Technical Review</a></div>
 
 	<section id="pricing">
-		<div class="container top">
+		<div class="container">
 			<div class="flex padding-x align-bottom">
-				<div class="cell small-18 medium-8 pricing-content">
+				<div class="cell small-18 medium-18 large-8 pricing-content">
 					<h2>Pricing Overview</h2>
-					<p class="txt-lrg semibold">Work is priced after a brief technical review. Costs reflect site size, technical complexity, and the number of issues identified.</p>
-					<p class="margin-btm-med txt-lrg">Most projects fall between $900–$1,400.</p>
+					<p class="txt-lrg fnt-med">Cost depends on the site size, technical complexity, and number of issues identified.</p>
+					<p class="margin-btm-med">* Most straight-forward projects fall between $900–$1,400.</p>
 					<div class="pricing-card single-issue">
-						<div class="flex">
-							<div class="cell small-18 medium-18 large-13">
+						<div class="flex align-bottom">
+							<div class="cell small-18 medium-18 large-14">
 								<h3 class="txt-xl">Single-Issue Fix</h3>
-								<p class="price-desc txt-drk">For isolated technical issues such as SSL errors, broken forms, layout problems, or 404/500 page errors.</p>
+								<p class="price-desc txt-drk">Good for small, isolated fixes such as SSL/HTTP errors, broken forms, layout problems, or any single specific technical issue.</p>
 							</div>
-							<div class="cell small-18 medium-18 large-5">
+							<div class="cell small-18 medium-18 large-4">
 								<div class="pricing-amount">
-									<span class="price"><em>flat</em> <sup>$</sup>149</span>
+									<span class="price"><em>flat</em> <sup>$</sup>150</span>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="cell small-18 medium-10 pricing-container">
+				<div class="cell small-18 medium-18 large-10 pricing-container">
 					<div class="pricing-card">
 						<div class="flex line-btm">
-							<div class="cell small-18 medium-18 large-11">
+							<div class="cell small-13">
 								<h3>Performance & Technical Fixes</h3>
 							</div>
-							<div class="cell small-18 medium-18 large-7">
+							<div class="cell small-5">
 								<div class="pricing-amount">
 									<span class="price"><em>from</em> <sup>$</sup>1,000</span>
 								</div>
 							</div>
 						</div>
 						<div class="flex line-btm">
-							<div class="cell small-18 medium-18 large-11">
+							<div class="cell small-13">
 								<h3>Technical SEO & Indexing</h3>
 							</div>
-							<div class="cell small-18 medium-18 large-7">
+							<div class="cell small-5">
 								<div class="pricing-amount">
 									<span class="price"><em>from</em> <sup>$</sup>900</span>
 								</div>
@@ -318,7 +307,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-11">
-								<h3>Structure & Functional Corrections</h3>
+								<h3>Structural & Functional Corrections</h3>
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
@@ -332,7 +321,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							</div>
 							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
-									<span class="price"><em>from</em> <sup>$</sup>150/month</span>
+									<span class="price"><em>from</em> <sup>$</sup>150</span>
 								</div>
 							</div>
 						</div>
@@ -398,11 +387,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			<div class="flex padding-x align-middle enable-trig trig-fade-up">
 				<div class="cell small-18 medium-9 trig-target" style="--trig-delay: 0s;">
 					<p class="eyebrow">Testimonials</p>
-					<h2 class="sub-title">Client <strong>Comments</strong></h2>
-					<p>
-						<span class="semibold">TradesAdmin</span> supports small service business owners <strong>in the GTA</strong> through technical corrections, performance improvements, and ongoing maintenance.
-					</p>
-					<p class="semibold">Projects are managed with a focus on practical problem-solving and long-term stability.</p>
+					<h2>Client Comments</h2>
 				</div>
 				<div class="cell small-18 medium-9 testimonials">
 					<Image src={testimonials} alt="Client testimonials for TradesAdmin  website technical support services" />
@@ -496,7 +481,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			<div class="flex padding-x align-middle">
 				<div class="cell small-18 medium-11">
 					<div id="form-container trig-fade-right enable-trig">
-						<h2>Free Website Scan</h2>
+						<h2>Website Report</h2>
 						<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
 						<p class="semibold txt-lrg">Get a free technical review of your website with recommended fixes by filling out and submitting the form below.</p>
 						<p class="margin-btm-med intro txt-lrg">If you do not have a website, feel free to send a message for a free consultation to help you get started.</p>

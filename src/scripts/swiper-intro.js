@@ -29,8 +29,9 @@ document.addEventListener('astro:page-load', () => {
 		},
 		spaceBetween: 0,
 		speed: 1000,
+		autoHeight: true,
 		autoplay: {
-			delay: 8000,
+			delay: 80000,
 			//disableOnInteraction: true,
 		},
 		loop: true,

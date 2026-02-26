@@ -4,7 +4,7 @@
    FOOTER
 ==================================== */
 footer svg {
-	max-width: 30px;
+	max-width: 20px;
 }
 
 footer a:link {
@@ -187,5 +187,12 @@ footer a:link:hover {
 	.footer-section {
 		display: flex;
 		justify-content: start;
+	}
+}
+
+@media (max-width: 500px) {
+	.footer-links a,
+	.contact-item {
+		font-size: 0.9rem;
 	}
 }

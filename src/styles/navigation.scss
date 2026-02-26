@@ -45,6 +45,13 @@
 	}
 }
 
+// #phone-number {
+// 	position: absolute;
+// 	top: 0.5rem;
+// 	font-size: 1rem;
+// 	right: 7%;
+// }
+
 /* =======================
 	 NAVIGATION 
 ========================== */
@@ -97,11 +104,15 @@
 
 .mobile-menu a {
 	//color: #fff !important;
-	font-family: var.$font-sans-serif-bold;
+	font-family: var.$font-sans-serif-semibold;
 	text-transform: uppercase;
 	display: block;
 	padding: 0.5rem 1rem;
 	font-size: 1.5rem;
+}
+
+.mobile-menu a.phone {
+	font-family: var.$font-sans-serif-bold;
 }
 
 .mobile-menu a:hover {

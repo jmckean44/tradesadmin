@@ -13,24 +13,24 @@
 	 COUNTER
 ========================== */
 .masonry-grid {
-	column-count: 3;
-	column-gap: 1.25rem;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1.25rem;
+	align-items: stretch;
 	transition: all 0.5s ease-in-out;
-	column-fill: initial;
 }
 
 .masonry-item {
-	display: flex;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	display: grid;
+	align-content: center;
 	height: 100%;
 	min-height: 300px;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	margin-bottom: 1.25rem;
 	border-radius: 10px;
 	background: var.$theme-clr-dark;
-	padding: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 2vw, 2rem);
+	padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2vw, 2rem);
 	font-size: 1.1rem;
 	transition: box-shadow 0.3s;
 }
@@ -92,13 +92,13 @@
 
 @media (max-width: 1400px) {
 	.masonry-grid {
-		column-count: 3;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 
 @media (max-width: var.$tablet) {
 	.masonry-grid {
-		column-count: 2;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.masonry-item:nth-child(6) {
 		margin-top: 0;
@@ -107,7 +107,7 @@
 
 @media (max-width: var.$mobile-sm) {
 	.masonry-grid {
-		column-count: 1;
+		grid-template-columns: 1fr;
 	}
 }
 
@@ -156,7 +156,7 @@
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-	padding: clamp(4rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3rem) clamp(3rem, 5vw, 3rem);
+	padding: clamp(3rem, 4vw, 4rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 3vw, 3rem);
 	transition: 0.5s ease all;
 	margin-bottom: 2rem;
 	//border: 1px solid #dddddd;
@@ -207,7 +207,7 @@
 
 .service-features {
 	list-style: none;
-	margin: 0 0 2rem;
+	margin: 0;
 	padding: 0;
 }
 
@@ -392,18 +392,26 @@
 ========================== */
 #pricing {
 	margin-top: 150px;
-	background: var.$bg-clr;
-	background: var.$theme-clr-blue;
+	padding: 0 var.$container-padding;
+	//background: var.$bg-clr;
+	//background: var.$theme-clr-blue;
 }
 
-#pricing .container.top {
-	padding: 100px var.$container-padding 0;
+#pricing .container {
+	//padding: 100px var.$container-padding 0;
+	background: #fff;
+	margin: 0 auto;
+	max-width: 1300px !important;
+	padding: 75px clamp(1.25rem, 4vw, 3rem);
+	border: 1px #ddd solid;
+	border-radius: 10px;
+	//box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.pricing-container {
-	position: relative;
-	text-align: right;
-}
+// .pricing-container {
+// 	position: relative;
+// 	text-align: right;
+// }
 
 #pricing .line-btm {
 	border-bottom: 1px #ddd solid;
@@ -412,11 +420,12 @@
 }
 
 .pricing-card {
-	background: rgba(255, 255, 255, 1);
-	//background: #fff;
+	background: #f9f9f9;
+
+	//border: 1px #ddd solid;
 	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	padding: 40px clamp(1.25rem, 5%, 2rem) 22px;
+	//box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+	padding: 3.5rem clamp(1.5rem, 3vw, 3rem) 22px;
 	width: 100%;
 	margin-top: 35px;
 	z-index: 2;
@@ -424,28 +433,30 @@
 
 .pricing-card.single-issue {
 	background: #fff;
-	padding: 30px clamp(1.25rem, 5%, 2rem) 22px;
-	//border: 2px #fff solid;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	padding: 0;
+	border: none;
+	box-shadow: none;
 }
 
 .pricing-content h2 {
-	color: #fff;
-	font-family: var.$font-sans-serif-bold;
+	//color: #fff;
+	//font-family: var.$font-sans-serif-bold;
 }
 
 .pricing-content p {
-	color: #fff;
+	//color: #fff;
 }
 
 .pricing-card.single-issue h3 {
 	color: var.$theme-clr;
+	margin-bottom: 1rem;
 }
 
 .pricing-card h3 {
-	font-size: 1.3rem;
+	font-size: 1.2rem;
 	font-weight: 500;
 	margin-bottom: 0.5rem;
+	line-height: 1.2;
 }
 
 .pricing-amount {
@@ -477,6 +488,12 @@
 	font-style: normal;
 }
 
+@media (max-width: var.$tablet) {
+	.pricing-amount {
+		text-align: left;
+	}
+}
+
 @media (max-width: var.$mobile) {
 	#pricing .container.top {
 		padding: 0 var.$container-padding 0;
@@ -486,6 +503,12 @@
 	}
 	.pricing-card {
 		margin-top: 0;
+	}
+}
+
+@media (max-width: 450px) {
+	.pricing-amount {
+		text-align: left !important;
 	}
 }
 
@@ -540,10 +563,15 @@
 	#contact .contact-mobile {
 		display: block;
 		max-width: 125px;
-		margin-top: -150px;
-		margin-right: -18px;
+		margin-top: -20px;
+		margin-right: -16px;
 		float: right;
 		margin-bottom: 1.5rem;
-		//border: 1px red solid;
+	}
+}
+
+@media (max-width: 500px) {
+	#contact .contact-mobile {
+		display: none;
 	}
 }

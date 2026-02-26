@@ -15,16 +15,17 @@
 	display: flex !important;
 	align-items: center;
 	justify-content: center;
+	padding: 0;
 }
 
 .swiper-intro .slide-1 {
 	margin: 0 auto;
 	text-align: center;
-	max-width: 1100px;
+	max-width: 1000px;
 }
 
 .swiper-intro .slide-1 h1 {
-	font-size: min(max(3rem, 5vw), 80px);
+	font-size: min(max(3.5rem, 5.5vw), 80px);
 	text-align: center !important;
 }
 
@@ -37,32 +38,28 @@
 	pointer-events: none;
 }
 
-.swiper-slide img {
+.swiper-intro .swiper-slide img {
 	max-width: 500px;
 }
 
-.swiper-slide .local-seo img {
-	max-width: 450px;
+.swiper-intro .swiper-slide .structure img {
+	max-width: 300px;
 }
 
-.swiper-slide .technical svg {
-	max-width: 400px;
+.swiper-intro .swiper-slide .technical img {
+	max-width: 375px;
 }
 
-.swiper-slide .performance img {
+.swiper-intro .swiper-slide .performance img {
 	max-width: 380px;
 }
 
-.swiper-slide .hosting img {
-	max-width: 350px;
-}
-
-.swiper-slide .audit img {
+.swiper-intro .swiper-slide .hosting img {
 	max-width: 400px;
 }
 
 .swiper-intro .swiper-slide h1,
-.swiper-slide p {
+.swiper-intro .swiper-slide p {
 	text-align: left;
 	text-wrap: pretty;
 }
@@ -106,4 +103,12 @@
 
 .swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
 	margin: 0 0.5rem !important;
+}
+
+@media (max-width: var.$mobile) {
+	.swiper-intro .swiper-slide,
+	.swiper-intro .swiper-slide h1,
+	.swiper-intro .swiper-slide p {
+		text-align: center;
+	}
 }

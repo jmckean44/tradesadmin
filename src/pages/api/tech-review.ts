@@ -489,13 +489,6 @@ export const POST: APIRoute = async ({ request }) => {
 				replyTo: email,
 				subject: `New submission: ${company}`,
 				html,
-				attachments: [
-					{
-						filename: reportFilename,
-						content: pdfBuffer,
-						contentType: 'application/pdf',
-					},
-				],
 			}),
 			25000,
 			'SMTP send',
