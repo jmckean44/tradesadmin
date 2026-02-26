@@ -139,7 +139,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				</div>
 				<div class="masonry-item trig-target" style="--trig-delay: .8s;">
 					<p class="issue">Responsiveness & Mobile</p>
-					<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience for visitors</h3>
+					<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience</h3>
 					<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
 				</div>
 			</div>
@@ -264,15 +264,18 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 	<section id="pricing">
 		<div class="container">
-			<div class="flex padding-x align-bottom">
-				<div class="cell small-18 medium-18 large-8 pricing-content">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-8 large-8 pricing-content">
 					<h2>Pricing Overview</h2>
 					<p class="txt-lrg fnt-med">Cost depends on the site size, technical complexity, and number of issues identified.</p>
-					<p class="margin-btm-med">* Most straight-forward projects fall between $900–$1,400.</p>
 					<div class="pricing-card single-issue">
-						<div class="flex align-bottom">
+						<div class="flex">
+							<div class="cell small-18">
+								<h3 class="txt-lrg">Single-Issue Fix</h3>
+							</div>
+						</div>
+						<div class="flex">
 							<div class="cell small-18 medium-18 large-14">
-								<h3 class="txt-xl">Single-Issue Fix</h3>
 								<p class="price-desc txt-drk">Good for small, isolated fixes such as SSL/HTTP errors, broken forms, layout problems, or any single specific technical issue.</p>
 							</div>
 							<div class="cell small-18 medium-18 large-4">
@@ -283,23 +286,23 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 					</div>
 				</div>
-				<div class="cell small-18 medium-18 large-10 pricing-container">
+				<div class="cell small-18 medium-10 large-10 pricing-container">
 					<div class="pricing-card">
 						<div class="flex line-btm">
-							<div class="cell small-13">
+							<div class="cell small-18 medium-11 large-11">
 								<h3>Performance & Technical Fixes</h3>
 							</div>
-							<div class="cell small-5">
+							<div class="cell small-18 medium-7 large-7">
 								<div class="pricing-amount">
 									<span class="price"><em>from</em> <sup>$</sup>1,000</span>
 								</div>
 							</div>
 						</div>
 						<div class="flex line-btm">
-							<div class="cell small-13">
+							<div class="cell small-18 medium-18 large-11">
 								<h3>Technical SEO & Indexing</h3>
 							</div>
-							<div class="cell small-5">
+							<div class="cell small-18 medium-18 large-7">
 								<div class="pricing-amount">
 									<span class="price"><em>from</em> <sup>$</sup>900</span>
 								</div>
@@ -768,7 +771,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				};
 
 				result.style.display = 'block';
-				result.textContent = 'Sending...';
+				result.textContent = 'Scanning...';
 				if (reviewDownloadUrl) {
 					URL.revokeObjectURL(reviewDownloadUrl);
 					reviewDownloadUrl = '';
