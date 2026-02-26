@@ -56,6 +56,12 @@ function normalizeUrl(input: string): string {
 	return /^https?:\/\//i.test(value) ? value : `https://${value}`;
 }
 
+function isValidEmail(input: string): boolean {
+	const value = String(input || '').trim();
+	if (!value) return false;
+	return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+}
+
 function pct(score: number | null | undefined): number | null {
 	return score == null ? null : Math.round(score * 100);
 }
@@ -373,6 +379,10 @@ export const POST: APIRoute = async ({ request }) => {
 
 		if (!company || !email) {
 			return new Response(JSON.stringify({ error: 'Company and email are required.' }), { status: 400 });
+		}
+
+		if (!isValidEmail(email)) {
+			return new Response(JSON.stringify({ error: 'Invalid email address.' }), { status: 400 });
 		}
 
 		const url = rawUrl ? normalizeUrl(rawUrl) : '';

@@ -178,7 +178,11 @@ h1.center {
 }
 
 .review-vital-card.is-average .review-vital-status {
-	color: var.$font-clr;
+	color: #ffac00;
+}
+
+.review-vital-card.is-poor .review-vital-status {
+	color: red;
 }
 
 .review-vital-card.is-good {
@@ -186,11 +190,11 @@ h1.center {
 }
 
 .review-vital-card.is-average {
-	border-top-color: var.$theme-clr;
+	border-top-color: #ffac00;
 }
 
 .review-vital-card.is-poor {
-	border-top-color: var.$theme-clr;
+	border-top-color: red;
 }
 
 .review-vital-card.is-na {

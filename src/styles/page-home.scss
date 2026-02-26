@@ -30,7 +30,7 @@
 	margin-bottom: 1.25rem;
 	border-radius: 10px;
 	background: var.$theme-clr-dark;
-	padding: clamp(1.5rem, 3vw, 3rem) clamp(1.25rem, 2vw, 1.5rem);
+	padding: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 2vw, 2rem);
 	font-size: 1.1rem;
 	transition: box-shadow 0.3s;
 }
@@ -56,7 +56,7 @@
 	font-family: var.$font-sans-serif-semibold;
 	margin-bottom: 1rem;
 	color: rgba(255, 255, 255, 0.8);
-	color: var.$theme-clr-light;
+	color: var.$highlight;
 	text-transform: uppercase;
 }
 
@@ -123,6 +123,22 @@
 ========================== */
 #services .container.top.btm {
 	padding: 125px 1.25rem 50px;
+}
+
+#services {
+	scroll-margin-top: calc(var.$header-height-desktop + 24px);
+}
+
+@media (max-width: var.$tablet) {
+	#services {
+		scroll-margin-top: calc(var.$header-height-tablet + 20px);
+	}
+}
+
+@media (max-width: var.$mobile) {
+	#services {
+		scroll-margin-top: calc(var.$header-height-mobile + 16px);
+	}
 }
 
 #services .services-grid {
@@ -447,12 +463,6 @@
 
 .pricing-amount sup {
 	font-size: 1rem;
-}
-
-.pricing-includes {
-	line-height: 1.3;
-	font-family: var.$font-sans-serif-reg;
-	margin-bottom: 2rem;
 }
 
 .price {

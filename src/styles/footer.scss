@@ -97,15 +97,19 @@ footer a:link:hover {
 }
 
 .footer-links li {
-	margin-bottom: 0.75rem;
+	margin-bottom: 0;
+	line-height: 1.5;
 }
 
 .footer-links a {
+	display: block;
 	color: #fff;
 	text-decoration: none;
-	font-size: 0.95rem;
+	font-size: 1rem;
 	transition: color 0.3s ease;
 	text-transform: uppercase;
+	padding: 0.25rem 0;
+	//border: 1px solid red;
 }
 
 .footer-links a:hover {
