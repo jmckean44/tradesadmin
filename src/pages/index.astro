@@ -499,8 +499,9 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 							<div>
 								<label for="url" class="visually-hidden">URL</label>
-								<input type="text" name="url" id="url" placeholder="Website" inputmode="url" autocomplete="url" />
+								<input type="text" name="url" id="url" placeholder="Website" inputmode="url" autocomplete="url" aria-describedby="url-hint" />
 								<span class="helperText">Website</span>
+								<p id="url-hint" class="url-hint">Use a full domain like example.com</p>
 								<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
 							</div>
 
@@ -571,17 +572,64 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			function normalizeUrl(value) {
 				const raw = String(value || '').trim();
 				if (!raw) return '';
-				return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+				let cleaned = raw.replace(/\s+/g, '');
+				cleaned = cleaned.replace(/^https?:\/(?!\/)/i, (match) => `${match.slice(0, -1)}//`);
+				cleaned = cleaned.replace(/^(https?:\/\/)+/i, (match) => (/^http:\/\//i.test(match) ? 'http://' : 'https://'));
+				if (!/^https?:\/\//i.test(cleaned)) cleaned = `https://${cleaned}`;
+
+				try {
+					const parsed = new URL(cleaned);
+					const normalizedHostname = parsed.hostname
+						.toLowerCase()
+						.replace(/,+/g, '.')
+						.replace(/\.+/g, '.')
+						.replace(/^\.+|\.+$/g, '');
+					if (normalizedHostname) parsed.hostname = normalizedHostname;
+					return parsed.toString();
+				} catch {
+					return cleaned;
+				}
 			}
 
-			function isValidUrlLoose(value) {
+			function getUrlValidationMessage(value) {
 				const normalized = normalizeUrl(value);
-				if (!normalized) return false;
+				if (!normalized) return 'Please provide a valid URL';
+
 				try {
 					const u = new URL(normalized);
-					return Boolean(u.hostname && u.hostname.includes('.'));
+					const host = String(u.hostname || '').trim();
+					if (!host || !host.includes('.')) return 'Please enter a full domain like example.com';
+
+					const tld = host.split('.').pop() || '';
+					if (tld.length < 2) return 'Please enter a full domain like example.com';
+
+					return '';
 				} catch {
-					return false;
+					return 'Please provide a valid URL';
+				}
+			}
+
+			function normalizeUrlForInputDisplay(value) {
+				const normalized = normalizeUrl(value);
+				if (!normalized) return '';
+
+				try {
+					const parsed = new URL(normalized);
+					const path = parsed.pathname === '/' ? '' : parsed.pathname;
+					return `${parsed.protocol}//${parsed.host}${path}${parsed.search}${parsed.hash}`;
+				} catch {
+					return normalized;
+				}
+			}
+
+			function applyUrlAutocorrect() {
+				const raw = String(urlInput.value || '').trim();
+				if (!raw) return;
+
+				const corrected = normalizeUrlForInputDisplay(raw);
+				if (corrected && corrected !== raw) {
+					urlInput.value = corrected;
 				}
 			}
 
@@ -591,7 +639,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					urlInput.setCustomValidity('');
 					return;
 				}
-				urlInput.setCustomValidity(isValidUrlLoose(raw) ? '' : 'Please provide a valid URL');
+				urlInput.setCustomValidity(getUrlValidationMessage(raw));
 			}
 
 			function isValidEmail(value) {
@@ -849,6 +897,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				(e) => {
 					const field = e.target;
 					if (!isFormField(field)) return;
+					if (field.id === 'url') applyUrlAutocorrect();
 					field.dataset.touched = 'true';
 					updateFieldState(field, submitted);
 				},
@@ -864,6 +913,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 				submitted = true;
+				applyUrlAutocorrect();
 
 				if (!validateAllFields()) {
 					form.querySelector(':invalid')?.focus();

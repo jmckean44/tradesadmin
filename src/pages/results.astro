@@ -170,7 +170,9 @@ import '../styles/page-results.scss';
 			const scores = preview.scores || {};
 			const vitals = preview.vitals || {};
 			const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
-			const reviewUnavailableMessage = preview.available === false ? '<p class="review-subtitle">Live scan data is currently unavailable. Showing fallback guidance.</p>' : '';
+			const unavailableMessageText =
+				typeof preview.reviewError === 'string' && preview.reviewError.trim() ? preview.reviewError.trim() : 'Live scan data is currently unavailable. Showing fallback guidance.';
+			const reviewUnavailableMessage = preview.available === false ? `<p class="review-subtitle">${escapeHtml(unavailableMessageText)}</p>` : '';
 
 			const scoreHtml = [
 				scoreRow('Performance', parseScore(scores.performance)),

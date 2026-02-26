@@ -347,28 +347,39 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 
 async function runReview(url: string): Promise<Review> {
 	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<Review> {
-		const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
-		endpoint.searchParams.set('url', targetUrl);
-		endpoint.searchParams.set('category', 'performance');
-		endpoint.searchParams.append('category', 'seo');
-		endpoint.searchParams.append('category', 'accessibility');
-		endpoint.searchParams.append('category', 'best-practices');
-		endpoint.searchParams.set('strategy', 'mobile');
-		const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
-		if (pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
+		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<Review> {
+			const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
+			endpoint.searchParams.set('url', targetUrl);
+			endpoint.searchParams.set('category', 'performance');
+			endpoint.searchParams.append('category', 'seo');
+			endpoint.searchParams.append('category', 'accessibility');
+			endpoint.searchParams.append('category', 'best-practices');
+			endpoint.searchParams.set('strategy', strategy);
 
-		const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
-		if (!response.ok) throw new Error(`PageSpeed API failed (${response.status})`);
+			const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
+			if (pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
 
-		const payload = (await response.json()) as {
-			lighthouseResult?: {
-				categories?: Record<string, { score?: number | null }>;
-				audits?: Record<string, { displayValue?: string }>;
+			const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
+			if (!response.ok) throw new Error(`PageSpeed API failed (${response.status})`);
+
+			const payload = (await response.json()) as {
+				lighthouseResult?: {
+					categories?: Record<string, { score?: number | null }>;
+					audits?: Record<string, { displayValue?: string }>;
+				};
 			};
-		};
 
-		if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
-		return reviewFromLhrLike(payload.lighthouseResult);
+			if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
+			return reviewFromLhrLike(payload.lighthouseResult);
+		}
+
+		const mobileReview = await requestPageSpeed('mobile');
+		if (hasAnyLiveScore(mobileReview)) return mobileReview;
+
+		const desktopReview = await requestPageSpeed('desktop');
+		if (hasAnyLiveScore(desktopReview)) return desktopReview;
+
+		return desktopReview;
 	}
 
 	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
