@@ -822,6 +822,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 					const payloadForStorage = {
 						preview: data?.preview || null,
+						scan: data?.scan || null,
 						notion: data?.notion || null,
 						timestamp: Date.now(),
 					};

@@ -185,6 +185,24 @@ function normalizeReviewErrorForUser(message: string): string {
 	return text;
 }
 
+function normalizeLiveScanErrorForUser(message: string): string {
+	const text = String(message || '');
+	if (!text) return 'Live scan data is currently unavailable.';
+	if (/api key|forbidden|accessnotconfigured|permission denied|403|401/i.test(text)) {
+		return 'Live scan data is unavailable because the PageSpeed API key is missing, invalid, or restricted.';
+	}
+	if (/429|rate limit|quota/i.test(text)) {
+		return 'Live scan data is temporarily unavailable due to PageSpeed API quota limits.';
+	}
+	if (/timed out|timeout/i.test(text)) {
+		return 'Live scan data request timed out. Please try again.';
+	}
+	if (isLighthouseAssetErrorMessage(text)) {
+		return 'Live scan data is currently unavailable in this server environment.';
+	}
+	return normalizeReviewErrorForUser(text);
+}
+
 function normalizeNotionErrorForUser(message: string): string {
 	const text = String(message || '');
 	if (!text) return 'Notion sync failed. Check integration access and database settings.';
@@ -701,10 +719,12 @@ export const POST: APIRoute = async ({ request }) => {
 
 		let review: Review | null = null;
 		let reviewError = '';
+		let liveScanError = '';
 		let fallbackFixes: string[] = [];
 		let forceUnavailablePreview = false;
 		if (!url) {
 			reviewError = 'No URL provided.';
+			liveScanError = reviewError;
 		} else {
 			try {
 				const cachedReview = getCachedReview(url);
@@ -717,6 +737,7 @@ export const POST: APIRoute = async ({ request }) => {
 			} catch (err) {
 				console.error('Review failed:', err);
 				const message = err instanceof Error ? err.message : String(err);
+				liveScanError = message;
 				reviewError = normalizeReviewErrorForUser(message);
 				try {
 					const basicChecks = await runBasicSiteChecks(url);
@@ -729,6 +750,7 @@ export const POST: APIRoute = async ({ request }) => {
 			if (review && !hasAnyLiveScore(review)) {
 				forceUnavailablePreview = true;
 				reviewError = reviewError || 'Live scan data is currently unavailable.';
+				liveScanError = liveScanError || reviewError;
 
 				if (!fallbackFixes.length) {
 					try {
@@ -772,6 +794,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
 		const preview = buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview);
+		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
 		let notionError = '';
@@ -811,6 +834,11 @@ export const POST: APIRoute = async ({ request }) => {
 				ok: true,
 				message: 'Submitted successfully.',
 				preview,
+				scan: {
+					available: preview.available === true,
+					pageSpeedApiKeyConfigured,
+					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
+				},
 				notion: {
 					configured: notionConfigured,
 					synced: notionConfigured ? notionSynced : false,

@@ -147,12 +147,17 @@ import '../styles/page-results.scss';
 		}
 
 		const preview = payload.preview || {};
+		const scan = payload.scan || null;
 		const notion = payload.notion || null;
 		const scores = preview.scores || {};
 		const vitals = preview.vitals || {};
 		const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
 		const unavailableMessageText =
-			typeof preview.reviewError === 'string' && preview.reviewError.trim() ? preview.reviewError.trim() : 'Live scan data is currently unavailable. Showing fallback guidance.';
+			typeof scan?.error === 'string' && scan.error.trim()
+				? scan.error.trim()
+				: typeof preview.reviewError === 'string' && preview.reviewError.trim()
+					? preview.reviewError.trim()
+					: 'Live scan data is currently unavailable. Showing fallback guidance.';
 		const reviewUnavailableMessage = preview.available === false ? `<p class="review-subtitle">${escapeHtml(unavailableMessageText)}</p>` : '';
 
 		const scoreHtml = [
