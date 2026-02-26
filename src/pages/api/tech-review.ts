@@ -150,6 +150,10 @@ function firstNumber(value: string): number | null {
 	return Number.isFinite(parsed) ? parsed : null;
 }
 
+function hasAnyLiveScore(review: Review): boolean {
+	return [review.performance, review.seo, review.accessibility, review.bestPractices].some((value) => typeof value === 'number' && Number.isFinite(value));
+}
+
 function normalizeReviewErrorForUser(message: string): string {
 	const text = String(message || '');
 	if (!text) return 'Live scan data is currently unavailable.';
@@ -198,8 +202,8 @@ async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
 	return { recommendedFixes: fixes.slice(0, 4) };
 }
 
-function buildReviewPreview(review: Review | null, reviewError: string, fallbackFixes: string[] = []): ReviewPreview {
-	if (!review) {
+function buildReviewPreview(review: Review | null, reviewError: string, fallbackFixes: string[] = [], forceUnavailable = false): ReviewPreview {
+	if (!review || forceUnavailable) {
 		return {
 			available: false,
 			scores: {
@@ -542,6 +546,7 @@ export const POST: APIRoute = async ({ request }) => {
 		let review: Review | null = null;
 		let reviewError = '';
 		let fallbackFixes: string[] = [];
+		let forceUnavailablePreview = false;
 		if (!url) {
 			reviewError = 'No URL provided.';
 		} else {
@@ -562,6 +567,20 @@ export const POST: APIRoute = async ({ request }) => {
 					fallbackFixes = basicChecks.recommendedFixes;
 				} catch (basicErr) {
 					console.error('Basic site checks failed:', basicErr);
+				}
+			}
+
+			if (review && !hasAnyLiveScore(review)) {
+				forceUnavailablePreview = true;
+				reviewError = reviewError || 'Live scan data is currently unavailable.';
+
+				if (!fallbackFixes.length) {
+					try {
+						const basicChecks = await runBasicSiteChecks(url);
+						fallbackFixes = basicChecks.recommendedFixes;
+					} catch (basicErr) {
+						console.error('Basic site checks failed:', basicErr);
+					}
 				}
 			}
 		}
@@ -623,7 +642,7 @@ export const POST: APIRoute = async ({ request }) => {
 			JSON.stringify({
 				ok: true,
 				message: 'Submitted successfully.',
-				preview: buildReviewPreview(review, reviewError, fallbackFixes),
+				preview: buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview),
 				report: {
 					filename: reportFilename,
 					mimeType: 'application/pdf',
