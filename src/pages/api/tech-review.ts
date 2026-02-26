@@ -185,6 +185,16 @@ function normalizeReviewErrorForUser(message: string): string {
 	return text;
 }
 
+function normalizeNotionErrorForUser(message: string): string {
+	const text = String(message || '');
+	if (!text) return 'Notion sync failed. Check integration access and database settings.';
+	if (/unauthorized|forbidden|401|403/i.test(text)) return 'Notion sync failed: integration token is invalid or missing permissions.';
+	if (/object_not_found|404|database lookup failed/i.test(text)) return 'Notion sync failed: database ID is invalid or integration is not shared to that database.';
+	if (/validation_error|400/i.test(text)) return 'Notion sync failed: database property schema does not match expected field types.';
+	if (/timed out|timeout/i.test(text)) return 'Notion sync failed: Notion request timed out.';
+	return 'Notion sync failed. Check integration access, database ID, and property schema.';
+}
+
 function getNotionHeaders(token: string): Record<string, string> {
 	return {
 		Authorization: `Bearer ${token}`,
@@ -804,7 +814,7 @@ export const POST: APIRoute = async ({ request }) => {
 				notion: {
 					configured: notionConfigured,
 					synced: notionConfigured ? notionSynced : false,
-					error: isDev && notionError ? notionError : undefined,
+					error: notionError ? (isDev ? notionError : normalizeNotionErrorForUser(notionError)) : undefined,
 				},
 			}),
 			{ status: 200 },
