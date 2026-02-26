@@ -45,6 +45,18 @@ type ReviewPreview = {
 	reviewError?: string;
 };
 
+type BasicSiteChecks = {
+	recommendedFixes: string[];
+};
+
+type CachedReview = {
+	review: Review;
+	expiresAt: number;
+};
+
+const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
+const reviewCache = new Map<string, CachedReview>();
+
 function getEnv(name: string): string {
 	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
 	return String(value).trim();
@@ -65,6 +77,46 @@ function isValidEmail(input: string): boolean {
 function isLighthouseAssetErrorMessage(message: string): boolean {
 	const text = String(message || '');
 	return text.includes('standalone-flow-template.html') || text.includes('flow-report/assets') || text.includes('ENOENT');
+}
+
+function getReviewCacheTtlMs(): number {
+	const raw = getEnv('TECH_REVIEW_CACHE_TTL_MS');
+	if (!raw) return REVIEW_CACHE_TTL_MS_DEFAULT;
+	const parsed = Number(raw);
+	if (!Number.isFinite(parsed) || parsed <= 0) return REVIEW_CACHE_TTL_MS_DEFAULT;
+	return Math.round(parsed);
+}
+
+function getReviewCacheKey(inputUrl: string): string {
+	try {
+		const parsed = new URL(normalizeUrl(inputUrl));
+		parsed.hash = '';
+		if (parsed.pathname.endsWith('/') && parsed.pathname !== '/') {
+			parsed.pathname = parsed.pathname.slice(0, -1);
+		}
+		return parsed.toString();
+	} catch {
+		return normalizeUrl(inputUrl).toLowerCase();
+	}
+}
+
+function getCachedReview(inputUrl: string): Review | null {
+	const key = getReviewCacheKey(inputUrl);
+	const cached = reviewCache.get(key);
+	if (!cached) return null;
+	if (cached.expiresAt <= Date.now()) {
+		reviewCache.delete(key);
+		return null;
+	}
+	return cached.review;
+}
+
+function setCachedReview(inputUrl: string, review: Review): void {
+	const key = getReviewCacheKey(inputUrl);
+	reviewCache.set(key, {
+		review,
+		expiresAt: Date.now() + getReviewCacheTtlMs(),
+	});
 }
 
 function pct(score: number | null | undefined): number | null {
@@ -98,7 +150,55 @@ function firstNumber(value: string): number | null {
 	return Number.isFinite(parsed) ? parsed : null;
 }
 
-function buildReviewPreview(review: Review | null, reviewError: string): ReviewPreview {
+function normalizeReviewErrorForUser(message: string): string {
+	const text = String(message || '');
+	if (!text) return 'Live scan data is currently unavailable.';
+	if (isLighthouseAssetErrorMessage(text)) return 'Live scan data is currently unavailable.';
+	if (/429|rate limit|quota/i.test(text)) return 'Live scan data is temporarily unavailable due to scan capacity limits.';
+	return text;
+}
+
+async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
+	const startedAt = Date.now();
+	const response = await withTimeout(fetch(url, { redirect: 'follow' }), 15000, 'Basic site check');
+	const durationMs = Date.now() - startedAt;
+
+	const contentType = (response.headers.get('content-type') || '').toLowerCase();
+	const cacheControl = (response.headers.get('cache-control') || '').toLowerCase();
+	const html = contentType.includes('text/html') ? await response.text() : '';
+
+	const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+	const titleText = titleMatch?.[1]?.trim() || '';
+	const hasMetaDescription = /<meta[^>]+name=["']description["'][^>]*content=["'][^"']{20,}["']/i.test(html) || /<meta[^>]+content=["'][^"']{20,}["'][^>]+name=["']description["']/i.test(html);
+	const h1Count = (html.match(/<h1\b/gi) || []).length;
+	const hasCanonical = /<link[^>]+rel=["']canonical["']/i.test(html);
+	const hasViewport = /<meta[^>]+name=["']viewport["']/i.test(html);
+	const imageTags = html.match(/<img\b[^>]*>/gi) || [];
+	const missingAltCount = imageTags.filter((tag) => !/\balt\s*=\s*["'][^"']*["']/i.test(tag)).length;
+	const hasMixedContent = /^https:\/\//i.test(url) && /(src|href)=["']http:\/\//i.test(html);
+
+	const fixes: string[] = [];
+
+	if (!response.ok) fixes.push(`Your page returned an HTTP ${response.status} response. Fixing this should be the first priority.`);
+	if (durationMs > 1500) fixes.push('Server response appears slow. Improve hosting performance, caching, and heavy plugin/script usage.');
+	if (!titleText || titleText.length < 10) fixes.push('Add a clear page title so search results show your service and location properly.');
+	if (!hasMetaDescription) fixes.push('Add a meta description to improve how your page appears in Google search snippets.');
+	if (h1Count === 0) fixes.push('Add one clear H1 heading that describes the page service and location.');
+	if (h1Count > 1) fixes.push('Use a single primary H1 heading and keep the rest as H2/H3 for cleaner page structure.');
+	if (!hasCanonical) fixes.push('Add canonical tags to reduce duplicate-page confusion for search engines.');
+	if (!hasViewport) fixes.push('Add a viewport meta tag to ensure proper mobile rendering and avoid usability issues.');
+	if (missingAltCount > 0) fixes.push(`Add descriptive alt text to ${missingAltCount} image${missingAltCount === 1 ? '' : 's'} for accessibility and SEO.`);
+	if (hasMixedContent) fixes.push('Remove HTTP asset links on HTTPS pages to prevent mixed-content warnings and blocked resources.');
+	if (!cacheControl) fixes.push('Set cache-control headers for static assets to improve repeat-load speed.');
+
+	if (!fixes.length) {
+		fixes.push('Core technical foundations look healthy. Continue monitoring performance and indexing regularly.');
+	}
+
+	return { recommendedFixes: fixes.slice(0, 4) };
+}
+
+function buildReviewPreview(review: Review | null, reviewError: string, fallbackFixes: string[] = []): ReviewPreview {
 	if (!review) {
 		return {
 			available: false,
@@ -114,7 +214,7 @@ function buildReviewPreview(review: Review | null, reviewError: string): ReviewP
 				tbt: 'N/A',
 				cls: 'N/A',
 			},
-			recommendedFixes: ['Run a full technical review with us and we will send a prioritized fix list.'],
+			recommendedFixes: fallbackFixes.length ? fallbackFixes : ['Run a full technical review with us and we will send a prioritized fix list.'],
 			reviewError: reviewError || undefined,
 		};
 	}
@@ -250,6 +350,8 @@ async function runReview(url: string): Promise<Review> {
 		endpoint.searchParams.append('category', 'accessibility');
 		endpoint.searchParams.append('category', 'best-practices');
 		endpoint.searchParams.set('strategy', 'mobile');
+		const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
+		if (pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
 
 		const response = await fetch(endpoint.toString());
 		if (!response.ok) throw new Error(`PageSpeed API failed (${response.status})`);
@@ -436,15 +538,28 @@ export const POST: APIRoute = async ({ request }) => {
 
 		let review: Review | null = null;
 		let reviewError = '';
+		let fallbackFixes: string[] = [];
 		if (!url) {
 			reviewError = 'No URL provided.';
 		} else {
 			try {
-				review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+				const cachedReview = getCachedReview(url);
+				if (cachedReview) {
+					review = cachedReview;
+				} else {
+					review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+					setCachedReview(url, review);
+				}
 			} catch (err) {
 				console.error('Review failed:', err);
 				const message = err instanceof Error ? err.message : String(err);
-				reviewError = isLighthouseAssetErrorMessage(message) ? 'Live scan data is currently unavailable.' : message;
+				reviewError = normalizeReviewErrorForUser(message);
+				try {
+					const basicChecks = await runBasicSiteChecks(url);
+					fallbackFixes = basicChecks.recommendedFixes;
+				} catch (basicErr) {
+					console.error('Basic site checks failed:', basicErr);
+				}
 			}
 		}
 
@@ -505,7 +620,7 @@ export const POST: APIRoute = async ({ request }) => {
 			JSON.stringify({
 				ok: true,
 				message: 'Submitted successfully.',
-				preview: buildReviewPreview(review, reviewError),
+				preview: buildReviewPreview(review, reviewError, fallbackFixes),
 				report: {
 					filename: reportFilename,
 					mimeType: 'application/pdf',

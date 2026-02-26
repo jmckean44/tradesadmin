@@ -18,9 +18,11 @@ import '../styles/page-results.scss';
 								aria-label="bookmark link to download report button">downloaded</a
 							> as a PDF report, below.
 							<p class="center txt-lrg">
-								For a deeper review of what needs attention,<br />call <span class="semibold">416-986-1059</span> or email <span class="semibold"
-									><a href="mailto:hello@tradesadmin.ca" role="link" aria-label="Email Trades Admin">hello@tradesadmin.ca</a></span
-								>.
+								For a deeper review of what needs attention,<br />call <span class="semibold"
+									><a href="tel:4169861059" class="underline" role="link" aria-label="link to 416-986-1059">416-986-1059</a></span
+								> or email <span class="semibold"
+									><a class="underline" href="mailto:hello@tradesadmin.ca?subject=Question about my website" role="link" aria-label="Email Trades Admin">hello@tradesadmin.ca</a></span
+								>.Quick Technical Snapshot
 							</p>
 						</p>
 					</div>
@@ -192,9 +194,7 @@ import '../styles/page-results.scss';
 				: '';
 
 			root.innerHTML = `
-				<div class="review-preview-card">
-					<h3>Quick Technical Snapshot</h3>
-					<p class="review-subtitle">Initial automated scan of your submitted site.</p>
+				<div class="review-preview-card">					
 					${reviewUnavailableMessage}
 					<div class="review-score-grid">${scoreHtml}</div>
 					<div class="review-vitals">${vitalsHtml}</div>
