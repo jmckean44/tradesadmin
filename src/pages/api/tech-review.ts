@@ -844,6 +844,8 @@ export const POST: APIRoute = async ({ request }) => {
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
 		let notionError = '';
+		let emailSent = false;
+		let emailError = '';
 
 		try {
 			await logSubmissionToNotion({
@@ -875,34 +877,26 @@ export const POST: APIRoute = async ({ request }) => {
 				25000,
 				'SMTP send',
 			);
+			emailSent = true;
 		} catch (err) {
-			const smtpErr = err as { code?: string; responseCode?: number; message?: string };
-			return new Response(
-				JSON.stringify(
-					isDev
-						? {
-								error: 'SMTP send failed.',
-								smtp: {
-									code: smtpErr?.code,
-									responseCode: smtpErr?.responseCode,
-									message: smtpErr?.message,
-								},
-						  }
-						: { error: 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.' },
-				),
-				{ status: 500 },
-			);
+			const smtpErr = err as { message?: string };
+			emailError = smtpErr?.message || 'SMTP send failed.';
+			console.error('SMTP send failed:', err);
 		}
 
 		return new Response(
 			JSON.stringify({
 				ok: true,
-				message: 'Submitted successfully.',
+				message: emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.',
 				preview,
 				scan: {
 					available: preview.available === true,
 					pageSpeedApiKeyConfigured,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
+				},
+				email: {
+					sent: emailSent,
+					error: emailError ? (isDev ? emailError : 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.') : undefined,
 				},
 				notion: {
 					configured: notionConfigured,

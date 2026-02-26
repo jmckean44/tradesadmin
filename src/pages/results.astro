@@ -128,12 +128,38 @@ import '../styles/page-results.scss';
 				`;
 		}
 
-		let payload = null;
-		try {
-			payload = JSON.parse(sessionStorage.getItem('scanResultPayload') || 'null');
-		} catch {
-			payload = null;
+		function readStoredPayload(key) {
+			try {
+				const raw = sessionStorage.getItem(key);
+				if (raw) {
+					const parsed = JSON.parse(raw);
+					if (parsed && typeof parsed === 'object') return parsed;
+				}
+			} catch {
+				// no-op
+			}
+
+			try {
+				const raw = localStorage.getItem(key);
+				if (raw) {
+					const parsed = JSON.parse(raw);
+					if (parsed && typeof parsed === 'object') {
+						try {
+							sessionStorage.setItem(key, raw);
+						} catch {
+							// no-op
+						}
+						return parsed;
+					}
+				}
+			} catch {
+				// no-op
+			}
+
+			return null;
 		}
+
+		const payload = readStoredPayload('scanResultPayload');
 
 		if (!payload?.preview) {
 			root.innerHTML = `
