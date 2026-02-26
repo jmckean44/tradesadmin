@@ -62,6 +62,11 @@ function isValidEmail(input: string): boolean {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
 }
 
+function isLighthouseAssetErrorMessage(message: string): boolean {
+	const text = String(message || '');
+	return text.includes('standalone-flow-template.html') || text.includes('flow-report/assets') || text.includes('ENOENT');
+}
+
 function pct(score: number | null | undefined): number | null {
 	return score == null ? null : Math.round(score * 100);
 }
@@ -260,10 +265,11 @@ async function runReview(url: string): Promise<Review> {
 		return reviewFromLhrLike(payload.lighthouseResult);
 	}
 
-	const [{ default: lighthouse }, { launch }] = await Promise.all([import('lighthouse'), import('chrome-launcher')]);
 	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
 
 	try {
+		const [{ default: lighthouse }, { launch }] = await Promise.all([import('lighthouse'), import('chrome-launcher')]);
+
 		chrome = await launch({ chromeFlags: ['--headless', '--no-sandbox'] });
 		const chromePort = chrome.port;
 
@@ -279,7 +285,7 @@ async function runReview(url: string): Promise<Review> {
 		return reviewFromLhrLike(runnerResult.lhr);
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
-		if (message.includes('standalone-flow-template.html') || message.includes('ENOENT')) {
+		if (isLighthouseAssetErrorMessage(message)) {
 			return runReviewWithPageSpeedInsights(url);
 		}
 		throw err;
@@ -437,7 +443,8 @@ export const POST: APIRoute = async ({ request }) => {
 				review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
 			} catch (err) {
 				console.error('Review failed:', err);
-				reviewError = err instanceof Error ? err.message : 'Unknown Lighthouse error';
+				const message = err instanceof Error ? err.message : String(err);
+				reviewError = isLighthouseAssetErrorMessage(message) ? 'Live scan data is currently unavailable.' : message;
 			}
 		}
 

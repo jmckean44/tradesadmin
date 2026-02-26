@@ -795,7 +795,9 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					}
 
 					if (!response.ok) {
-						const serverMessage = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
+						const serverMessageRaw = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
+						const isAssetError = /ENOENT|standalone-flow-template\.html|flow-report\/assets/i.test(String(serverMessageRaw));
+						const serverMessage = isAssetError ? 'Live scan data is currently unavailable. Showing fallback guidance.' : serverMessageRaw;
 						throw new Error(serverMessage);
 					}
 

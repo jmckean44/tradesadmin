@@ -420,31 +420,19 @@
 }
 
 .pricing-card {
-	background: #f9f9f9;
-
-	//border: 1px #ddd solid;
-	border-radius: 10px;
-	//box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 	padding: 3.5rem clamp(1.5rem, 3vw, 3rem) 22px;
 	width: 100%;
 	margin-top: 35px;
+	border-left: 1px #ddd solid;
 	z-index: 2;
 }
 
 .pricing-card.single-issue {
 	background: #fff;
-	padding: 0;
-	border: none;
+	padding: 0 0 0;
+	//border-top: 1px #ddd solid;
+	border-left: 0;
 	box-shadow: none;
-}
-
-.pricing-content h2 {
-	//color: #fff;
-	//font-family: var.$font-sans-serif-bold;
-}
-
-.pricing-content p {
-	//color: #fff;
 }
 
 .pricing-card.single-issue h3 {
