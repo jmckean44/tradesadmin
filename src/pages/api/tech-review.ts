@@ -54,6 +54,30 @@ type CachedReview = {
 	expiresAt: number;
 };
 
+type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date';
+
+type NotionDatabaseProperty = {
+	id: string;
+	name: string;
+	type: string;
+};
+
+type NotionDatabaseSchemaResponse = {
+	properties?: Record<string, NotionDatabaseProperty>;
+};
+
+type NotionSubmissionInput = {
+	company: string;
+	email: string;
+	url: string;
+	phone: string;
+	message: string;
+	reportFilename: string;
+	preview: ReviewPreview;
+	review: Review | null;
+	reviewError: string;
+};
+
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const reviewCache = new Map<string, CachedReview>();
 
@@ -160,6 +184,161 @@ function normalizeReviewErrorForUser(message: string): string {
 	if (isLighthouseAssetErrorMessage(text)) return 'Live scan data is currently unavailable.';
 	if (/429|rate limit|quota/i.test(text)) return 'Live scan data is temporarily unavailable due to scan capacity limits.';
 	return text;
+}
+
+function getNotionHeaders(token: string): Record<string, string> {
+	return {
+		Authorization: `Bearer ${token}`,
+		'Notion-Version': '2022-06-28',
+		'Content-Type': 'application/json',
+	};
+}
+
+function normalizePropertyName(input: string): string {
+	return String(input || '')
+		.trim()
+		.toLowerCase()
+		.replace(/[_-]+/g, ' ')
+		.replace(/\s+/g, ' ');
+}
+
+function findPropertyKeyByType(properties: Record<string, NotionDatabaseProperty>, type: NotionPropertyType, candidates: string[] = []): string | null {
+	const exactNames = new Set(candidates.map((name) => normalizePropertyName(name)));
+
+	for (const [key, property] of Object.entries(properties)) {
+		if (property.type !== type) continue;
+		if (!exactNames.size || exactNames.has(normalizePropertyName(property.name || key))) return key;
+	}
+
+	if (exactNames.size) {
+		for (const [key, property] of Object.entries(properties)) {
+			if (property.type !== type) continue;
+			const current = normalizePropertyName(property.name || key);
+			if (Array.from(exactNames).some((candidate) => current.includes(candidate) || candidate.includes(current))) return key;
+		}
+	}
+
+	return null;
+}
+
+function buildNotionTextValue(value: string): Array<{ type: 'text'; text: { content: string } }> {
+	const content = String(value || '').trim();
+	if (!content) return [];
+	return [{ type: 'text', text: { content: content.slice(0, 1900) } }];
+}
+
+function stripUrlProtocol(value: string): string {
+	return String(value || '')
+		.trim()
+		.replace(/^https?:\/\//i, '');
+}
+
+async function getNotionDatabaseProperties(token: string, databaseId: string): Promise<Record<string, NotionDatabaseProperty>> {
+	const response = await withTimeout(fetch(`https://api.notion.com/v1/databases/${databaseId}`, { headers: getNotionHeaders(token) }), 12000, 'Notion database lookup');
+
+	if (!response.ok) {
+		const body = await response.text().catch(() => '');
+		throw new Error(`Notion database lookup failed (${response.status}) ${body}`.trim());
+	}
+
+	const data = (await response.json()) as NotionDatabaseSchemaResponse;
+	return data.properties ?? {};
+}
+
+async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void> {
+	const notionToken = getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN');
+	const notionDatabaseId = getEnv('NOTION_DATABASE_ID');
+	if (!notionToken || !notionDatabaseId) return;
+
+	const propertiesSchema = await getNotionDatabaseProperties(notionToken, notionDatabaseId);
+	const properties: Record<string, unknown> = {};
+
+	const titleKey = findPropertyKeyByType(propertiesSchema, 'title');
+	if (!titleKey) throw new Error('Notion database has no title property.');
+
+	const urlHost = input.url
+		? (() => {
+				try {
+					return new URL(input.url).hostname;
+				} catch {
+					return input.url;
+				}
+		  })()
+		: 'No URL';
+	const titleValue = `${input.company} — ${urlHost}`;
+	properties[titleKey] = { title: buildNotionTextValue(titleValue) };
+
+	const setTextLikeProperty = (type: 'rich_text' | 'email' | 'url' | 'phone_number', names: string[], value: string): void => {
+		if (!value) return;
+		const key = findPropertyKeyByType(propertiesSchema, type, names);
+		if (!key) return;
+
+		if (type === 'rich_text') {
+			properties[key] = { rich_text: buildNotionTextValue(value) };
+			return;
+		}
+
+		if (type === 'email') {
+			properties[key] = { email: value };
+			return;
+		}
+
+		if (type === 'url') {
+			properties[key] = { url: stripUrlProtocol(value) };
+			return;
+		}
+
+		properties[key] = { phone_number: value };
+	};
+
+	const setNumberProperty = (names: string[], value: number | null | undefined): void => {
+		if (value == null || !Number.isFinite(value)) return;
+		const key = findPropertyKeyByType(propertiesSchema, 'number', names);
+		if (!key) return;
+		properties[key] = { number: value };
+	};
+
+	setTextLikeProperty('email', ['email', 'e-mail'], input.email);
+	setTextLikeProperty('rich_text', ['url', 'website', 'site', 'domain'], stripUrlProtocol(input.url));
+	setTextLikeProperty('phone_number', ['phone', 'telephone'], input.phone);
+	setTextLikeProperty('rich_text', ['message', 'details', 'comments', 'notes'], input.message);
+
+	const statusKey = findPropertyKeyByType(propertiesSchema, 'checkbox', ['scan available', 'available', 'has live data']);
+	if (statusKey) properties[statusKey] = { checkbox: input.preview.available === true };
+
+	const submittedAtKey = findPropertyKeyByType(propertiesSchema, 'date', ['submitted at', 'submitted', 'date']);
+	if (submittedAtKey) properties[submittedAtKey] = { date: { start: new Date().toISOString() } };
+
+	setNumberProperty(['performance', 'performance score'], input.preview.scores.performance);
+	setNumberProperty(['seo', 'seo score'], input.preview.scores.seo);
+	setNumberProperty(['accessibility', 'accessibility score'], input.preview.scores.accessibility);
+	setNumberProperty(['best practices', 'best practices score'], input.preview.scores.bestPractices);
+
+	setTextLikeProperty('rich_text', ['lcp'], input.preview.vitals.lcp || 'N/A');
+	setTextLikeProperty('rich_text', ['interactive', 'tti'], input.preview.vitals.interactive || 'N/A');
+	setTextLikeProperty('rich_text', ['tbt', 'total blocking time'], input.preview.vitals.tbt || 'N/A');
+	setTextLikeProperty('rich_text', ['cls'], input.preview.vitals.cls || 'N/A');
+	setTextLikeProperty('rich_text', ['review error', 'scan error', 'error'], input.reviewError || input.preview.reviewError || '');
+	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
+	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
+
+	const response = await withTimeout(
+		fetch('https://api.notion.com/v1/pages', {
+			method: 'POST',
+			headers: getNotionHeaders(notionToken),
+			body: JSON.stringify({
+				parent: { database_id: notionDatabaseId },
+				properties,
+			}),
+		}),
+		12000,
+		'Notion page create',
+	);
+
+	if (!response.ok) {
+		const body = await response.text().catch(() => '');
+		throw new Error(`Notion page create failed (${response.status}) ${body}`.trim());
+	}
 }
 
 async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
@@ -512,6 +691,8 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		const url = rawUrl ? normalizeUrl(rawUrl) : '';
+		const displayUrl = rawUrl || url || 'N/A';
+		const notionUrl = rawUrl || url;
 		if (url) {
 			try {
 				new URL(url);
@@ -612,7 +793,6 @@ export const POST: APIRoute = async ({ request }) => {
             `
 			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
-		const displayUrl = url || 'N/A';
 		const html = `
             <h2>New Contact Submission</h2>
             <ul>
@@ -636,6 +816,23 @@ export const POST: APIRoute = async ({ request }) => {
 			reviewError,
 		});
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
+		const preview = buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview);
+
+		try {
+			await logSubmissionToNotion({
+				company,
+				email,
+				url: notionUrl,
+				phone,
+				message,
+				reportFilename,
+				preview,
+				review,
+				reviewError,
+			});
+		} catch (notionErr) {
+			console.error('Notion sync failed:', notionErr);
+		}
 
 		await withTimeout(
 			transporter.sendMail({
@@ -653,7 +850,7 @@ export const POST: APIRoute = async ({ request }) => {
 			JSON.stringify({
 				ok: true,
 				message: 'Submitted successfully.',
-				preview: buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview),
+				preview,
 				report: {
 					filename: reportFilename,
 					mimeType: 'application/pdf',

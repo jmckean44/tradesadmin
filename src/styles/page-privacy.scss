@@ -1,0 +1,15 @@
+@use 'variables.scss' as var;
+#privacy-policy .container.top.btm {
+	padding: clamp(150px, 20vw, 200px) var.$container-padding 100px;
+	max-width: 1000px;
+}
+
+ul {
+	list-style: disc;
+	margin-bottom: 2rem;
+	margin-left: 2rem;
+}
+
+h4 {
+	margin-top: 2rem;
+}

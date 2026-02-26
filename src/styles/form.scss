@@ -95,27 +95,6 @@ form .btn:disabled {
 	z-index: 1;
 }
 
-.url-hint {
-	margin: 0;
-	font-size: 0.82rem;
-	line-height: 1.2;
-	color: var.$theme-clr-dark;
-	opacity: 0;
-	font-family: var.$font-sans-serif-med;
-	max-height: 0;
-	overflow: hidden;
-	pointer-events: none;
-	transition: opacity 0.2s ease, max-height 0.2s ease, margin 0.2s ease;
-}
-
-#form #url:focus + .helperText + .url-hint,
-#form.was-validated #url:invalid:not(:placeholder-shown) + .helperText + .url-hint,
-#form #url.is-invalid:not(:placeholder-shown) + .helperText + .url-hint {
-	margin: -10px 0 0.85rem;
-	opacity: 0.8;
-	max-height: 2rem;
-}
-
 /* empty required fields */
 #form.was-validated :is(input, textarea, select):required:invalid:placeholder-shown ~ .empty-feedback,
 #form :is(input, textarea, select).is-invalid:placeholder-shown ~ .empty-feedback {
