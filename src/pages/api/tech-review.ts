@@ -65,6 +65,10 @@ type NotionDatabaseSchemaResponse = {
 	properties?: Record<string, NotionDatabaseProperty>;
 };
 
+type NotionDatabaseQueryResponse = {
+	results?: Array<{ id?: string }>;
+};
+
 type NotionSubmissionInput = {
 	company: string;
 	email: string;
@@ -272,6 +276,54 @@ async function getNotionDatabaseProperties(token: string, databaseId: string): P
 	return data.properties ?? {};
 }
 
+async function findExistingNotionPageIdByEmail(token: string, databaseId: string, emailPropertyName: string, email: string): Promise<string | null> {
+	const response = await withTimeout(
+		fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+			method: 'POST',
+			headers: getNotionHeaders(token),
+			body: JSON.stringify({
+				filter: {
+					property: emailPropertyName,
+					email: { equals: email },
+				},
+				page_size: 1,
+			}),
+		}),
+		12000,
+		'Notion database query',
+	);
+
+	if (!response.ok) {
+		const body = await response.text().catch(() => '');
+		throw new Error(`Notion database query failed (${response.status}) ${body}`.trim());
+	}
+
+	const data = (await response.json()) as NotionDatabaseQueryResponse;
+	const firstId = data.results?.[0]?.id;
+	return typeof firstId === 'string' && firstId ? firstId : null;
+}
+
+async function createOrUpdateNotionPage(token: string, databaseId: string, pageId: string | null, properties: Record<string, unknown>): Promise<void> {
+	const endpoint = pageId ? `https://api.notion.com/v1/pages/${pageId}` : 'https://api.notion.com/v1/pages';
+	const method = pageId ? 'PATCH' : 'POST';
+	const body = pageId ? { properties } : { parent: { database_id: databaseId }, properties };
+
+	const response = await withTimeout(
+		fetch(endpoint, {
+			method,
+			headers: getNotionHeaders(token),
+			body: JSON.stringify(body),
+		}),
+		12000,
+		pageId ? 'Notion page update' : 'Notion page create',
+	);
+
+	if (!response.ok) {
+		const responseBody = await response.text().catch(() => '');
+		throw new Error(`Notion page ${pageId ? 'update' : 'create'} failed (${response.status}) ${responseBody}`.trim());
+	}
+}
+
 async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void> {
 	const notionToken = getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN');
 	const notionDatabaseId = getEnv('NOTION_DATABASE_ID');
@@ -325,7 +377,11 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		properties[key] = { number: value };
 	};
 
-	setTextLikeProperty('email', ['email', 'e-mail'], input.email);
+	const emailKey = findPropertyKeyByType(propertiesSchema, 'email', ['email', 'e-mail']);
+	if (emailKey && input.email) {
+		properties[emailKey] = { email: input.email };
+	}
+
 	setTextLikeProperty('rich_text', ['url', 'website', 'site', 'domain'], stripUrlProtocol(input.url));
 	setTextLikeProperty('phone_number', ['phone', 'telephone'], input.phone);
 	setTextLikeProperty('rich_text', ['message', 'details', 'comments', 'notes'], input.message);
@@ -349,23 +405,13 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
 
-	const response = await withTimeout(
-		fetch('https://api.notion.com/v1/pages', {
-			method: 'POST',
-			headers: getNotionHeaders(notionToken),
-			body: JSON.stringify({
-				parent: { database_id: notionDatabaseId },
-				properties,
-			}),
-		}),
-		12000,
-		'Notion page create',
-	);
-
-	if (!response.ok) {
-		const body = await response.text().catch(() => '');
-		throw new Error(`Notion page create failed (${response.status}) ${body}`.trim());
+	let existingPageId: string | null = null;
+	if (emailKey && input.email) {
+		const emailPropertyName = propertiesSchema[emailKey]?.name || emailKey;
+		existingPageId = await findExistingNotionPageIdByEmail(notionToken, notionDatabaseId, emailPropertyName, input.email);
 	}
+
+	await createOrUpdateNotionPage(notionToken, notionDatabaseId, existingPageId, properties);
 }
 
 async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
