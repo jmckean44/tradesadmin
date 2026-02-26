@@ -353,7 +353,7 @@ async function runReview(url: string): Promise<Review> {
 		const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
 		if (pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
 
-		const response = await fetch(endpoint.toString());
+		const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
 		if (!response.ok) throw new Error(`PageSpeed API failed (${response.status})`);
 
 		const payload = (await response.json()) as {
@@ -386,11 +386,14 @@ async function runReview(url: string): Promise<Review> {
 
 		return reviewFromLhrLike(runnerResult.lhr);
 	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		if (isLighthouseAssetErrorMessage(message)) {
-			return runReviewWithPageSpeedInsights(url);
+		const lighthouseMessage = err instanceof Error ? err.message : String(err);
+
+		try {
+			return await runReviewWithPageSpeedInsights(url);
+		} catch (fallbackErr) {
+			const fallbackMessage = fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr);
+			throw new Error(`Lighthouse failed: ${lighthouseMessage}. PageSpeed fallback failed: ${fallbackMessage}`);
 		}
-		throw err;
 	} finally {
 		if (chrome) await chrome.kill();
 	}
