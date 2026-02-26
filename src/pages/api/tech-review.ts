@@ -863,17 +863,36 @@ export const POST: APIRoute = async ({ request }) => {
 			notionError = notionErr instanceof Error ? notionErr.message : String(notionErr);
 		}
 
-		await withTimeout(
-			transporter.sendMail({
-				from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-				to: getEnv('CONTACT_TO') || getEnv('SMTP_USER'),
-				replyTo: email,
-				subject: `New submission: ${company}`,
-				html,
-			}),
-			25000,
-			'SMTP send',
-		);
+		try {
+			await withTimeout(
+				transporter.sendMail({
+					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+					to: getEnv('CONTACT_TO') || getEnv('SMTP_USER'),
+					replyTo: email,
+					subject: `New submission: ${company}`,
+					html,
+				}),
+				25000,
+				'SMTP send',
+			);
+		} catch (err) {
+			const smtpErr = err as { code?: string; responseCode?: number; message?: string };
+			return new Response(
+				JSON.stringify(
+					isDev
+						? {
+								error: 'SMTP send failed.',
+								smtp: {
+									code: smtpErr?.code,
+									responseCode: smtpErr?.responseCode,
+									message: smtpErr?.message,
+								},
+						  }
+						: { error: 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.' },
+				),
+				{ status: 500 },
+			);
+		}
 
 		return new Response(
 			JSON.stringify({
@@ -895,6 +914,11 @@ export const POST: APIRoute = async ({ request }) => {
 		);
 	} catch (err) {
 		console.error('tech-review route error:', err);
-		return new Response(JSON.stringify({ error: 'Unexpected server error while processing your request.' }), { status: 500 });
+		const isDev = import.meta.env.DEV;
+		const message = err instanceof Error ? err.message : String(err);
+		return new Response(
+			JSON.stringify(isDev ? { error: 'Unexpected server error while processing your request.', details: message } : { error: 'Unexpected server error while processing your request.' }),
+			{ status: 500 },
+		);
 	}
 };
