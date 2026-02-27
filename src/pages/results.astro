@@ -159,7 +159,59 @@ import '../styles/page-results.scss';
 			return null;
 		}
 
-		const payload = readStoredPayload('scanResultPayload');
+		function fromBase64Url(value) {
+			try {
+				const normalized = String(value || '')
+					.replace(/-/g, '+')
+					.replace(/_/g, '/');
+				const padded = normalized + '='.repeat((4 - (normalized.length % 4 || 4)) % 4);
+				const binary = atob(padded);
+				const utf8 = Array.from(binary)
+					.map((char) => `%${char.charCodeAt(0).toString(16).padStart(2, '0')}`)
+					.join('');
+				return decodeURIComponent(utf8);
+			} catch {
+				return '';
+			}
+		}
+
+		function readPayloadFromQueryParam() {
+			try {
+				const params = new URLSearchParams(window.location.search);
+				const encoded = params.get('payload');
+				if (!encoded) return null;
+
+				const decoded = fromBase64Url(encoded);
+				if (!decoded) return null;
+
+				const parsed = JSON.parse(decoded);
+				if (!parsed || typeof parsed !== 'object') return null;
+
+				const normalizedPayload = parsed;
+				const serialized = JSON.stringify(normalizedPayload);
+				try {
+					sessionStorage.setItem('scanResultPayload', serialized);
+				} catch {
+					// no-op
+				}
+				try {
+					localStorage.setItem('scanResultPayload', serialized);
+				} catch {
+					// no-op
+				}
+
+				params.delete('payload');
+				const nextQuery = params.toString();
+				const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash}`;
+				window.history.replaceState({}, '', nextUrl);
+
+				return normalizedPayload;
+			} catch {
+				return null;
+			}
+		}
+
+		const payload = readStoredPayload('scanResultPayload') || readPayloadFromQueryParam();
 
 		if (!payload?.preview) {
 			root.innerHTML = `

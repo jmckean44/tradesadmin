@@ -486,8 +486,8 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<div id="form-container trig-fade-right enable-trig">
 						<h2>Website Report</h2>
 						<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
-						<p class="semibold txt-lrg">Get a free technical review of your website with recommended fixes by filling out and submitting the form below.</p>
-						<p class="margin-btm-med intro txt-lrg">If you do not have a website, feel free to send a message for a free consultation to help you get started.</p>
+						<p class="semibold txt-lrg">Get a <span class="theme-clr">free technical review</span> of your website with recommended fixes by filling out and submitting the form below.</p>
+						<p class="margin-btm-med">If you don't have a website, feel free to send a message for a free consultation to help you get started.</p>
 
 						<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
 							<div>
@@ -746,6 +746,15 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					.replaceAll("'", '&#39;');
 			}
 
+			function toBase64Url(value) {
+				try {
+					const utf8 = encodeURIComponent(value).replace(/%([0-9A-F]{2})/g, (_match, p1) => String.fromCharCode(parseInt(p1, 16)));
+					return btoa(utf8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+				} catch {
+					return '';
+				}
+			}
+
 			function scoreRow(label, value) {
 				const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
 				const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
@@ -871,6 +880,13 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 					if (persistedForResults) {
 						window.location.assign(resultPage);
+						return;
+					}
+
+					const encodedPayload = toBase64Url(JSON.stringify(payloadForStorage));
+					if (encodedPayload) {
+						const separator = resultPage.includes('?') ? '&' : '?';
+						window.location.assign(`${resultPage}${separator}payload=${encodeURIComponent(encodedPayload)}`);
 						return;
 					}
 

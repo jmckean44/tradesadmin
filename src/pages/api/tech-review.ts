@@ -962,10 +962,13 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		try {
+			const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
+			const fallbackRecipient = getEnv('SMTP_USER');
+
 			await withTimeout(
 				transporter.sendMail({
 					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-					to: getEnv('CONTACT_TO') || getEnv('SMTP_USER'),
+					to: primaryRecipient,
 					replyTo: email,
 					subject: `New submission: ${company}`,
 					html,
@@ -975,9 +978,37 @@ export const POST: APIRoute = async ({ request }) => {
 			);
 			emailSent = true;
 		} catch (err) {
-			const smtpErr = err as { message?: string };
-			emailError = smtpErr?.message || 'SMTP send failed.';
+			const primaryErr = err as { message?: string };
+			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
 			console.error('SMTP send failed:', err);
+
+			const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
+			const fallbackRecipient = getEnv('SMTP_USER');
+			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
+
+			if (canRetryWithFallback) {
+				try {
+					await withTimeout(
+						transporter.sendMail({
+							from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+							to: fallbackRecipient,
+							replyTo: email,
+							subject: `New submission: ${company}`,
+							html,
+						}),
+						25000,
+						'SMTP send retry',
+					);
+					emailSent = true;
+					emailError = '';
+				} catch (retryErr) {
+					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
+					console.error('SMTP send retry failed:', retryErr);
+				}
+			} else {
+				emailError = primaryMessage;
+			}
 		}
 
 		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';
