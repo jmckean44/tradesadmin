@@ -346,16 +346,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	const titleKey = findPropertyKeyByType(propertiesSchema, 'title');
 	if (!titleKey) throw new Error('Notion database has no title property.');
 
-	const urlHost = input.url
-		? (() => {
-				try {
-					return new URL(input.url).hostname;
-				} catch {
-					return input.url;
-				}
-		  })()
-		: 'No URL';
-	const titleValue = `${input.company} — ${urlHost}`;
+	const titleValue = input.company;
 	properties[titleKey] = { title: buildNotionTextValue(titleValue) };
 
 	const setTextLikeProperty = (type: 'rich_text' | 'email' | 'url' | 'phone_number', names: string[], value: string): void => {
@@ -374,7 +365,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		}
 
 		if (type === 'url') {
-			properties[key] = { url: stripUrlProtocol(value) };
+			properties[key] = { url: normalizeUrl(value) };
 			return;
 		}
 
@@ -393,7 +384,9 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		properties[emailKey] = { email: input.email };
 	}
 
-	setTextLikeProperty('rich_text', ['url', 'website', 'site', 'domain'], stripUrlProtocol(input.url));
+	const normalizedWebsiteUrl = normalizeUrl(input.url);
+	setTextLikeProperty('url', ['url', 'website', 'site', 'domain'], normalizedWebsiteUrl);
+	setTextLikeProperty('rich_text', ['url', 'website', 'site', 'domain'], stripUrlProtocol(normalizedWebsiteUrl));
 	setTextLikeProperty('phone_number', ['phone', 'telephone'], input.phone);
 	setTextLikeProperty('rich_text', ['message', 'details', 'comments', 'notes'], input.message);
 
@@ -797,7 +790,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const url = rawUrl ? normalizeUrl(rawUrl) : '';
 		const displayUrl = rawUrl || url || 'N/A';
-		const notionUrl = rawUrl || url;
+		const notionUrl = url;
 		if (url) {
 			try {
 				new URL(url);
