@@ -54,6 +54,7 @@ header > div {
 
 #header.unpinned,
 #header.pinned {
+	position: fixed;
 	top: 0;
 	height: 70px;
 	padding: 0;
