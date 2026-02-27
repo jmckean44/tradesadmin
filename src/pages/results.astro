@@ -263,14 +263,13 @@ import '../styles/page-results.scss';
 			].join('');
 
 			const fixesHtml = fixes.length ? `<ol>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>` : '<p>No recommended fixes returned.</p>';
-			const notionStatusHtml = notion
-				? `<p class="review-subtitle">Notion sync: ${notion.configured ? (notion.synced ? 'Connected' : 'Failed') : 'Not configured'}${notion?.error ? ` — ${escapeHtml(notion.error)}` : ''}</p>`
-				: '';
+
+			// Remove Notion sync status from .review-subtitle (no placeholder)
+			const notionStatusHtml = '';
 
 			root.innerHTML = `
-				<div class="review-preview-card">					
-					${reviewUnavailableMessage}
-					${notionStatusHtml}
+				<div class="review-preview-card">                   
+					${preview.available === false ? `<p class="review-subtitle">Live scan data is temporarily unavailable. Recommendations below are based on best practices, not a real-time scan.</p>` : ''}
 					<div class="review-score-grid">${scoreHtml}</div>
 					<div class="review-vitals">${vitalsHtml}</div>
 					<div class="review-fixes">

@@ -55,7 +55,10 @@ h1.center {
 }
 
 .review-subtitle {
-	display: none;
+	text-align: center;
+	font-family: var.$font-sans-serif-med;
+	font-size: 1.25rem;
+	margin: 0 auto 1rem;
 }
 
 .review-score-grid {
