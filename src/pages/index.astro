@@ -188,7 +188,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			</div>
 
 			<div class="services-grid trig-fade-up enable-trig">
-				<div class="services-card trig-target" style="--trig-delay: 0s;">
+				<div class="services-card trig-target" id="performance" style="--trig-delay: 0s;">
 					<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
 					<h2>Performance & Technical Fixes</h2>
 					<p>Slow site and mobile performance issue fixes.</p>
@@ -205,7 +205,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
-				<div class="services-card trig-target" style="--trig-delay: .2s;">
+				<div class="services-card trig-target" id="seo" style="--trig-delay: .2s;">
 					<div class="service-icon">
 						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
 					</div>
@@ -225,7 +225,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
-				<div class="services-card trig-target" style="--trig-delay: .4s;">
+				<div class="services-card trig-target" id="structure" style="--trig-delay: .4s;">
 					<div class="service-icon">
 						<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
 					</div>
@@ -245,7 +245,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
-				<div class="services-card trig-target" style="--trig-delay: .6s;">
+				<div class="services-card trig-target" id="maintenance" style="--trig-delay: .6s;">
 					<div class="service-icon">
 						<Image src={iconHosting} alt="Maintenance, Hosting & Support icon" />
 					</div>
@@ -296,7 +296,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<div class="pricing-card">
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-11 large-10">
-								<h3>Performance & Technical Fixes</h3>
+								<h3><a href="#performance" class="underline" role="link" aria-label="link to Performance">Performance & Technical Fixes</a></h3>
 							</div>
 							<div class="cell small-18 medium-7 large-8">
 								<div class="pricing-amount">
@@ -306,7 +306,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3>Technical SEO & Indexing</h3>
+								<h3><a href="#seo" class="underline" role="link" aria-label="link to SEO">Technical SEO & Indexing</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
@@ -316,7 +316,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3>Structural & Functional Corrections</h3>
+								<h3><a href="#structure" class="underline" role="link" aria-label="link to Structural & Functional Corrections">Structural & Functional Corrections</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
@@ -326,11 +326,11 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3>Maintenance, Hosting & Support</h3>
+								<h3><a href="#maintenance" class="underline" role="link" aria-label="link to Maintenance, Hosting & Support">Maintenance, Hosting & Support</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
-									<span class="price"><em>one-time/monthly</em><br /><sup>$</sup>200-<sup>$</sup>600</span>
+									<span class="price"><em>monthly/one-time</em><br /><sup>$</sup>200/<sup>$</sup>600</span>
 								</div>
 							</div>
 						</div>
@@ -340,7 +340,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
-									<span class="price"><em>from</em> <sup>$</sup>750 - <sup>$</sup>1,250</span>
+									<span class="price"><em>from</em> <sup>$</sup>850 - <sup>$</sup>1,500</span>
 								</div>
 							</div>
 						</div>
