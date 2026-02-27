@@ -283,6 +283,10 @@ function normalizeUrlForNotion(value: string): string {
 
 	try {
 		const parsed = new URL(normalized);
+		// Remove trailing slash from pathname unless root
+		if (parsed.pathname !== '/' && parsed.pathname.endsWith('/')) {
+			parsed.pathname = parsed.pathname.replace(/\/+$/, '');
+		}
 		if (parsed.pathname === '/') parsed.pathname = '';
 		return parsed.toString();
 	} catch {
