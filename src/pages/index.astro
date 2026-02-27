@@ -525,7 +525,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							</div>
 
 							<div class="margin-top-med margin-btm-sm">
-								<div id="turnstile-container" class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
+								<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
 							</div>
 
 							<p id="result" style="display:none;"></p>
@@ -533,7 +533,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<button type="submit" class="btn arrow">RUN FREE SCAN</button>
 						</form>
 
-						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 					</div>
 				</div>
 				<div class="cell small-18 medium-7 trig-fade-right enable-trig contact-desktop">
@@ -545,17 +545,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 	<script is:inline>
 		document.addEventListener('astro:page-load', () => {
-			const widgets = document.querySelectorAll('.cf-turnstile');
-			if (widgets.length > 1) {
-				widgets.forEach((el, i) => {
-					if (i > 0) el.remove();
-				});
-			}
-		});
-	</script>
-
-	<script is:inline>
-		document.addEventListener('astro:page-load', () => {
 			const form = document.getElementById('form');
 			const result = document.getElementById('result');
 			const reviewPreview = document.getElementById('review-preview');
@@ -564,8 +553,36 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			const turnstileContainer = document.getElementById('turnstile-container');
 
 			if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
+			if (form.dataset.scanFormBound === 'true') return;
+			form.dataset.scanFormBound = 'true';
 
 			let submitted = false;
+
+			function ensureTurnstileRendered() {
+				if (!turnstileContainer) return false;
+				const siteKey = turnstileContainer.getAttribute('data-sitekey')?.trim();
+				if (!siteKey || !window.turnstile || typeof window.turnstile.render !== 'function') return false;
+
+				const existingWidgetId = turnstileContainer.dataset.widgetId;
+				if (existingWidgetId) return true;
+
+				turnstileContainer.innerHTML = '';
+				const widgetId = window.turnstile.render(turnstileContainer, {
+					sitekey: siteKey,
+				});
+				turnstileContainer.dataset.widgetId = String(widgetId);
+				return true;
+			}
+
+			if (!ensureTurnstileRendered()) {
+				let attempts = 0;
+				const interval = setInterval(() => {
+					attempts += 1;
+					if (ensureTurnstileRendered() || attempts >= 20) {
+						clearInterval(interval);
+					}
+				}, 250);
+			}
 
 			function normalizeUrl(value) {
 				const raw = String(value || '').trim();
@@ -672,8 +689,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							const widgetToken = String(window.turnstile.getResponse(widgetId) || '').trim();
 							if (widgetToken) return widgetToken;
 						}
-
-						return String(window.turnstile.getResponse() || '').trim();
+						return '';
 					} catch {
 						return '';
 					}
@@ -861,7 +877,12 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					urlInput.setCustomValidity('');
 					submitted = false;
 
-					if (window.turnstile) window.turnstile.reset();
+					if (window.turnstile && typeof window.turnstile.reset === 'function') {
+						const widgetId = turnstileContainer?.dataset?.widgetId;
+						if (widgetId) {
+							window.turnstile.reset(widgetId);
+						}
+					}
 				} catch (err) {
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';

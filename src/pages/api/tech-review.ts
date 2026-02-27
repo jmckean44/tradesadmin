@@ -53,6 +53,11 @@ type CachedReview = {
 	expiresAt: number;
 };
 
+type ReviewRunResult = {
+	review: Review;
+	source: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key';
+};
+
 type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date';
 
 type NotionDatabaseProperty = {
@@ -136,6 +141,12 @@ function getCachedReview(inputUrl: string): Review | null {
 		return null;
 	}
 	return cached.review;
+}
+
+function getAnyCachedReview(inputUrl: string): Review | null {
+	const key = getReviewCacheKey(inputUrl);
+	const cached = reviewCache.get(key);
+	return cached?.review ?? null;
 }
 
 function setCachedReview(inputUrl: string, review: Review): void {
@@ -597,12 +608,16 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 	};
 }
 
-async function runReview(url: string): Promise<Review> {
-	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<Review> {
-		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<Review> {
+function wait(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function runReview(url: string): Promise<ReviewRunResult> {
+	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
+		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
 			const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
 
-			const executePageSpeedRequest = async (includeApiKey: boolean): Promise<Review> => {
+			const executePageSpeedRequest = async (includeApiKey: boolean): Promise<ReviewRunResult> => {
 				const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
 				endpoint.searchParams.set('url', targetUrl);
 				endpoint.searchParams.set('category', 'performance');
@@ -612,21 +627,46 @@ async function runReview(url: string): Promise<Review> {
 				endpoint.searchParams.set('strategy', strategy);
 				if (includeApiKey && pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
 
-				const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
-				if (!response.ok) {
-					const body = await response.text().catch(() => '');
-					throw new Error(`PageSpeed API failed (${response.status}) ${body}`.trim());
+				let lastError: Error | null = null;
+				for (let attempt = 1; attempt <= 3; attempt += 1) {
+					try {
+						const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
+						if (!response.ok) {
+							const body = await response.text().catch(() => '');
+							const message = `PageSpeed API failed (${response.status}) ${body}`.trim();
+							const transientFailure = /429|5\d\d|rate limit|quota|timed out|timeout|internal/i.test(message);
+							if (attempt < 3 && transientFailure) {
+								await wait(300 * attempt);
+								continue;
+							}
+							throw new Error(message);
+						}
+
+						const payload = (await response.json()) as {
+							lighthouseResult?: {
+								categories?: Record<string, { score?: number | null }>;
+								audits?: Record<string, { displayValue?: string }>;
+							};
+						};
+
+						if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
+						return {
+							review: reviewFromLhrLike(payload.lighthouseResult),
+							source: includeApiKey ? 'pagespeed-key' : 'pagespeed-no-key',
+						};
+					} catch (err) {
+						const message = err instanceof Error ? err.message : String(err);
+						const transientFailure = /429|5\d\d|rate limit|quota|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
+						lastError = err instanceof Error ? err : new Error(message);
+						if (attempt < 3 && transientFailure) {
+							await wait(300 * attempt);
+							continue;
+						}
+						throw lastError;
+					}
 				}
 
-				const payload = (await response.json()) as {
-					lighthouseResult?: {
-						categories?: Record<string, { score?: number | null }>;
-						audits?: Record<string, { displayValue?: string }>;
-					};
-				};
-
-				if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
-				return reviewFromLhrLike(payload.lighthouseResult);
+				throw lastError ?? new Error('PageSpeed API request failed');
 			};
 
 			if (!pageSpeedApiKey) {
@@ -637,19 +677,19 @@ async function runReview(url: string): Promise<Review> {
 				return await executePageSpeedRequest(true);
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
-				const keyRejected = /403|401|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked/i.test(message);
-				if (!keyRejected) throw err;
+				const shouldRetryWithoutKey = /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
+				if (!shouldRetryWithoutKey) throw err;
 				return executePageSpeedRequest(false);
 			}
 		}
 
-		const mobileReview = await requestPageSpeed('mobile');
-		if (hasAnyLiveScore(mobileReview)) return mobileReview;
+		const mobileResult = await requestPageSpeed('mobile');
+		if (hasAnyLiveScore(mobileResult.review)) return mobileResult;
 
-		const desktopReview = await requestPageSpeed('desktop');
-		if (hasAnyLiveScore(desktopReview)) return desktopReview;
+		const desktopResult = await requestPageSpeed('desktop');
+		if (hasAnyLiveScore(desktopResult.review)) return desktopResult;
 
-		return desktopReview;
+		return desktopResult;
 	}
 
 	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
@@ -669,7 +709,10 @@ async function runReview(url: string): Promise<Review> {
 
 		if (!runnerResult?.lhr) throw new Error('Lighthouse returned no report');
 
-		return reviewFromLhrLike(runnerResult.lhr);
+		return {
+			review: reviewFromLhrLike(runnerResult.lhr),
+			source: 'lighthouse',
+		};
 	} catch (err) {
 		const lighthouseMessage = err instanceof Error ? err.message : String(err);
 
@@ -782,6 +825,7 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		let review: Review | null = null;
+		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
 		let reviewError = '';
 		let liveScanError = '';
 		let fallbackFixes: string[] = [];
@@ -790,12 +834,16 @@ export const POST: APIRoute = async ({ request }) => {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
 		} else {
+			const staleCachedReview = getAnyCachedReview(url);
 			try {
 				const cachedReview = getCachedReview(url);
 				if (cachedReview) {
 					review = cachedReview;
+					scanSource = 'cache-fresh';
 				} else {
-					review = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+					const runResult = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+					review = runResult.review;
+					scanSource = runResult.source;
 					setCachedReview(url, review);
 				}
 			} catch (err) {
@@ -803,6 +851,11 @@ export const POST: APIRoute = async ({ request }) => {
 				const message = err instanceof Error ? err.message : String(err);
 				liveScanError = message;
 				reviewError = normalizeReviewErrorForUser(message);
+				if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
+					review = staleCachedReview;
+					scanSource = 'cache-stale';
+					reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
+				}
 				try {
 					const basicChecks = await runBasicSiteChecks(url);
 					fallbackFixes = basicChecks.recommendedFixes;
@@ -813,6 +866,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 			if (review && !hasAnyLiveScore(review)) {
 				forceUnavailablePreview = true;
+				scanSource = 'fallback';
 				reviewError = reviewError || 'Live scan data is currently unavailable.';
 				liveScanError = liveScanError || reviewError;
 
@@ -824,6 +878,10 @@ export const POST: APIRoute = async ({ request }) => {
 						console.error('Basic site checks failed:', basicErr);
 					}
 				}
+			}
+
+			if (!review) {
+				scanSource = 'fallback';
 			}
 		}
 
@@ -843,12 +901,23 @@ export const POST: APIRoute = async ({ request }) => {
             `
 			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
+		const scanSourceLabel: Record<typeof scanSource, string> = {
+			lighthouse: 'Lighthouse (server)',
+			'pagespeed-key': 'PageSpeed API (with key)',
+			'pagespeed-no-key': 'PageSpeed API (without key)',
+			'cache-fresh': 'Cached live result (fresh)',
+			'cache-stale': 'Cached live result (stale fallback)',
+			fallback: 'Fallback site checks only',
+		};
+
 		const html = `
             <h2>New Contact Submission</h2>
             <ul>
                 <li><strong>Company:</strong> ${escapeHtml(company)}</li>
                 <li><strong>Email:</strong> ${escapeHtml(email)}</li>
 				<li><strong>URL:</strong> ${escapeHtml(displayUrl)}</li>
+				<li><strong>Scan Source:</strong> ${escapeHtml(scanSourceLabel[scanSource])}</li>
+				${liveScanError ? `<li><strong>Scan Error:</strong> ${escapeHtml(liveScanError)}</li>` : ''}
                 ${phone ? `<li><strong>Phone:</strong> ${escapeHtml(phone)}</li>` : ''}
                 ${message ? `<li><strong>Message:</strong> ${escapeHtml(message)}</li>` : ''}
             </ul>
@@ -909,6 +978,7 @@ export const POST: APIRoute = async ({ request }) => {
 				preview,
 				scan: {
 					available: preview.available === true,
+					source: scanSource,
 					pageSpeedApiKeyConfigured,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
