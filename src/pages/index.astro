@@ -40,752 +40,744 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<div class="cell small-18 center">
 								<div class="slide-1">
 									<h1><strong>Technical Support</strong> for HVAC, Plumbing, Electrical & contractor websites</h1>
-									<div>
-										<label for="email_address" class="visually-hidden">Email</label>
-										<input type="email" name="email" id="email_address" placeholder="Email *" required autocomplete="email" spellcheck="false" />
-										<span class="helperText">Email *</span>
-									</div>
-									<div class="swiper-slide">
-										<div class="flex padding-x align-middle">
-											<div class="cell small-18 medium-8 medium-order-1 small-order-2 center">
-												<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
-											</div>
-											<div class="cell small-18 medium-10 medium-order-2 small-order-1">
-												<h1><strong>Performance Optimization</strong></h1>
-												<p>
-													<span class="semibold">Core Web Vitals</span> diagnostics, layout stabilization, and <span class="semibold">performance corrections</span>.
-												</p>
-											</div>
-										</div>
-									</div>
-
-									<div class="swiper-slide">
-										<div class="flex padding-x align-middle">
-											<div class="cell small-18 medium-10">
-												<h1><strong>Technical SEO & Indexing</strong></h1>
-												<p>Ensuring your <span class="semibold">business shows up correctly</span> when people search for your services <span class="semibold">"near me".</span></p>
-											</div>
-											<div class="cell small-18 medium-8 center technical">
-												<Image src={localseo} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
-											</div>
-										</div>
-									</div>
-
-									<div class="swiper-slide">
-										<div class="flex padding-x align-middle">
-											<div class="cell small-18 medium-8 medium-order-1 small-order-2 center structure">
-												<Image src={iconStructure} alt="Structure icon" class="structure" />
-											</div>
-											<div class="cell small-18 medium-10 medium-order-2 small-order-1">
-												<h1><strong>Structural & Functional Corrections</strong></h1>
-												<p>
-													Fixing <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other technical inconsistencies.
-												</p>
-											</div>
-										</div>
-									</div>
-
-									<div class="swiper-slide">
-										<div class="flex padding-x align-middle">
-											<div class="cell small-18 medium-10">
-												<h1>
-													<strong>Maintenance, Hosting & Support</strong>
-												</h1>
-												<p>Technical support for <span class="semibold">hosting, DNS, SSL certificates, security,</span> and more.</p>
-											</div>
-											<div class="cell small-18 medium-8 hosting">
-												<Image src={hosting} alt="Website Hosting, Maintenance & Support Illustration" />
-											</div>
-										</div>
-									</div>
 								</div>
-								<div class="swiper-pagination"></div>
 							</div>
 						</div>
 					</div>
 
-					<div class="cta top"><a class="btn" href="#contact">Get a Free Website Speed Test</a></div>
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center">
+								<lottie-player src="/seo.json" background="transparent" speed="0.5" loop count="" autoplay style="width: 100%; height: 100%;"></lottie-player>
+							</div>
+							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+								<h1><strong>Performance Optimization</strong></h1>
+								<p>
+									<span class="semibold">Core Web Vitals</span> diagnostics, layout stabilization, and <span class="semibold">performance corrections</span>.
+								</p>
+							</div>
+						</div>
+					</div>
 
-					<br />
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-10">
+								<h1><strong>Technical SEO & Indexing</strong></h1>
+								<p>Ensuring your <span class="semibold">business shows up correctly</span> when people search for your services <span class="semibold">"near me".</span></p>
+							</div>
+							<div class="cell small-18 medium-8 center technical">
+								<Image src={localseo} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
+							</div>
+						</div>
+					</div>
 
-					<section id="masonry-section">
-						<div class="container top">
-							<h2 class="margin-btm-med center">Common Technical Issues</h2>
-							<div class="masonry-grid trig-fade-up enable-trig">
-								<div class="masonry-item trig-target" style="--trig-delay: 1s;">
-									<p class="issue">Broken Links & Forms</p>
-									<h3>Broken forms and "404 Page Not Found" errors damage trust and search results, causing missed potential customer opportunities</h3>
-									<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
-								</div>
-								<div class="masonry-item trig-target" style="--trig-delay: .4s;">
-									<p class="issue">Security & Updates</p>
-									<h3>Expired SSL certificates, HTTP issues, and outdated plugins can trigger warnings</h3>
-									<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
-								</div>
-								<div class="masonry-item trig-target" style="--trig-delay: .0s;">
-									<p class="issue">Google & Indexing</p>
-									<h3>Outdated Google Business Profiles, missing Analytics, no Search Console setup - reduces visibility</h3>
-									<div><Image src={iconIssueGBP} alt="Google Business Profile icon" class="gbp" /></div>
-								</div>
-								<div class="masonry-item trig-target" style="--trig-delay: .2s;">
-									<p class="issue">Performance & Speed</p>
-									<h3>Poor performance scores and page load times can contribute to higher bounce rates</h3>
-									<div><Image src={iconIssueSpeed} alt="Performance & Speed icon" class="speed" /></div>
-								</div>
-								<div class="masonry-item trig-target" style="--trig-delay: .6s;">
-									<p class="issue">Structure & Navigation</p>
-									<h3>Navigation, layout, and naming inconsistencies can be confusing and affect SEO</h3>
-									<div><Image src={iconStructure} alt="Structure icon" class="structure" /></div>
-								</div>
-								<div class="masonry-item trig-target" style="--trig-delay: .8s;">
-									<p class="issue">Responsiveness & Mobile</p>
-									<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience</h3>
-									<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-8 medium-order-1 small-order-2 center structure">
+								<Image src={iconStructure} alt="Structure icon" class="structure" />
+							</div>
+							<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+								<h1><strong>Structural & Functional Corrections</strong></h1>
+								<p>
+									Fixing <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other technical inconsistencies.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="flex padding-x align-middle">
+							<div class="cell small-18 medium-10">
+								<h1>
+									<strong>Maintenance, Hosting & Support</strong>
+								</h1>
+								<p>Technical support for <span class="semibold">hosting, DNS, SSL certificates, security,</span> and more.</p>
+							</div>
+							<div class="cell small-18 medium-8 hosting">
+								<Image src={hosting} alt="Website Hosting, Maintenance & Support Illustration" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+	</section>
+
+	<div class="cta top"><a class="btn" href="#contact">Get a Free Website Speed Test</a></div>
+
+	<br />
+
+	<section id="masonry-section">
+		<div class="container top">
+			<h2 class="margin-btm-med center">Common Technical Issues</h2>
+			<div class="masonry-grid trig-fade-up enable-trig">
+				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
+					<p class="issue">Broken Links & Forms</p>
+					<h3>Broken forms and "404 Page Not Found" errors damage trust and search results, causing missed potential customer opportunities</h3>
+					<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
+					<p class="issue">Security & Updates</p>
+					<h3>Expired SSL certificates, HTTP issues, and outdated plugins can trigger warnings</h3>
+					<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .0s;">
+					<p class="issue">Google & Indexing</p>
+					<h3>Outdated Google Business Profiles, missing Analytics, no Search Console setup - reduces visibility</h3>
+					<div><Image src={iconIssueGBP} alt="Google Business Profile icon" class="gbp" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .2s;">
+					<p class="issue">Performance & Speed</p>
+					<h3>Poor performance scores and page load times can contribute to higher bounce rates</h3>
+					<div><Image src={iconIssueSpeed} alt="Performance & Speed icon" class="speed" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .6s;">
+					<p class="issue">Structure & Navigation</p>
+					<h3>Navigation, layout, and naming inconsistencies can be confusing and affect SEO</h3>
+					<div><Image src={iconStructure} alt="Structure icon" class="structure" /></div>
+				</div>
+				<div class="masonry-item trig-target" style="--trig-delay: .8s;">
+					<p class="issue">Responsiveness & Mobile</p>
+					<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience</h3>
+					<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="services-intro">
+		<div class="container top">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-11">
+					<div class="services-intro">
+						<p class="eyebrow">Support</p>
+						<h2>Who This Is For</h2>
+						<p class="txt-lrg">
+							<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing,</span> and other <span class="semibold">service contractors</span> across the
+							GTA.
+						</p>
+						<p class="txt-lrg">
+							If your business depends on <span class="semibold">phone calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quote requests</span>, your
+							website should load fast, work properly, and stay error-free.
+						</p>
+					</div>
+				</div>
+				<div class="cell small-18 medium-7 gbp-video">
+					<video playsinline muted loop autoplay aria-label="Google Business Profile optimization and local search results illustration" poster="/gbp.webp">
+						<source data-src="/gbp.mp4" type="video/mp4" />
+					</video>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="services">
+		<div class="container btm">
+			<div class="flex padding-x align-middle" id="what-we-fix">
+				<div class="cell small-18">
+					<p class="eyebrow">Services</p>
+					<h2>What Gets Fixed</h2>
+				</div>
+			</div>
+
+			<div class="services-grid trig-fade-up enable-trig">
+				<div class="services-card trig-target" style="--trig-delay: 0s;">
+					<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
+					<h2>Performance & Technical Fixes</h2>
+					<p>Slow site and mobile performance issue fixes.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Core web vitals diagnostic</li>
+						<li><span class="check">✓</span> Mobile/responsive corrections</li>
+						<li><span class="check">✓</span> Image compression & WebP conversion</li>
+						<li><span class="check">✓</span> Lazy loading configuration</li>
+						<li><span class="check">✓</span> Layout shift and stability fixes</li>
+						<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
+						<li><span class="check">✓</span> Render-blocking resource reviews</li>
+						<li><span class="check">✓</span> Plugin audits</li>
+					</ul>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .2s;">
+					<div class="service-icon">
+						<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
+					</div>
+					<h2>Technical SEO & Indexing</h2>
+					<p>Ensure Google can correctly understand and display your service pages.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span>Google Business Profile, Search Console, & Analytics setup</li>
+						<li><span class="check">✓</span>Indexing diagnostics</li>
+						<li><span class="check">✓</span>Sitemap creation/validation</li>
+						<li><span class="check">✓</span>URL structure review</li>
+						<li><span class="check">✓</span>Metadata review and refinement</li>
+						<li><span class="check">✓</span>Canonical tags checks</li>
+						<li><span class="check">✓</span>Internal linking corrections</li>
+						<li><span class="check">✓</span>Schema/structured data validation</li>
+						<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
+					</ul>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .4s;">
+					<div class="service-icon">
+						<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
+					</div>
+					<h2>Structural & Functional Corrections</h2>
+					<p>Fixing broken layouts, navigation, forms, and technical inconsistencies.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Proper page naming conventions</li>
+						<li><span class="check">✓</span> Simplifying navigation structure</li>
+						<li><span class="check">✓</span> Correcting mobile layout issues</li>
+						<li><span class="check">✓</span> Fixing spacing & alignment inconsistencies</li>
+						<li><span class="check">✓</span> Removing outdated styling conflicts</li>
+						<li><span class="check">✓</span> Fixing header/footer inconsistencies</li>
+						<li><span class="check">✓</span> Form errors and submission issues</li>
+						<li><span class="check">✓</span> Broken links (404/500)</li>
+						<li><span class="check">✓</span> Console error debugging</li>
+					</ul>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
+				</div>
+
+				<div class="services-card trig-target" style="--trig-delay: .6s;">
+					<div class="service-icon">
+						<Image src={iconHosting} alt="Maintenance, Hosting & Support icon" />
+					</div>
+					<h2>Maintenance, Hosting & Support</h2>
+					<p>Technical support for hosting, DNS, SSL certificates, backups, updates, and technical upkeep.</p>
+					<ul class="service-features">
+						<li><span class="check">✓</span> Web & Email hosting setup</li>
+						<li><span class="check">✓</span> DNS & Nameserver config</li>
+						<li><span class="check">✓</span> SSL certificate issues</li>
+						<li><span class="check">✓</span> Security monitoring</li>
+						<li><span class="check">✓</span> Domain Registration & Management</li>
+						<li><span class="check">✓</span> Website Backups & Restore Services</li>
+						<li><span class="check">✓</span> General technical support and fixes</li>
+					</ul>
+					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="cta"><a class="btn" href="#contact">Get a Free Technical Review</a></div>
+
+	<section id="pricing">
+		<div class="container">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-8 large-8 pricing-content">
+					<h2>Pricing Overview</h2>
+					<p class="txt-lrg fnt-med">Cost depends on the site size, technical complexity, and number of issues identified.</p>
+					<div class="pricing-card single-issue">
+						<div class="flex">
+							<div class="cell small-18">
+								<h3 class="txt-lrg">Single-Issue Fix</h3>
+							</div>
+						</div>
+						<div class="flex">
+							<div class="cell small-18 medium-18 large-14">
+								<p class="price-desc txt-drk">Good for small, isolated fixes such as SSL/HTTP errors, broken forms, layout problems, or any single specific technical issue.</p>
+							</div>
+							<div class="cell small-18 medium-18 large-4">
+								<div class="pricing-amount">
+									<span class="price"><em>flat</em> <sup>$</sup>150</span>
 								</div>
 							</div>
 						</div>
-					</section>
-
-					<section id="services-intro">
-						<div class="container top">
-							<div class="flex padding-x align-middle">
-								<div class="cell small-18 medium-11">
-									<div class="services-intro">
-										<p class="eyebrow">Support</p>
-										<h2>Who This Is For</h2>
-										<p class="txt-lrg">
-											<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing,</span> and other <span class="semibold">service contractors</span> across
-											the GTA.
-										</p>
-										<p class="txt-lrg">
-											If your business depends on <span class="semibold">phone calls</span>, <span class="semibold">Google Maps visibility</span>, or <span class="semibold">online quote requests</span
-											>, your website should load fast, work properly, and stay error-free.
-										</p>
-									</div>
-								</div>
-								<div class="cell small-18 medium-7 gbp-video">
-									<video playsinline muted loop autoplay aria-label="Google Business Profile optimization and local search results illustration" poster="/gbp.webp">
-										<source data-src="/gbp.mp4" type="video/mp4" />
-									</video>
+					</div>
+				</div>
+				<div class="cell small-18 medium-10 large-10 pricing-container">
+					<div class="pricing-card">
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-11 large-11">
+								<h3>Performance & Technical Fixes</h3>
+							</div>
+							<div class="cell small-18 medium-7 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>1,000</span>
 								</div>
 							</div>
 						</div>
-					</section>
-
-					<section id="services">
-						<div class="container btm">
-							<div class="flex padding-x align-middle" id="what-we-fix">
-								<div class="cell small-18">
-									<p class="eyebrow">Services</p>
-									<h2>What Gets Fixed</h2>
-								</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Technical SEO & Indexing</h3>
 							</div>
-
-							<div class="services-grid trig-fade-up enable-trig">
-								<div class="services-card trig-target" style="--trig-delay: 0s;">
-									<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
-									<h2>Performance & Technical Fixes</h2>
-									<p>Slow site and mobile performance issue fixes.</p>
-									<ul class="service-features">
-										<li><span class="check">✓</span> Core web vitals diagnostic</li>
-										<li><span class="check">✓</span> Mobile/responsive corrections</li>
-										<li><span class="check">✓</span> Image compression & WebP conversion</li>
-										<li><span class="check">✓</span> Lazy loading configuration</li>
-										<li><span class="check">✓</span> Layout shift and stability fixes</li>
-										<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
-										<li><span class="check">✓</span> Render-blocking resource reviews</li>
-										<li><span class="check">✓</span> Plugin audits</li>
-									</ul>
-									<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
-								</div>
-
-								<div class="services-card trig-target" style="--trig-delay: .2s;">
-									<div class="service-icon">
-										<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
-									</div>
-									<h2>Technical SEO & Indexing</h2>
-									<p>Ensure Google can correctly understand and display your service pages.</p>
-									<ul class="service-features">
-										<li><span class="check">✓</span>Google Business Profile, Search Console, & Analytics setup</li>
-										<li><span class="check">✓</span>Indexing diagnostics</li>
-										<li><span class="check">✓</span>Sitemap creation/validation</li>
-										<li><span class="check">✓</span>URL structure review</li>
-										<li><span class="check">✓</span>Metadata review and refinement</li>
-										<li><span class="check">✓</span>Canonical tags checks</li>
-										<li><span class="check">✓</span>Internal linking corrections</li>
-										<li><span class="check">✓</span>Schema/structured data validation</li>
-										<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
-									</ul>
-									<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
-								</div>
-
-								<div class="services-card trig-target" style="--trig-delay: .4s;">
-									<div class="service-icon">
-										<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
-									</div>
-									<h2>Structural & Functional Corrections</h2>
-									<p>Fixing broken layouts, navigation, forms, and technical inconsistencies.</p>
-									<ul class="service-features">
-										<li><span class="check">✓</span> Proper page naming conventions</li>
-										<li><span class="check">✓</span> Simplifying navigation structure</li>
-										<li><span class="check">✓</span> Correcting mobile layout issues</li>
-										<li><span class="check">✓</span> Fixing spacing & alignment inconsistencies</li>
-										<li><span class="check">✓</span> Removing outdated styling conflicts</li>
-										<li><span class="check">✓</span> Fixing header/footer inconsistencies</li>
-										<li><span class="check">✓</span> Form errors and submission issues</li>
-										<li><span class="check">✓</span> Broken links (404/500)</li>
-										<li><span class="check">✓</span> Console error debugging</li>
-									</ul>
-									<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
-								</div>
-
-								<div class="services-card trig-target" style="--trig-delay: .6s;">
-									<div class="service-icon">
-										<Image src={iconHosting} alt="Maintenance, Hosting & Support icon" />
-									</div>
-									<h2>Maintenance, Hosting & Support</h2>
-									<p>Technical support for hosting, DNS, SSL certificates, backups, updates, and technical upkeep.</p>
-									<ul class="service-features">
-										<li><span class="check">✓</span> Web & Email hosting setup</li>
-										<li><span class="check">✓</span> DNS & Nameserver config</li>
-										<li><span class="check">✓</span> SSL certificate issues</li>
-										<li><span class="check">✓</span> Security monitoring</li>
-										<li><span class="check">✓</span> Domain Registration & Management</li>
-										<li><span class="check">✓</span> Website Backups & Restore Services</li>
-										<li><span class="check">✓</span> General technical support and fixes</li>
-									</ul>
-									<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>900</span>
 								</div>
 							</div>
 						</div>
-					</section>
-
-					<div class="cta"><a class="btn" href="#contact">Get a Free Technical Review</a></div>
-
-					<section id="pricing">
-						<div class="container">
-							<div class="flex padding-x align-middle">
-								<div class="cell small-18 medium-8 large-8 pricing-content">
-									<h2>Pricing Overview</h2>
-									<p class="txt-lrg fnt-med">Cost depends on the site size, technical complexity, and number of issues identified.</p>
-									<div class="pricing-card single-issue">
-										<div class="flex">
-											<div class="cell small-18">
-												<h3 class="txt-lrg">Single-Issue Fix</h3>
-											</div>
-										</div>
-										<div class="flex">
-											<div class="cell small-18 medium-18 large-14">
-												<p class="price-desc txt-drk">Good for small, isolated fixes such as SSL/HTTP errors, broken forms, layout problems, or any single specific technical issue.</p>
-											</div>
-											<div class="cell small-18 medium-18 large-4">
-												<div class="pricing-amount">
-													<span class="price"><em>flat</em> <sup>$</sup>150</span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="cell small-18 medium-10 large-10 pricing-container">
-									<div class="pricing-card">
-										<div class="flex line-btm">
-											<div class="cell small-18 medium-11 large-11">
-												<h3>Performance & Technical Fixes</h3>
-											</div>
-											<div class="cell small-18 medium-7 large-7">
-												<div class="pricing-amount">
-													<span class="price"><em>from</em> <sup>$</sup>1,000</span>
-												</div>
-											</div>
-										</div>
-										<div class="flex line-btm">
-											<div class="cell small-18 medium-18 large-11">
-												<h3>Technical SEO & Indexing</h3>
-											</div>
-											<div class="cell small-18 medium-18 large-7">
-												<div class="pricing-amount">
-													<span class="price"><em>from</em> <sup>$</sup>900</span>
-												</div>
-											</div>
-										</div>
-										<div class="flex line-btm">
-											<div class="cell small-18 medium-18 large-11">
-												<h3>Structural & Functional Corrections</h3>
-											</div>
-											<div class="cell small-18 medium-18 large-7">
-												<div class="pricing-amount">
-													<span class="price"><em>from</em> <sup>$</sup>1,200</span>
-												</div>
-											</div>
-										</div>
-										<div class="flex line-btm">
-											<div class="cell small-18 medium-18 large-11">
-												<h3>Maintenance, Hosting & Support</h3>
-											</div>
-											<div class="cell small-18 medium-18 large-7">
-												<div class="pricing-amount">
-													<span class="price"><em>from</em> <sup>$</sup>150</span>
-												</div>
-											</div>
-										</div>
-										<div class="flex">
-											<div class="cell small-18 medium-18 large-11">
-												<h3>Landing Page Starter Site</h3>
-											</div>
-											<div class="cell small-18 medium-18 large-7">
-												<div class="pricing-amount">
-													<span class="price"><em>from</em> <sup>$</sup>499</span>
-												</div>
-											</div>
-										</div>
-									</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Structural & Functional Corrections</h3>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>1,200</span>
 								</div>
 							</div>
 						</div>
-					</section>
-
-					<section id="process">
-						<div class="container top btm">
-							<div class="flex padding-x">
-								<div class="cell small-18 enable-trig trig-fade-up">
-									<div class="center margin-btm-med trig-target" style="--trig-delay: 0s;">
-										<p class="eyebrow center">A Simple</p>
-										<h2 class="title">3-Step Process</h2>
-									</div>
-								</div>
+						<div class="flex line-btm">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Maintenance, Hosting & Support</h3>
 							</div>
-
-							<div class="process-timeline">
-								<div class="process-step trig-target" style="--trig-delay: 0s;">
-									<div class="step-number">1</div>
-									<div class="step-content">
-										<h3>Submit URL &<br />Describe the Issue</h3>
-										<p>Provide your website address and outline any concerns.</p>
-									</div>
-								</div>
-
-								<div class="process-step trig-target" style="--trig-delay: .2s;">
-									<div class="step-number">2</div>
-									<div class="step-content">
-										<h3>Technical<br />Findings & Scope</h3>
-										<p>You receive a clear, plain-English list of issues and a fixed-price estimate.</p>
-									</div>
-								</div>
-
-								<div class="process-step trig-target" style="--trig-delay: .4s;">
-									<div class="step-number">3</div>
-									<div class="step-content">
-										<h3>Approval &<br />Implementation</h3>
-										<p>Corrections are completed and deployed without disruption.</p>
-									</div>
-								</div>
-							</div>
-
-							<div class="cta top"><a class="btn" href="#contact">Ask a Question</a></div>
-						</div>
-					</section>
-
-					<section id="testimonials">
-						<div class="container top">
-							<div class="flex padding-x align-middle enable-trig trig-fade-up">
-								<div class="cell small-18 medium-9 trig-target" style="--trig-delay: 0s;">
-									<p class="eyebrow">Testimonials</p>
-									<h2>Client Comments</h2>
-								</div>
-								<div class="cell small-18 medium-9 testimonials">
-									<Image src={testimonials} alt="Client testimonials for TradesAdmin  website technical support services" />
-								</div>
-							</div>
-
-							<div class="swiper swiper-testimonials">
-								<div class="swiper-wrapper">
-									<div class="swiper-slide">
-										<Image src={wyse} alt="Wyse Construction Group website" />
-										<p>
-											<span class="quote top">&rdquo;</span>
-											<span class="semibold">TradesAdmin</span> rebuilt our WordPress site, improved the overall performance and resolved the technical challenges we were experiencing, which made a noticeable
-											difference in our online visibility.<span class="quote btm">&rdquo;</span>
-										</p>
-										<div class="author">
-											<strong>Mireet</strong><br />
-											<span class="semibold">Wyse Construction</span><br />
-											<em class="reg">Accounting Manager</em>
-											<br />
-											<span><a target="_blank" href="https://wyseconstruction.ca" class="underline" role="link" aria-label="offsite link to wyseconstruction.ca">wyseconstruction.ca</a></span>
-										</div>
-									</div>
-									<div class="swiper-slide">
-										<Image src={shiupong} alt="Shiupong corporate site" />
-										<p>
-											<span class="quote top">&rdquo;</span>
-											We had <span class="semibold">TradesAdmin</span> review our corporate site and are very pleased with how well the site is performing. They corrected several technical issues, explained
-											everything clearly, and are always accessible.<span class="quote btm">&rdquo;</span>
-										</p>
-										<div class="author">
-											<strong>Carmen</strong><br />
-											<span class="semibold">Shiupong Group</span><br />
-											<em class="reg">National Account Manager</em><br />
-											<span><a target="_blank" href="https://shiupong.com" class="underline" role="link" aria-label="offsite link to shiupong.com">shiupong.com</a></span>
-										</div>
-									</div>
-									<div class="swiper-slide">
-										<Image src={riverscape} alt="Riverscape residential community project" />
-										<p>
-											<span class="quote top">&rdquo;</span>
-											<span class="semibold">TradesAdmin</span> significantly accelerated our site’s loading times and resolved persistent mobile layout issues, all without requiring a complete redesign.
-											Their targeted optimizations enhanced both user experience and site performance across devices.<span class="quote btm">&rdquo;</span>
-										</p>
-										<div class="author">
-											<strong>Mark</strong><br />
-											<span class="semibold">Upperview Homes</span><br />
-											<em class="reg">President & Owner</em><br />
-											<span><a target="_blank" href="https://riverscape.ca/" class="underline" role="link" aria-label="offsite link to riverscape.ca">riverscape.ca</a></span>
-										</div>
-									</div>
-									<div class="swiper-slide">
-										<Image src={gia} alt="Gia Property Management" />
-										<p>
-											<span class="quote top">&rdquo;</span>
-											<span class="semibold">TradesAdmin</span> made the process of building our WordPress site easy, straightforward, and perfect for us to manage our own content. Our site functions great,
-											and is responsive. They corrected multiple technical issues, explained the root causes clearly, and restored our site stability.<span class="quote btm">&rdquo;</span>
-										</p>
-										<div class="author">
-											<strong>Mike</strong><br />
-											<span class="semibold">Gia Property Management</span><br />
-											<em class="reg">Co-Founder & Vice President</em>
-											<br />
-											<span><a target="_blank" href="https://giapm.ca/" class="underline" role="link" aria-label="offsite link to giapm.ca">giapm.ca</a></span>
-										</div>
-									</div>
-									<div class="swiper-slide">
-										<Image src={fortune} alt="Fortune District website" />
-										<p>
-											<span class="quote top">&rdquo;</span>
-											<span class="semibold">TradesAdmin</span> have continually been attentive with any technical questions or concerns that we had, responded quickly, and handled the job thoroughly. <span
-												class="quote btm">&rdquo;</span
-											>
-										</p>
-										<div class="author">
-											<strong>Kent</strong><br />
-											<span class="semibold">Fortune CCP - Pre-Delivery Inspections (PDI)</span><br />
-											<em class="reg">Founder & Owner</em>
-											<br />
-											<span><a target="_blank" href="https://fortuneccp.com" class="underline" role="link" aria-label="offsite link to fortuneccp.com">fortuneccp.com</a></span>
-										</div>
-									</div>
-								</div>
-								<div class="swiper-pagination"></div>
-							</div>
-						</div>
-					</section>
-
-					<section id="contact">
-						<div class="container top btm">
-							<div class="flex padding-x align-middle">
-								<div class="cell small-18 medium-11">
-									<div id="form-container trig-fade-right enable-trig">
-										<h2>Website Report</h2>
-										<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
-										<p class="semibold txt-lrg">Get a free technical review of your website with recommended fixes by filling out and submitting the form below.</p>
-										<p class="margin-btm-med intro txt-lrg">If you do not have a website, feel free to send a message for a free consultation to help you get started.</p>
-
-										<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
-											<div>
-												<label for="company" class="visually-hidden">Company Name</label>
-												<input type="text" name="company" id="company" placeholder="Company Name *" required />
-												<span class="helperText">Company Name</span>
-												<div class="empty-feedback invalid-feedback">Please provide your company name</div>
-											</div>
-
-											<div>
-												<label for="url" class="visually-hidden">URL</label>
-												<input type="text" name="url" id="url" placeholder="Website" inputmode="url" autocomplete="url" />
-												<span class="helperText">Use a full domain like example.com</span>
-												<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
-											</div>
-
-											<div>
-												<label for="email_address" class="visually-hidden">Email</label>
-												<input type="email" name="email" id="email_address" placeholder="Email *" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" />
-												<span class="helperText">Email</span>
-												<div class="empty-feedback">Please provide your email address</div>
-												<div class="invalid-feedback">Please provide a valid email address</div>
-											</div>
-
-											<div>
-												<label for="phone" class="visually-hidden">Phone</label>
-												<input type="tel" name="phone" id="phone" placeholder="Phone" />
-												<span class="helperText">Phone</span>
-											</div>
-
-											<div>
-												<label for="details" class="visually-hidden">Details</label>
-												<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
-												<span class="helperText">Details</span>
-											</div>
-
-											<div class="margin-top-med margin-btm-sm">
-												<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
-											</div>
-
-											<p id="result" style="display:none;"></p>
-											<div id="review-preview" class="review-preview" style="display:none;"></div>
-											<button type="submit" class="btn arrow">RUN FREE SCAN</button>
-										</form>
-
-										<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-									</div>
-								</div>
-								<div class="cell small-18 medium-7 trig-fade-right enable-trig contact-desktop">
-									<Image src={gbp} class="trig-target" alt="TradesAdmin Contact" />
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>150</span>
 								</div>
 							</div>
 						</div>
-					</section>
+						<div class="flex">
+							<div class="cell small-18 medium-18 large-11">
+								<h3>Landing Page Starter Site</h3>
+							</div>
+							<div class="cell small-18 medium-18 large-7">
+								<div class="pricing-amount">
+									<span class="price"><em>from</em> <sup>$</sup>499</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-					<script is:inline>
-						document.addEventListener('astro:page-load', () => {
-							const form = document.getElementById('form');
-							const result = document.getElementById('result');
-							const reviewPreview = document.getElementById('review-preview');
-							const urlInput = document.getElementById('url');
-							const emailInput = document.getElementById('email_address');
-							const turnstileContainer = document.getElementById('turnstile-container');
+	<section id="process">
+		<div class="container top btm">
+			<div class="flex padding-x">
+				<div class="cell small-18 enable-trig trig-fade-up">
+					<div class="center margin-btm-med trig-target" style="--trig-delay: 0s;">
+						<p class="eyebrow center">A Simple</p>
+						<h2 class="title">3-Step Process</h2>
+					</div>
+				</div>
+			</div>
 
-							if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
-							if (form.dataset.scanFormBound === 'true') return;
-							form.dataset.scanFormBound = 'true';
+			<div class="process-timeline">
+				<div class="process-step trig-target" style="--trig-delay: 0s;">
+					<div class="step-number">1</div>
+					<div class="step-content">
+						<h3>Submit URL &<br />Describe the Issue</h3>
+						<p>Provide your website address and outline any concerns.</p>
+					</div>
+				</div>
 
-							let submitted = false;
+				<div class="process-step trig-target" style="--trig-delay: .2s;">
+					<div class="step-number">2</div>
+					<div class="step-content">
+						<h3>Technical<br />Findings & Scope</h3>
+						<p>You receive a clear, plain-English list of issues and a fixed-price estimate.</p>
+					</div>
+				</div>
 
-							function ensureTurnstileRendered() {
-								if (!turnstileContainer) return false;
-								const siteKey = turnstileContainer.getAttribute('data-sitekey')?.trim();
-								if (!siteKey || !window.turnstile || typeof window.turnstile.render !== 'function') return false;
+				<div class="process-step trig-target" style="--trig-delay: .4s;">
+					<div class="step-number">3</div>
+					<div class="step-content">
+						<h3>Approval &<br />Implementation</h3>
+						<p>Corrections are completed and deployed without disruption.</p>
+					</div>
+				</div>
+			</div>
 
-								const existingWidgetId = turnstileContainer.dataset.widgetId;
-								if (existingWidgetId) return true;
+			<div class="cta top"><a class="btn" href="#contact">Ask a Question</a></div>
+		</div>
+	</section>
 
-								turnstileContainer.innerHTML = '';
-								const widgetId = window.turnstile.render(turnstileContainer, {
-									sitekey: siteKey,
-								});
-								turnstileContainer.dataset.widgetId = String(widgetId);
-								return true;
-							}
+	<section id="testimonials">
+		<div class="container top">
+			<div class="flex padding-x align-middle enable-trig trig-fade-up">
+				<div class="cell small-18 medium-9 trig-target" style="--trig-delay: 0s;">
+					<p class="eyebrow">Testimonials</p>
+					<h2>Client Comments</h2>
+				</div>
+				<div class="cell small-18 medium-9 testimonials">
+					<Image src={testimonials} alt="Client testimonials for TradesAdmin  website technical support services" />
+				</div>
+			</div>
 
-							if (!ensureTurnstileRendered()) {
-								let attempts = 0;
-								const interval = setInterval(() => {
-									attempts += 1;
-									if (ensureTurnstileRendered() || attempts >= 20) {
-										clearInterval(interval);
-									}
-								}, 250);
-							}
+			<div class="swiper swiper-testimonials">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide">
+						<Image src={wyse} alt="Wyse Construction Group website" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> rebuilt our WordPress site, improved the overall performance and resolved the technical challenges we were experiencing, which made a noticeable difference
+							in our online visibility.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mireet</strong><br />
+							<span class="semibold">Wyse Construction</span><br />
+							<em class="reg">Accounting Manager</em>
+							<br />
+							<span><a target="_blank" href="https://wyseconstruction.ca" class="underline" role="link" aria-label="offsite link to wyseconstruction.ca">wyseconstruction.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={shiupong} alt="Shiupong corporate site" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							We had <span class="semibold">TradesAdmin</span> review our corporate site and are very pleased with how well the site is performing. They corrected several technical issues, explained everything
+							clearly, and are always accessible.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Carmen</strong><br />
+							<span class="semibold">Shiupong Group</span><br />
+							<em class="reg">National Account Manager</em><br />
+							<span><a target="_blank" href="https://shiupong.com" class="underline" role="link" aria-label="offsite link to shiupong.com">shiupong.com</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={riverscape} alt="Riverscape residential community project" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> significantly accelerated our site’s loading times and resolved persistent mobile layout issues, all without requiring a complete redesign. Their
+							targeted optimizations enhanced both user experience and site performance across devices.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mark</strong><br />
+							<span class="semibold">Upperview Homes</span><br />
+							<em class="reg">President & Owner</em><br />
+							<span><a target="_blank" href="https://riverscape.ca/" class="underline" role="link" aria-label="offsite link to riverscape.ca">riverscape.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={gia} alt="Gia Property Management" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> made the process of building our WordPress site easy, straightforward, and perfect for us to manage our own content. Our site functions great, and
+							is responsive. They corrected multiple technical issues, explained the root causes clearly, and restored our site stability.<span class="quote btm">&rdquo;</span>
+						</p>
+						<div class="author">
+							<strong>Mike</strong><br />
+							<span class="semibold">Gia Property Management</span><br />
+							<em class="reg">Co-Founder & Vice President</em>
+							<br />
+							<span><a target="_blank" href="https://giapm.ca/" class="underline" role="link" aria-label="offsite link to giapm.ca">giapm.ca</a></span>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<Image src={fortune} alt="Fortune District website" />
+						<p>
+							<span class="quote top">&rdquo;</span>
+							<span class="semibold">TradesAdmin</span> have continually been attentive with any technical questions or concerns that we had, responded quickly, and handled the job thoroughly. <span
+								class="quote btm">&rdquo;</span
+							>
+						</p>
+						<div class="author">
+							<strong>Kent</strong><br />
+							<span class="semibold">Fortune CCP - Pre-Delivery Inspections (PDI)</span><br />
+							<em class="reg">Founder & Owner</em>
+							<br />
+							<span><a target="_blank" href="https://fortuneccp.com" class="underline" role="link" aria-label="offsite link to fortuneccp.com">fortuneccp.com</a></span>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+	</section>
 
-							function normalizeUrl(value) {
-								const raw = String(value || '').trim();
-								if (!raw) return '';
+	<section id="contact">
+		<div class="container top btm">
+			<div class="flex padding-x align-middle">
+				<div class="cell small-18 medium-11">
+					<div id="form-container trig-fade-right enable-trig">
+						<h2>Website Report</h2>
+						<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
+						<p class="semibold txt-lrg">Get a free technical review of your website with recommended fixes by filling out and submitting the form below.</p>
+						<p class="margin-btm-med intro txt-lrg">If you do not have a website, feel free to send a message for a free consultation to help you get started.</p>
 
-								let cleaned = raw.replace(/\s+/g, '');
-								cleaned = cleaned.replace(/^https?:\/(?!\/)/i, (match) => `${match.slice(0, -1)}//`);
-								cleaned = cleaned.replace(/^(https?:\/\/)+/i, (match) => (/^http:\/\//i.test(match) ? 'http://' : 'https://'));
-								if (!/^https?:\/\//i.test(cleaned)) cleaned = `https://${cleaned}`;
+						<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
+							<div>
+								<label for="company" class="visually-hidden">Company Name</label>
+								<input type="text" name="company" id="company" placeholder="Company Name *" required />
+								<span class="helperText">Company Name</span>
+								<div class="empty-feedback invalid-feedback">Please provide your company name</div>
+							</div>
 
-								try {
-									const parsed = new URL(cleaned);
-									const normalizedHostname = parsed.hostname
-										.toLowerCase()
-										.replace(/,+/g, '.')
-										.replace(/\.+/g, '.')
-										.replace(/^\.+|\.+$/g, '');
-									if (normalizedHostname) parsed.hostname = normalizedHostname;
-									return parsed.toString();
-								} catch {
-									return cleaned;
-								}
-							}
+							<div>
+								<label for="url" class="visually-hidden">URL</label>
+								<input type="text" name="url" id="url" placeholder="Website" inputmode="url" autocomplete="url" />
+								<span class="helperText">Use a full domain like example.com</span>
+								<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
+							</div>
 
-							function getUrlValidationMessage(value) {
-								const normalized = normalizeUrl(value);
-								if (!normalized) return 'Please provide a valid URL';
+							<div>
+								<label for="email_address" class="visually-hidden">Email</label>
+								<input type="email" name="email" id="email_address" placeholder="Email *" required autocomplete="email" spellcheck="false" />
+								<span class="helperText">Email</span>
+								<div class="empty-feedback">Please provide your email address</div>
+								<div class="invalid-feedback">Please provide a valid email address</div>
+							</div>
 
-								try {
-									const u = new URL(normalized);
-									const host = String(u.hostname || '').trim();
-									if (!host || !host.includes('.')) return 'Please enter a full domain like example.com';
+							<div>
+								<label for="phone" class="visually-hidden">Phone</label>
+								<input type="tel" name="phone" id="phone" placeholder="Phone" />
+								<span class="helperText">Phone</span>
+							</div>
 
-									const tld = host.split('.').pop() || '';
-									if (tld.length < 2) return 'Please enter a full domain like example.com';
+							<div>
+								<label for="details" class="visually-hidden">Details</label>
+								<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
+								<span class="helperText">Details</span>
+							</div>
 
-									return '';
-								} catch {
-									return 'Please provide a valid URL';
-								}
-							}
+							<div class="margin-top-med margin-btm-sm">
+								<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
+							</div>
 
-							function normalizeUrlForInputDisplay(value) {
-								const normalized = normalizeUrl(value);
-								if (!normalized) return '';
+							<p id="result" style="display:none;"></p>
+							<div id="review-preview" class="review-preview" style="display:none;"></div>
+							<button type="submit" class="btn arrow">RUN FREE SCAN</button>
+						</form>
 
-								try {
-									const parsed = new URL(normalized);
-									const path = parsed.pathname === '/' ? '' : parsed.pathname;
-									return `${parsed.protocol}//${parsed.host}${path}${parsed.search}${parsed.hash}`;
-								} catch {
-									return normalized;
-								}
-							}
+						<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+					</div>
+				</div>
+				<div class="cell small-18 medium-7 trig-fade-right enable-trig contact-desktop">
+					<Image src={gbp} class="trig-target" alt="TradesAdmin Contact" />
+				</div>
+			</div>
+		</div>
+	</section>
 
-							function applyUrlAutocorrect() {
-								const raw = String(urlInput.value || '').trim();
-								if (!raw) return;
+	<script is:inline>
+		document.addEventListener('astro:page-load', () => {
+			const form = document.getElementById('form');
+			const result = document.getElementById('result');
+			const reviewPreview = document.getElementById('review-preview');
+			const urlInput = document.getElementById('url');
+			const emailInput = document.getElementById('email_address');
+			const turnstileContainer = document.getElementById('turnstile-container');
 
-								const corrected = normalizeUrlForInputDisplay(raw);
-								if (corrected && corrected !== raw) {
-									urlInput.value = corrected;
-								}
-							}
+			if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
+			if (form.dataset.scanFormBound === 'true') return;
+			form.dataset.scanFormBound = 'true';
 
-							function updateUrlValidity() {
-								const raw = urlInput.value.trim();
-								if (!raw) {
-									urlInput.setCustomValidity('');
-									return;
-								}
-								urlInput.setCustomValidity(getUrlValidationMessage(raw));
-							}
+			let submitted = false;
 
-							function isValidEmail(value) {
-								const email = String(value || '')
-									.trim()
-									.replace(/\s+/g, '');
-								if (!email) return false;
-								return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-							}
+			function ensureTurnstileRendered() {
+				if (!turnstileContainer) return false;
+				const siteKey = turnstileContainer.getAttribute('data-sitekey')?.trim();
+				if (!siteKey || !window.turnstile || typeof window.turnstile.render !== 'function') return false;
 
-							function normalizeEmailForInputDisplay(value) {
-								return String(value || '')
-									.trim()
-									.replace(/\s+/g, '');
-							}
+				const existingWidgetId = turnstileContainer.dataset.widgetId;
+				if (existingWidgetId) return true;
 
-							function applyEmailAutocorrect() {
-								const raw = String(emailInput.value || '');
-								const corrected = normalizeEmailForInputDisplay(raw);
-								if (corrected !== raw) {
-									emailInput.value = corrected;
-								}
-							}
+				turnstileContainer.innerHTML = '';
+				const widgetId = window.turnstile.render(turnstileContainer, {
+					sitekey: siteKey,
+				});
+				turnstileContainer.dataset.widgetId = String(widgetId);
+				return true;
+			}
 
-							function updateEmailValidity() {
-								const raw = emailInput.value.trim();
-								if (!raw) {
-									emailInput.setCustomValidity('');
-									return;
-								}
-								emailInput.setCustomValidity(isValidEmail(raw) ? '' : 'Please provide a valid email address');
-							}
+			if (!ensureTurnstileRendered()) {
+				let attempts = 0;
+				const interval = setInterval(() => {
+					attempts += 1;
+					if (ensureTurnstileRendered() || attempts >= 20) {
+						clearInterval(interval);
+					}
+				}, 250);
+			}
 
-							function getTurnstileToken() {
-								const fieldToken =
-									form.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
-									form.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() ||
-									document.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
-									document.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() ||
-									'';
+			function normalizeUrl(value) {
+				const raw = String(value || '').trim();
+				if (!raw) return '';
 
-								if (fieldToken) return fieldToken;
+				let cleaned = raw.replace(/\s+/g, '');
+				cleaned = cleaned.replace(/^https?:\/(?!\/)/i, (match) => `${match.slice(0, -1)}//`);
+				cleaned = cleaned.replace(/^(https?:\/\/)+/i, (match) => (/^http:\/\//i.test(match) ? 'http://' : 'https://'));
+				if (!/^https?:\/\//i.test(cleaned)) cleaned = `https://${cleaned}`;
 
-								if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
-									try {
-										const widgetId = turnstileContainer?.dataset?.widgetId;
-										if (widgetId) {
-											const widgetToken = String(window.turnstile.getResponse(widgetId) || '').trim();
-											if (widgetToken) return widgetToken;
-										}
-										return '';
-									} catch {
-										return '';
-									}
-								}
+				try {
+					const parsed = new URL(cleaned);
+					const normalizedHostname = parsed.hostname
+						.toLowerCase()
+						.replace(/,+/g, '.')
+						.replace(/\.+/g, '.')
+						.replace(/^\.+|\.+$/g, '');
+					if (normalizedHostname) parsed.hostname = normalizedHostname;
+					return parsed.toString();
+				} catch {
+					return cleaned;
+				}
+			}
 
-								return '';
-							}
+			function getUrlValidationMessage(value) {
+				const normalized = normalizeUrl(value);
+				if (!normalized) return 'Please provide a valid URL';
 
-							function isFormField(el) {
-								return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
-							}
+				try {
+					const u = new URL(normalized);
+					const host = String(u.hostname || '').trim();
+					if (!host || !host.includes('.')) return 'Please enter a full domain like example.com';
 
-							function updateFieldState(field, force = false) {
-								if (!isFormField(field)) return;
+					const tld = host.split('.').pop() || '';
+					if (tld.length < 2) return 'Please enter a full domain like example.com';
 
-								if (field.id === 'url') updateUrlValidity();
-								if (field.id === 'email_address') updateEmailValidity();
+					return '';
+				} catch {
+					return 'Please provide a valid URL';
+				}
+			}
 
-								const touched = field.dataset.touched === 'true';
-								if (!force && !touched) {
-									field.classList.remove('is-valid', 'is-invalid');
-									return;
-								}
+			function normalizeUrlForInputDisplay(value) {
+				const normalized = normalizeUrl(value);
+				if (!normalized) return '';
 
-								field.classList.toggle('is-invalid', !field.checkValidity());
-								field.classList.toggle('is-valid', field.checkValidity());
-							}
+				try {
+					const parsed = new URL(normalized);
+					const path = parsed.pathname === '/' ? '' : parsed.pathname;
+					return `${parsed.protocol}//${parsed.host}${path}${parsed.search}${parsed.hash}`;
+				} catch {
+					return normalized;
+				}
+			}
 
-							function validateAllFields() {
-								form.classList.add('was-validated');
-								updateUrlValidity();
-								updateEmailValidity();
+			function applyUrlAutocorrect() {
+				const raw = String(urlInput.value || '').trim();
+				if (!raw) return;
 
-								const fields = form.querySelectorAll('input, textarea, select');
-								fields.forEach((f) => updateFieldState(f, true));
+				const corrected = normalizeUrlForInputDisplay(raw);
+				if (corrected && corrected !== raw) {
+					urlInput.value = corrected;
+				}
+			}
 
-								return form.checkValidity();
-							}
+			function updateUrlValidity() {
+				const raw = urlInput.value.trim();
+				if (!raw) {
+					urlInput.setCustomValidity('');
+					return;
+				}
+				urlInput.setCustomValidity(getUrlValidationMessage(raw));
+			}
 
-							function escapeHtml(value) {
-								return String(value ?? '')
-									.replaceAll('&', '&amp;')
-									.replaceAll('<', '&lt;')
-									.replaceAll('>', '&gt;')
-									.replaceAll('"', '&quot;')
-									.replaceAll("'", '&#39;');
-							}
+			function isValidEmail(value) {
+				const email = String(value || '')
+					.trim()
+					.replace(/\s+/g, '');
+				if (!email) return false;
+				return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+			}
 
-							function scoreRow(label, value) {
-								const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
-								const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
-								return `
+			function applyEmailAutocorrect() {
+				const raw = String(emailInput.value || '');
+				const corrected = raw.trim().replace(/\s+/g, '');
+				if (corrected !== raw) emailInput.value = corrected;
+			}
+
+			function updateEmailValidity() {
+				const raw = emailInput.value.trim();
+				if (!raw) {
+					emailInput.setCustomValidity('');
+					return;
+				}
+				emailInput.setCustomValidity(isValidEmail(raw) ? '' : 'Please provide a valid email address');
+			}
+
+			function getTurnstileToken() {
+				const fieldToken =
+					form.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
+					form.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() ||
+					document.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
+					document.querySelector('textarea[name="cf-turnstile-response"]')?.value?.trim() ||
+					'';
+
+				if (fieldToken) return fieldToken;
+
+				if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+					try {
+						const widgetId = turnstileContainer?.dataset?.widgetId;
+						if (widgetId) {
+							const widgetToken = String(window.turnstile.getResponse(widgetId) || '').trim();
+							if (widgetToken) return widgetToken;
+						}
+						return '';
+					} catch {
+						return '';
+					}
+				}
+
+				return '';
+			}
+
+			function isFormField(el) {
+				return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
+			}
+
+			function updateFieldState(field, force = false) {
+				if (!isFormField(field)) return;
+
+				if (field.id === 'url') updateUrlValidity();
+				if (field.id === 'email_address') updateEmailValidity();
+
+				const touched = field.dataset.touched === 'true';
+				if (!force && !touched) {
+					field.classList.remove('is-valid', 'is-invalid');
+					return;
+				}
+
+				field.classList.toggle('is-invalid', !field.checkValidity());
+				field.classList.toggle('is-valid', field.checkValidity());
+			}
+
+			function validateAllFields() {
+				form.classList.add('was-validated');
+				updateUrlValidity();
+				updateEmailValidity();
+
+				const fields = form.querySelectorAll('input, textarea, select');
+				fields.forEach((f) => updateFieldState(f, true));
+
+				return form.checkValidity();
+			}
+
+			function escapeHtml(value) {
+				return String(value ?? '')
+					.replaceAll('&', '&amp;')
+					.replaceAll('<', '&lt;')
+					.replaceAll('>', '&gt;')
+					.replaceAll('"', '&quot;')
+					.replaceAll("'", '&#39;');
+			}
+
+			function scoreRow(label, value) {
+				const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+				const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
+				return `
 					<div class="review-score-row">
 						<div class="review-score-head"><strong>${label}</strong><span>${shown}</span></div>
 						<progress max="100" value="${safeValue}" aria-label="${label} score"></progress>
 					</div>
 				`;
-							}
+			}
 
-							function renderReviewPreview(preview) {
-								if (!preview || typeof preview !== 'object') {
-									reviewPreview.style.display = 'none';
-									reviewPreview.innerHTML = '';
-									return;
-								}
+			function renderReviewPreview(preview) {
+				if (!preview || typeof preview !== 'object') {
+					reviewPreview.style.display = 'none';
+					reviewPreview.innerHTML = '';
+					return;
+				}
 
-								const scores = preview.scores || {};
-								const vitals = preview.vitals || {};
-								const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
+				const scores = preview.scores || {};
+				const vitals = preview.vitals || {};
+				const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
 
-								const scoreHtml = [
-									scoreRow('Performance', Number(scores.performance)),
-									scoreRow('SEO', Number(scores.seo)),
-									scoreRow('Accessibility', Number(scores.accessibility)),
-									scoreRow('Best Practices', Number(scores.bestPractices)),
-								].join('');
+				const scoreHtml = [
+					scoreRow('Performance', Number(scores.performance)),
+					scoreRow('SEO', Number(scores.seo)),
+					scoreRow('Accessibility', Number(scores.accessibility)),
+					scoreRow('Best Practices', Number(scores.bestPractices)),
+				].join('');
 
-								const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
+				const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
 
-								reviewPreview.innerHTML = `
+				reviewPreview.innerHTML = `
 					<div class="review-preview-card">
 						<h3>Quick Technical Snapshot</h3>
 						<p class="review-subtitle">Initial automated scan of your submitted site.</p>
@@ -803,159 +795,157 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					</div>
 				`;
 
-								reviewPreview.style.display = 'block';
-							}
+				reviewPreview.style.display = 'block';
+			}
 
-							async function submitForm(turnstileToken) {
-								const formData = new FormData(form);
-								const endpoint = form.dataset.apiPath || '/api/tech-review/';
-								const resultPage = form.dataset.resultsPath || '/results/';
+			async function submitForm(turnstileToken) {
+				const formData = new FormData(form);
+				const endpoint = form.dataset.apiPath || '/api/tech-review/';
+				const resultPage = form.dataset.resultsPath || '/results/';
 
-								const payload = {
-									company: String(formData.get('company') || '').trim(),
-									email: String(formData.get('email') || '').trim(),
-									url: normalizeUrl(String(formData.get('url') || '').trim()),
-									phone: String(formData.get('phone') || '').trim(),
-									message: String(formData.get('details') || formData.get('message') || '').trim(),
-									turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
-								};
+				const payload = {
+					company: String(formData.get('company') || '').trim(),
+					email: String(formData.get('email') || '')
+						.trim()
+						.replace(/\s+/g, ''),
+					url: normalizeUrl(String(formData.get('url') || '').trim()),
+					phone: String(formData.get('phone') || '').trim(),
+					message: String(formData.get('details') || formData.get('message') || '').trim(),
+					turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
+				};
 
-								result.style.display = 'block';
-								result.textContent = 'Scanning...';
-								reviewPreview.style.display = 'none';
-								reviewPreview.innerHTML = '';
+				result.style.display = 'block';
+				result.textContent = 'Scanning...';
+				reviewPreview.style.display = 'none';
+				reviewPreview.innerHTML = '';
 
-								try {
-									const response = await fetch(endpoint, {
-										method: 'POST',
-										headers: { 'Content-Type': 'application/json' },
-										body: JSON.stringify(payload),
-									});
+				try {
+					const response = await fetch(endpoint, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(payload),
+					});
 
-									const text = await response.text();
-									console.log('API status/body:', response.status, text);
-									let data = {};
-									if (text) {
-										try {
-											data = JSON.parse(text);
-										} catch {
-											data = {};
-										}
-									}
+					const text = await response.text();
+					console.log('API status/body:', response.status, text);
+					let data = {};
+					if (text) {
+						try {
+							data = JSON.parse(text);
+						} catch {
+							data = {};
+						}
+					}
 
-									if (!response.ok) {
-										const serverMessageRaw = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
-										const isAssetError = /ENOENT|standalone-flow-template\.html|flow-report\/assets/i.test(String(serverMessageRaw));
-										const serverMessage = isAssetError ? 'Live scan data is currently unavailable. Showing fallback guidance.' : serverMessageRaw;
-										throw new Error(serverMessage);
-									}
+					if (!response.ok) {
+						const serverMessageRaw = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
+						const isAssetError = /ENOENT|standalone-flow-template\.html|flow-report\/assets/i.test(String(serverMessageRaw));
+						const serverMessage = isAssetError ? 'Live scan data is currently unavailable. Showing fallback guidance.' : serverMessageRaw;
+						throw new Error(serverMessage);
+					}
 
-									result.textContent = data?.message || 'Thanks. Your request was submitted.';
+					result.textContent = data?.message || 'Thanks. Your request was submitted.';
 
-									const payloadForStorage = {
-										preview: data?.preview || null,
-										scan: data?.scan || null,
-										email: data?.email || null,
-										notion: data?.notion || null,
-										timestamp: Date.now(),
-									};
+					const payloadForStorage = {
+						preview: data?.preview || null,
+						scan: data?.scan || null,
+						email: data?.email || null,
+						notion: data?.notion || null,
+						timestamp: Date.now(),
+					};
 
-									let persistedForResults = false;
-									try {
-										sessionStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
-										persistedForResults = true;
-									} catch {
-										persistedForResults = false;
-									}
+					let persistedForResults = false;
+					try {
+						sessionStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
+						persistedForResults = true;
+					} catch {
+						persistedForResults = false;
+					}
 
-									try {
-										localStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
-										persistedForResults = true;
-									} catch {
-										// no-op: some browsers block localStorage in privacy modes
-									}
+					try {
+						localStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
+						persistedForResults = true;
+					} catch {
+						// no-op: some browsers block localStorage in privacy modes
+					}
 
-									if (persistedForResults) {
-										window.location.assign(resultPage);
-										return;
-									}
+					if (persistedForResults) {
+						window.location.assign(resultPage);
+						return;
+					}
 
-									renderReviewPreview(data?.preview);
+					renderReviewPreview(data?.preview);
 
-									form.reset();
-									form.classList.remove('was-validated');
-									form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
-										el.classList.remove('is-valid', 'is-invalid');
-									});
-									form.querySelectorAll('[data-touched]').forEach((el) => {
-										el.removeAttribute('data-touched');
-									});
-									urlInput.setCustomValidity('');
-									submitted = false;
+					form.reset();
+					form.classList.remove('was-validated');
+					form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
+						el.classList.remove('is-valid', 'is-invalid');
+					});
+					form.querySelectorAll('[data-touched]').forEach((el) => {
+						el.removeAttribute('data-touched');
+					});
+					urlInput.setCustomValidity('');
+					submitted = false;
 
-									if (window.turnstile && typeof window.turnstile.reset === 'function') {
-										const widgetId = turnstileContainer?.dataset?.widgetId;
-										if (widgetId) {
-											window.turnstile.reset(widgetId);
-										}
-									}
-								} catch (err) {
-									reviewPreview.style.display = 'none';
-									reviewPreview.innerHTML = '';
-									result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
-								}
-							}
+					if (window.turnstile && typeof window.turnstile.reset === 'function') {
+						const widgetId = turnstileContainer?.dataset?.widgetId;
+						if (widgetId) {
+							window.turnstile.reset(widgetId);
+						}
+					}
+				} catch (err) {
+					reviewPreview.style.display = 'none';
+					reviewPreview.innerHTML = '';
+					result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+				}
+			}
 
-							form.addEventListener(
-								'blur',
-								(e) => {
-									const field = e.target;
-									if (!isFormField(field)) return;
-									if (field.id === 'url') applyUrlAutocorrect();
-									if (field.id === 'email_address') applyEmailAutocorrect();
-									field.dataset.touched = 'true';
-									updateFieldState(field, submitted);
-								},
-								true,
-							);
+			form.addEventListener(
+				'blur',
+				(e) => {
+					const field = e.target;
+					if (!isFormField(field)) return;
+					if (field.id === 'url') applyUrlAutocorrect();
+					if (field.id === 'email_address') applyEmailAutocorrect();
+					field.dataset.touched = 'true';
+					updateFieldState(field, submitted);
+				},
+				true,
+			);
 
-							form.addEventListener('input', (e) => {
-								const field = e.target;
-								if (!isFormField(field)) return;
-								updateFieldState(field, submitted);
-							});
+			form.addEventListener('input', (e) => {
+				const field = e.target;
+				if (!isFormField(field)) return;
+				updateFieldState(field, submitted);
+			});
 
-							form.addEventListener('submit', (e) => {
-								e.preventDefault();
-								submitted = true;
-								applyUrlAutocorrect();
-								applyEmailAutocorrect();
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				submitted = true;
+				applyUrlAutocorrect();
+				applyEmailAutocorrect();
 
-								if (!validateAllFields()) {
-									form.querySelector(':invalid')?.focus();
-									return;
-								}
+				if (!validateAllFields()) {
+					form.querySelector(':invalid')?.focus();
+					return;
+				}
 
-								const turnstileToken = getTurnstileToken();
-								if (!turnstileToken) {
-									result.style.display = 'block';
-									const hasSiteKey = Boolean(turnstileContainer?.getAttribute('data-sitekey')?.trim());
-									result.textContent = hasSiteKey ? 'Please complete the verification checkbox, then submit again.' : 'Verification is currently unavailable. Please refresh and try again.';
-									return;
-								}
+				const turnstileToken = getTurnstileToken();
+				if (!turnstileToken) {
+					result.style.display = 'block';
+					const hasSiteKey = Boolean(turnstileContainer?.getAttribute('data-sitekey')?.trim());
+					result.textContent = hasSiteKey ? 'Please complete the verification checkbox, then submit again.' : 'Verification is currently unavailable. Please refresh and try again.';
+					return;
+				}
 
-								submitForm(turnstileToken);
-							});
-						});
-					</script>
+				submitForm(turnstileToken);
+			});
+		});
+	</script>
 
-					<script src="../scripts/swiper-intro.js"></script>
-					<script src="../scripts/swiper-testimonials.js"></script>
-					<script src="../scripts/nav-active-scroll.js"></script>
-					<script is:inline src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
-					<script src="../scripts/lazyload-videos.js"></script>
-				</div>
-			</div>
-		</div>
-	</section></Layout
->
+	<script src="../scripts/swiper-intro.js"></script>
+	<script src="../scripts/swiper-testimonials.js"></script>
+	<script src="../scripts/nav-active-scroll.js"></script>
+	<script is:inline src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+	<script src="../scripts/lazyload-videos.js"></script>
+</Layout>
