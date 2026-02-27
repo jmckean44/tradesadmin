@@ -670,6 +670,10 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 						if (!response.ok) {
 							const body = await response.text().catch(() => '');
 							const message = `PageSpeed API failed (${response.status}) ${body}`.trim();
+							// Detect per-minute quota (HTTP 429)
+							if (response.status === 429) {
+								console.warn('[PageSpeed API] Per-minute quota exceeded (HTTP 429). This likely means you are hitting the rate limit of ~400 requests per 100 seconds.');
+							}
 							const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
 							if (attempt < 3 && transientFailure) {
 								await wait(300 * attempt);

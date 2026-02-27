@@ -24,6 +24,13 @@ import iconIssueSpeed from '../img/icon-issue-speed.svg';
 import iconIssueResponsive from '../img/icon-issue-responsive.svg';
 import iconIssueBroken from '../img/icon-issue-broken.svg';
 
+import { defineMiddleware } from 'astro/middleware';
+export const onRequest = defineMiddleware(async (_, next) => {
+	const response = await next();
+	response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' https://challenges.cloudflare.com");
+	return response;
+});
+
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 const resultsPath = `${import.meta.env.BASE_URL}results/`;
