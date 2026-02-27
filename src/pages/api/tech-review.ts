@@ -91,6 +91,9 @@ const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
 
+// PageSpeed Insights API key is loaded from Netlify environment as PAGESPEED_API_KEY
+// To use, set PAGESPEED_API_KEY in netlify.toml or Netlify dashboard
+
 function getEnv(name: string): string {
 	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
 	return String(value).trim();

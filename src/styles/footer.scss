@@ -160,10 +160,15 @@ footer a:link:hover {
 	gap: 1rem;
 }
 
-.copyright {
-	font-size: 0.9rem;
+.copyright,
+.copyright a {
+	font-size: 1rem;
 	color: var.$note;
 	margin: 0;
+}
+
+.copyright a:hover {
+	color: var.$highlight;
 }
 
 .footer-bottom-links {

@@ -5,3 +5,4 @@ publish = "dist"
 [build.environment]
 NOTION_API_KEY = ""
 NOTION_DATABASE_ID = ""
+PAGESPEED_API_KEY = ""
