@@ -617,13 +617,15 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
 			const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
 
-			const executePageSpeedRequest = async (includeApiKey: boolean): Promise<ReviewRunResult> => {
+			const executePageSpeedRequest = async (includeApiKey: boolean, mode: 'full' | 'minimal' = 'full'): Promise<ReviewRunResult> => {
 				const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
 				endpoint.searchParams.set('url', targetUrl);
 				endpoint.searchParams.set('category', 'performance');
-				endpoint.searchParams.append('category', 'seo');
-				endpoint.searchParams.append('category', 'accessibility');
-				endpoint.searchParams.append('category', 'best-practices');
+				if (mode === 'full') {
+					endpoint.searchParams.append('category', 'seo');
+					endpoint.searchParams.append('category', 'accessibility');
+					endpoint.searchParams.append('category', 'best-practices');
+				}
 				endpoint.searchParams.set('strategy', strategy);
 				if (includeApiKey && pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
 
@@ -670,16 +672,30 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 			};
 
 			if (!pageSpeedApiKey) {
-				return executePageSpeedRequest(false);
+				try {
+					return await executePageSpeedRequest(false, 'full');
+				} catch (err) {
+					const message = err instanceof Error ? err.message : String(err);
+					const quotaLikeFailure = /429|rate limit|quota/i.test(message);
+					if (!quotaLikeFailure) throw err;
+					return executePageSpeedRequest(false, 'minimal');
+				}
 			}
 
 			try {
-				return await executePageSpeedRequest(true);
+				return await executePageSpeedRequest(true, 'full');
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
 				const shouldRetryWithoutKey = /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
 				if (!shouldRetryWithoutKey) throw err;
-				return executePageSpeedRequest(false);
+				try {
+					return await executePageSpeedRequest(false, 'full');
+				} catch (retryErr) {
+					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+					const quotaLikeFailure = /429|rate limit|quota/i.test(retryMessage);
+					if (!quotaLikeFailure) throw retryErr;
+					return executePageSpeedRequest(false, 'minimal');
+				}
 			}
 		}
 
@@ -971,10 +987,12 @@ export const POST: APIRoute = async ({ request }) => {
 			console.error('SMTP send failed:', err);
 		}
 
+		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';
+
 		return new Response(
 			JSON.stringify({
 				ok: true,
-				message: emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.',
+				message: userMessage,
 				preview,
 				scan: {
 					available: preview.available === true,
