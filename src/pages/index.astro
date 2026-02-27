@@ -559,6 +559,14 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 	<script is:inline>
 		document.addEventListener('astro:page-load', () => {
+			// If user navigated back from results page, clear the form
+			if (window.performance && window.performance.getEntriesByType) {
+				const navEntries = window.performance.getEntriesByType('navigation');
+				if (navEntries.length && navEntries[0].type === 'back_forward') {
+					const form = document.getElementById('form');
+					if (form) form.reset();
+				}
+			}
 			const form = document.getElementById('form');
 			const result = document.getElementById('result');
 			const reviewPreview = document.getElementById('review-preview');

@@ -6,6 +6,7 @@
 
 header {
 	position: relative;
+	display: flex;
 	flex-direction: row;
 	align-content: center;
 	left: 0;
@@ -19,6 +20,21 @@ header {
 	border-top: 5px var.$theme-clr solid;
 	// border-bottom: 1px solid #ddd;
 	// box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Add fade-in effect for pinned header */
+#header.pinned.fade-in {
+	opacity: 0;
+	animation: fadeInHeader 0.5s forwards;
+}
+
+@keyframes fadeInHeader {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 /* =========================

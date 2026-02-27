@@ -186,3 +186,21 @@ function initMobileNav() {
 }
 
 document.addEventListener('astro:page-load', initMobileNav);
+
+// Fade in header at 500px scroll, fixed, no layout shift
+document.addEventListener('DOMContentLoaded', function () {
+	const header = document.getElementById('header');
+	if (!header) return;
+	let lastPinned = false;
+	function onScroll() {
+		const shouldPin = window.scrollY > 500;
+		if (shouldPin !== lastPinned) {
+			header.classList.toggle('pinned', shouldPin);
+			header.classList.toggle('fade-in', shouldPin);
+			lastPinned = shouldPin;
+		}
+	}
+	window.addEventListener('scroll', onScroll, { passive: true });
+	// Initial state
+	onScroll();
+});
