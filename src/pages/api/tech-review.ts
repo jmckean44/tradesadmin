@@ -58,7 +58,7 @@ type ReviewRunResult = {
 	source: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key';
 };
 
-type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date';
+type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date' | 'select';
 
 type NotionDatabaseProperty = {
 	id: string;
