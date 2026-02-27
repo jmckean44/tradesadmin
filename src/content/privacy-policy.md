@@ -13,4 +13,4 @@ TradesAdmin does **not** share, sell, or distribute your information to any thir
 If you have questions about how your information is used, contact:
 
 **hello@tradesadmin.ca**  
-416-986-1059
+416 986 1059

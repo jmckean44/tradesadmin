@@ -437,6 +437,12 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		existingPageId = await findExistingNotionPageIdByEmail(notionToken, notionDatabaseId, emailPropertyName, input.email);
 	}
 
+	// Only set Status = New if creating a new page (not updating)
+	const statusSelectKey = findPropertyKeyByType(propertiesSchema, 'select', ['status']);
+	if (statusSelectKey && !existingPageId) {
+		properties[statusSelectKey] = { select: { name: 'New' } };
+	}
+
 	await createOrUpdateNotionPage(notionToken, notionDatabaseId, existingPageId, properties);
 }
 
