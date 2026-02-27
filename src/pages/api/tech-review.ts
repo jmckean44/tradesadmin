@@ -707,32 +707,55 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 				throw lastError ?? new Error('PageSpeed API request failed');
 			};
 
-			if (!pageSpeedApiKey) {
+			// Try with API key first (if available)
+			let result: ReviewRunResult | null = null;
+			let triedWithKey = false;
+			if (pageSpeedApiKey) {
+				try {
+					result = await executePageSpeedRequest(true, 'full');
+					// If metrics are missing, retry without key
+					const hasMetrics =
+						result &&
+						result.review &&
+						(typeof result.review.performance === 'number' ||
+							typeof result.review.seo === 'number' ||
+							typeof result.review.accessibility === 'number' ||
+							typeof result.review.bestPractices === 'number');
+					if (!hasMetrics) {
+						// Retry without API key
+						const retryResult = await executePageSpeedRequest(false, 'full');
+						// If retry yields more metrics, use it
+						const retryHasMetrics =
+							retryResult &&
+							retryResult.review &&
+							(typeof retryResult.review.performance === 'number' ||
+								typeof retryResult.review.seo === 'number' ||
+								typeof retryResult.review.accessibility === 'number' ||
+								typeof retryResult.review.bestPractices === 'number');
+						if (retryHasMetrics) {
+							return retryResult;
+						}
+					}
+					return result;
+				} catch (err) {
+					// If error, fallback to no-key
+					try {
+						return await executePageSpeedRequest(false, 'full');
+					} catch (retryErr) {
+						const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+						const quotaLikeFailure = /429|rate limit|quota/i.test(retryMessage);
+						if (!quotaLikeFailure) throw retryErr;
+						return executePageSpeedRequest(false, 'minimal');
+					}
+				}
+			} else {
+				// No API key, just try without
 				try {
 					return await executePageSpeedRequest(false, 'full');
 				} catch (err) {
 					const message = err instanceof Error ? err.message : String(err);
 					const quotaLikeFailure = /429|rate limit|quota/i.test(message);
 					if (!quotaLikeFailure) throw err;
-					return executePageSpeedRequest(false, 'minimal');
-				}
-			}
-
-			try {
-				return await executePageSpeedRequest(true, 'full');
-			} catch (err) {
-				const message = err instanceof Error ? err.message : String(err);
-				const shouldRetryWithoutKey = /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
-				if (includeKeyQuotaOrAuthFailure(message)) {
-					pageSpeedKeyCooldownUntil = Date.now() + PAGESPEED_KEY_COOLDOWN_MS;
-				}
-				if (!shouldRetryWithoutKey) throw err;
-				try {
-					return await executePageSpeedRequest(false, 'full');
-				} catch (retryErr) {
-					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-					const quotaLikeFailure = /429|rate limit|quota/i.test(retryMessage);
-					if (!quotaLikeFailure) throw retryErr;
 					return executePageSpeedRequest(false, 'minimal');
 				}
 			}
@@ -747,39 +770,8 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 		return desktopResult;
 	}
 
-	let chrome: { port: number; kill: () => void | Promise<void> } | undefined;
-
-	try {
-		const [{ default: lighthouse }, { launch }] = await Promise.all([import('lighthouse'), import('chrome-launcher')]);
-
-		chrome = await launch({ chromeFlags: ['--headless', '--no-sandbox'] });
-		const chromePort = chrome.port;
-
-		const runnerResult = await lighthouse(url, {
-			port: chromePort,
-			output: 'json',
-			logLevel: 'error',
-			onlyCategories: ['performance', 'seo', 'accessibility', 'best-practices'],
-		});
-
-		if (!runnerResult?.lhr) throw new Error('Lighthouse returned no report');
-
-		return {
-			review: reviewFromLhrLike(runnerResult.lhr),
-			source: 'lighthouse',
-		};
-	} catch (err) {
-		const lighthouseMessage = err instanceof Error ? err.message : String(err);
-
-		try {
-			return await runReviewWithPageSpeedInsights(url);
-		} catch (fallbackErr) {
-			const fallbackMessage = fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr);
-			throw new Error(`Lighthouse failed: ${lighthouseMessage}. PageSpeed fallback failed: ${fallbackMessage}`);
-		}
-	} finally {
-		if (chrome) await chrome.kill();
-	}
+	// Always use PageSpeed API for scans (never attempt to run Lighthouse/Chrome in serverless)
+	return await runReviewWithPageSpeedInsights(url);
 }
 
 export const GET: APIRoute = async () => {
