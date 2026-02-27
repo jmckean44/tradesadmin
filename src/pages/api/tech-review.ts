@@ -88,6 +88,8 @@ type NotionSubmissionInput = {
 
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const reviewCache = new Map<string, CachedReview>();
+const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
+let pageSpeedKeyCooldownUntil = 0;
 
 function getEnv(name: string): string {
 	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
@@ -275,6 +277,19 @@ function stripUrlProtocol(value: string): string {
 		.replace(/^https?:\/\//i, '');
 }
 
+function normalizeUrlForNotion(value: string): string {
+	const normalized = normalizeUrl(value);
+	if (!normalized) return '';
+
+	try {
+		const parsed = new URL(normalized);
+		if (parsed.pathname === '/') parsed.pathname = '';
+		return parsed.toString();
+	} catch {
+		return normalized;
+	}
+}
+
 async function getNotionDatabaseProperties(token: string, databaseId: string): Promise<Record<string, NotionDatabaseProperty>> {
 	const response = await withTimeout(fetch(`https://api.notion.com/v1/databases/${databaseId}`, { headers: getNotionHeaders(token) }), 12000, 'Notion database lookup');
 
@@ -365,7 +380,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		}
 
 		if (type === 'url') {
-			properties[key] = { url: normalizeUrl(value) };
+			properties[key] = { url: normalizeUrlForNotion(value) };
 			return;
 		}
 
@@ -384,7 +399,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		properties[emailKey] = { email: input.email };
 	}
 
-	const normalizedWebsiteUrl = normalizeUrl(input.url);
+	const normalizedWebsiteUrl = normalizeUrlForNotion(input.url);
 	setTextLikeProperty('url', ['url', 'website', 'site', 'domain'], normalizedWebsiteUrl);
 	setTextLikeProperty('rich_text', ['url', 'website', 'site', 'domain'], stripUrlProtocol(normalizedWebsiteUrl));
 	setTextLikeProperty('phone_number', ['phone', 'telephone'], input.phone);
@@ -605,10 +620,21 @@ function wait(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function getPageSpeedApiKeyIfUsable(): string {
+	const key = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
+	if (!key) return '';
+	if (Date.now() < pageSpeedKeyCooldownUntil) return '';
+	return key;
+}
+
+function includeKeyQuotaOrAuthFailure(message: string): boolean {
+	return /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
+}
+
 async function runReview(url: string): Promise<ReviewRunResult> {
 	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
 		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
-			const pageSpeedApiKey = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
+			const pageSpeedApiKey = getPageSpeedApiKeyIfUsable();
 
 			const executePageSpeedRequest = async (includeApiKey: boolean, mode: 'full' | 'minimal' = 'full'): Promise<ReviewRunResult> => {
 				const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
@@ -629,7 +655,7 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 						if (!response.ok) {
 							const body = await response.text().catch(() => '');
 							const message = `PageSpeed API failed (${response.status}) ${body}`.trim();
-							const transientFailure = /429|5\d\d|rate limit|quota|timed out|timeout|internal/i.test(message);
+							const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
 							if (attempt < 3 && transientFailure) {
 								await wait(300 * attempt);
 								continue;
@@ -651,7 +677,7 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 						};
 					} catch (err) {
 						const message = err instanceof Error ? err.message : String(err);
-						const transientFailure = /429|5\d\d|rate limit|quota|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
+						const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
 						lastError = err instanceof Error ? err : new Error(message);
 						if (attempt < 3 && transientFailure) {
 							await wait(300 * attempt);
@@ -680,6 +706,9 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
 				const shouldRetryWithoutKey = /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
+				if (includeKeyQuotaOrAuthFailure(message)) {
+					pageSpeedKeyCooldownUntil = Date.now() + PAGESPEED_KEY_COOLDOWN_MS;
+				}
 				if (!shouldRetryWithoutKey) throw err;
 				try {
 					return await executePageSpeedRequest(false, 'full');
@@ -990,7 +1019,7 @@ export const POST: APIRoute = async ({ request }) => {
 				try {
 					await withTimeout(
 						transporter.sendMail({
-							from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
 							to: fallbackRecipient,
 							replyTo: email,
 							subject: `New submission: ${company}`,
