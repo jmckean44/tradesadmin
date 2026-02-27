@@ -640,6 +640,14 @@ function includeKeyQuotaOrAuthFailure(message: string): boolean {
 
 async function runReview(url: string): Promise<ReviewRunResult> {
 	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
+		// Debug log for API responses
+		function logPageSpeedApiResponse(strategy: string, responsePayload: any) {
+			try {
+				console.log(`[PageSpeed API][${strategy}] Response:`, JSON.stringify(responsePayload, null, 2));
+			} catch (err) {
+				console.log(`[PageSpeed API][${strategy}] Response (raw):`, responsePayload);
+			}
+		}
 		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
 			const pageSpeedApiKey = getPageSpeedApiKeyIfUsable();
 
@@ -676,6 +684,8 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 								audits?: Record<string, { displayValue?: string }>;
 							};
 						};
+
+						logPageSpeedApiResponse(strategy, payload);
 
 						if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
 						return {
