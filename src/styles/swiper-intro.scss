@@ -25,9 +25,14 @@
 }
 
 .swiper-intro .slide-1 h1 {
-	font-size: min(max(3.5rem, 5.5vw), 80px);
+	font-size: min(max(3rem, 7vw), 75px);
 	text-align: center !important;
+	color: var.$theme-clr-dark;
 }
+
+// .swiper-intro .slide-1 h1 span {
+// 	color: #526187;
+// }
 
 .swiper-intro .swiper-slide#slide1 h1 {
 	font-size: min(max(3rem, 5vw), 70px);

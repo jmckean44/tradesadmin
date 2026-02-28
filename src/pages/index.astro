@@ -46,7 +46,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<div class="flex padding-x align-middle">
 							<div class="cell small-18 center">
 								<div class="slide-1">
-									<h1><strong>Technical Support</strong> for HVAC, Plumbing, Electrical & contractor websites</h1>
+									<h1><strong class="theme-clr">Technical support</strong> <span class="txt-light">for HVAC, plumbing, electrical & contractor</span> <strong class="theme-clr">websites</strong></h1>
 								</div>
 							</div>
 						</div>
@@ -111,7 +111,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 		</div>
 	</section>
 
-	<div class="cta top"><a class="btn" href="#contact">Free Website Speed Test</a></div>
+	<div class="cta top"><a class="btn" href="#contact" role="link" aria-label="link to form">Free Website Speed Test</a></div>
 
 	<div class="lottie">
 		<lottie-player src="/seo.json" background="transparent" speed=".4" loop count="10" autoplay style="width: 100%; height: 100%;"></lottie-player>
@@ -160,7 +160,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			<div class="flex padding-x align-middle">
 				<div class="cell small-18 medium-11">
 					<div class="services-intro">
-						<p class="eyebrow">Support</p>
+						<p class="eyebrow">Web Support</p>
 						<h2>Who This Is For</h2>
 						<p class="txt-lrg">
 							<span class="semibold">TradesAdmin</span> supports <span class="semibold">HVAC, plumbing, electrical, roofing,</span> and other <span class="semibold">service contractors</span> across the
@@ -205,7 +205,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Render-blocking resource reviews</li>
 						<li><span class="check">✓</span> Plugin audits</li>
 					</ul>
-					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" id="seo" style="--trig-delay: .2s;">
@@ -225,7 +224,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span>Schema/structured data validation</li>
 						<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
 					</ul>
-					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" id="structure" style="--trig-delay: .4s;">
@@ -245,7 +243,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Broken links (404/500)</li>
 						<li><span class="check">✓</span> Console error debugging</li>
 					</ul>
-					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 
 				<div class="services-card trig-target" id="maintenance" style="--trig-delay: .6s;">
@@ -263,7 +260,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<li><span class="check">✓</span> Website Backups & Restore Services</li>
 						<li><span class="check">✓</span> General technical support and fixes</li>
 					</ul>
-					<!-- <a href="#contact" class="learn-more slide-right">Request a Review &darr;</a> -->
 				</div>
 			</div>
 		</div>
@@ -299,7 +295,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 					<div class="pricing-card">
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-11 large-10">
-								<h3><a href="#performance" class="underline" role="link" aria-label="link to Performance">Performance & Technical Fixes</a></h3>
+								<h3><a href="#performance" role="link" aria-label="link to Performance">Performance & Technical Fixes</a></h3>
 							</div>
 							<div class="cell small-18 medium-7 large-8">
 								<div class="pricing-amount">
@@ -309,7 +305,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3><a href="#seo" class="underline" role="link" aria-label="link to SEO">Technical SEO & Indexing</a></h3>
+								<h3><a href="#seo" role="link" aria-label="link to SEO">Technical SEO & Indexing</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
@@ -319,7 +315,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3><a href="#structure" class="underline" role="link" aria-label="link to Structural & Functional Corrections">Structural & Functional Corrections</a></h3>
+								<h3><a href="#structure" role="link" aria-label="link to Structural & Functional Corrections">Structural & Functional Corrections</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
@@ -329,7 +325,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div class="flex line-btm">
 							<div class="cell small-18 medium-18 large-10">
-								<h3><a href="#maintenance" class="underline" role="link" aria-label="link to Maintenance, Hosting & Support">Maintenance, Hosting & Support</a></h3>
+								<h3><a href="#maintenance" role="link" aria-label="link to Maintenance, Hosting & Support">Maintenance, Hosting & Support</a></h3>
 							</div>
 							<div class="cell small-18 medium-18 large-8">
 								<div class="pricing-amount">
@@ -368,29 +364,27 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				<div class="process-step trig-target" style="--trig-delay: 0s;">
 					<div class="step-number">1</div>
 					<div class="step-content">
-						<h3>Submit URL &<br />Describe the Issue</h3>
-						<p>Provide your website address and outline any concerns.</p>
+						<h3>Submit your URL</h3>
 					</div>
 				</div>
 
 				<div class="process-step trig-target" style="--trig-delay: .2s;">
 					<div class="step-number">2</div>
 					<div class="step-content">
-						<h3>Technical<br />Findings & Scope</h3>
-						<p>You receive a clear, plain-English list of issues and a fixed-price estimate.</p>
+						<h3>View a performance report</h3>
+						<p>in 30seonds</p>
 					</div>
 				</div>
 
 				<div class="process-step trig-target" style="--trig-delay: .4s;">
 					<div class="step-number">3</div>
 					<div class="step-content">
-						<h3>Approval &<br />Implementation</h3>
-						<p>Corrections are completed and deployed without disruption.</p>
+						<h3>Decide what to do next</h3>
 					</div>
 				</div>
 			</div>
 
-			<div class="cta top"><a class="btn" href="#contact">Ask a Question</a></div>
+			<div class="cta top"><a class="btn" href="#contact" role="link" aria-label="link to Contact">Submit Your URL</a></div>
 		</div>
 	</section>
 
