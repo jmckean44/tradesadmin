@@ -400,11 +400,13 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 				result.textContent = data?.message || 'Thanks. Your request was submitted.';
 
+				// Always include the submitted URL for results page display
 				const payloadForStorage = {
 					preview: data?.preview || null,
 					scan: data?.scan || null,
 					email: data?.email || null,
 					notion: data?.notion || null,
+					url: payload.url || '',
 					timestamp: Date.now(),
 				};
 
