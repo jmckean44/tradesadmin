@@ -1,7 +1,7 @@
 @use 'variables.scss' as var;
 
-#privacy-policy .container.top.btm {
-	padding: clamp(2rem, 20vw, 100px) var.$container-padding 0;
+#privacy-policy .container.page-top.btm {
+	padding: clamp(8rem, 12.5vw, 200px) var.$container-padding 0;
 	max-width: 1000px;
 }
 

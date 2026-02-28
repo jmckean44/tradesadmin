@@ -1,7 +1,7 @@
 @use 'variables.scss' as var;
 
 #scan-results .container.top {
-	padding: clamp(2rem, 20vw, 100px) var.$container-padding 0;
+	padding: clamp(8rem, 12.5vw, 200px) var.$container-padding 0;
 	//max-width: 1200px;
 }
 
