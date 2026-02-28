@@ -1,3 +1,17 @@
+import dns from 'dns/promises';
+
+// Shared error message for unresolved domains
+export const DOMAIN_NOT_FOUND_ERROR = 'The website address you entered could not be found. Please check for typos and try again.';
+// Check if domain resolves
+async function isDomainResolvable(url: string): Promise<boolean> {
+	try {
+		const { hostname } = new URL(normalizeUrl(url));
+		await dns.lookup(hostname);
+		return true;
+	} catch {
+		return false;
+	}
+}
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
 
@@ -841,6 +855,13 @@ export const POST: APIRoute = async ({ request }) => {
 				new URL(url);
 			} catch {
 				return new Response(JSON.stringify({ error: 'Invalid URL.' }), { status: 400 });
+			}
+			// DNS resolution check
+			if (!(await isDomainResolvable(url))) {
+				return new Response(JSON.stringify({ error: DOMAIN_NOT_FOUND_ERROR }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
 			}
 		}
 

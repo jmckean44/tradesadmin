@@ -360,7 +360,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 			};
 
 			result.style.display = 'block';
-			result.textContent = 'Scanning: please wait about 30 seconds...';
+			result.textContent = 'Scanning... please wait about 30 seconds.';
 			reviewPreview.style.display = 'none';
 			reviewPreview.innerHTML = '';
 
@@ -383,10 +383,19 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 				}
 
 				if (!response.ok) {
-					const serverMessageRaw = data?.error || text || (response.status >= 500 ? 'Server error. Please try again shortly.' : `Request failed (${response.status})`);
-					const isAssetError = /ENOENT|standalone-flow-template\.html|flow-report\/assets/i.test(String(serverMessageRaw));
-					const serverMessage = isAssetError ? 'Live scan data is currently unavailable. Showing fallback guidance.' : serverMessageRaw;
-					throw new Error(serverMessage);
+					// If the error is the domain not found/typo error, show in #result, else show in #review-preview
+					const domainNotFoundError = 'The website address you entered could not be found. Please check for typos and try again.';
+					if (data?.error && String(data.error).trim() === domainNotFoundError) {
+						result.style.display = 'block';
+						result.textContent = data.error;
+						reviewPreview.style.display = 'none';
+						reviewPreview.innerHTML = '';
+					} else {
+						reviewPreview.style.display = 'block';
+						reviewPreview.innerHTML = `<div class="review-preview-card"><p>${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</p></div>`;
+						result.textContent = '';
+					}
+					return;
 				}
 
 				result.textContent = data?.message || 'Thanks. Your request was submitted.';
