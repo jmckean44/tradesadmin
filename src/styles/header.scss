@@ -19,8 +19,8 @@ header {
 	//background: var.$bg-clr;
 	background: #fff;
 	border-top: 3px var.$theme-clr-dark solid;
-	//border-bottom: 1px solid #ddd;
-	//box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+	border-bottom: 1px solid #ddd;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
 header > div {

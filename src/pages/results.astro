@@ -11,7 +11,7 @@ import '../styles/page-results.scss';
 					<div class="results-intro">
 						<h1 class="center">Scan Results</h1>
 						<p class="center txt-lrg">
-							This is a <span class="semibold">preview of how your site is <span class="underline">performing</span></span>, followed by a short list of recommendations.
+							This is a <span class="semibold">preview of how <span id="results-url">[url]</span> <span class="underline">performing</span></span>, followed by a short list of recommendations.
 						</p>
 						<p class="center txt-lrg">
 							To discuss what could be improved in more detail, call <br /><span class="semibold"
@@ -222,6 +222,13 @@ import '../styles/page-results.scss';
 			}
 
 			const payload = readStoredPayload('scanResultPayload') || readPayloadFromQueryParam();
+			// Populate the URL in the results header if available
+			const urlSpan = document.getElementById('results-url');
+			if (urlSpan && payload?.preview?.url) {
+				urlSpan.textContent = escapeHtml(payload.preview.url);
+			} else if (urlSpan) {
+				urlSpan.textContent = '[no url]';
+			}
 
 			if (!payload?.preview) {
 				root.innerHTML = `
