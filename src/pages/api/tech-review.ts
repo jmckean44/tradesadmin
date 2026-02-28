@@ -1088,9 +1088,14 @@ export const POST: APIRoute = async ({ request }) => {
 		console.error('tech-review route error:', err);
 		const isDev = import.meta.env.DEV;
 		const message = err instanceof Error ? err.message : String(err);
+		const errorObj = err instanceof Error ? err : new Error(String(err));
 		return new Response(
-			JSON.stringify(isDev ? { error: 'Unexpected server error while processing your request.', details: message } : { error: 'Unexpected server error while processing your request.' }),
-			{ status: 500 },
+			JSON.stringify({
+				errorType: errorObj.name || 'Error',
+				errorMessage: message,
+				stack: isDev ? errorObj.stack : undefined,
+			}),
+			{ status: 502 },
 		);
 	}
 };
