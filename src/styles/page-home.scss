@@ -482,26 +482,9 @@
 	font-style: normal;
 }
 
-// @media (max-width: var.$tablet) {
-// 	#pricing .container {
-// 		padding: 100px 1.5rem 0;
-// 	}
-// 	.pricing-card {
-// 		padding: 0;
-// 		margin-top: 0;
-// 		border-left: 0;
-// 	}
-// 	.pricing-card.single-issue .pricing-amount {
-// 		text-align: left;
-// 	}
-// 	.pricing-card.single-issue .price-desc {
-// 		margin-bottom: 0;
-// 	}
-// }
-
 @media (max-width: var.$mobile) {
 	#pricing .container {
-		padding: 100px 1.5rem 0;
+		padding: 50px 1.5rem 0;
 	}
 	.pricing-card {
 		padding: 0;

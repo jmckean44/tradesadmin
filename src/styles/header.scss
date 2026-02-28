@@ -5,7 +5,7 @@
 ================================================ */
 
 header {
-	position: relative;
+	position: fixed;
 	display: flex;
 	flex-direction: row;
 	align-content: center;
@@ -23,20 +23,55 @@ header {
 	box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Add fade-in effect for pinned header */
-#header.pinned.fade-in {
-	opacity: 0;
-	animation: fadeInHeader 0.5s forwards;
+header > div {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	max-width: var.$container-width;
+	margin: 0 auto;
 }
 
-@keyframes fadeInHeader {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
+#header.unpinned,
+#header.pinned {
+	height: 70px;
+	transition: all 0.3s ease;
+	border-bottom: 1px #ddd solid;
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 800px) {
+	header {
+		padding: 0;
 	}
 }
+
+@media (max-width: var.$mobile) {
+	#header {
+		height: 70px;
+	}
+	#header.unpinned,
+	#header.pinned {
+		padding: 0;
+		height: 70px;
+		transition: all 0.3s ease;
+		border-bottom: 1px #ddd solid;
+	}
+}
+
+/* Add fade-in effect for pinned header */
+// #header.pinned.fade-in {
+// 	opacity: 0;
+// 	animation: fadeInHeader 0.5s forwards;
+// }
+
+// @keyframes fadeInHeader {
+// 	from {
+// 		opacity: 0;
+// 	}
+// 	to {
+// 		opacity: 1;
+// 	}
+// }
 
 /* =========================
 	 LOGO DESKTOP
@@ -55,31 +90,6 @@ header {
 	vertical-align: baseline;
 }
 
-@media (max-width: 800px) {
-	header {
-		padding: 0;
-	}
-}
-
-header > div {
-	display: flex;
-	align-content: center;
-	justify-content: space-between;
-	max-width: var.$container-width;
-	margin: 0 auto;
-}
-
-#header.unpinned,
-#header.pinned {
-	position: fixed;
-	top: 0;
-	height: 70px;
-	padding: 0;
-	transition: all 0.3s ease;
-	border-bottom: 1px #ddd solid;
-	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
-}
-
 #header.unpinned #nav-desktop,
 #header.pinned #nav-desktop {
 	align-items: start;
@@ -92,16 +102,6 @@ header > div {
 }
 
 @media (max-width: var.$mobile) {
-	#header {
-		height: 70px;
-	}
-	#header.unpinned,
-	#header.pinned {
-		padding: 0;
-		height: 70px;
-		transition: all 0.3s ease;
-		border-bottom: 1px #ddd solid;
-	}
 	#logo {
 		max-width: 170px;
 	}

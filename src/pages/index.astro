@@ -39,7 +39,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 
 <Layout pageTitle="description" pageSiteTitles="">
 	<section id="intro">
-		<div class="container">
+		<div class="container page-top">
 			<div class="swiper swiper-intro">
 				<div class="swiper-wrapper">
 					<div class="swiper-slide">
@@ -121,32 +121,32 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 		<div class="container top">
 			<h2 class="margin-btm-med center">Common Technical Issues</h2>
 			<div class="masonry-grid trig-fade-up enable-trig">
-				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
+				<div class="masonry-item trig-target" style="--trig-delay: 0s;">
 					<p class="issue">Broken Links & Forms</p>
 					<h3>Broken forms and "404 Page Not Found" errors damage trust and search results, causing missed potential customer opportunities</h3>
 					<div><Image src={iconIssueBroken} alt="Broken Links & Forms icon" class="broken" /></div>
 				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
+				<div class="masonry-item trig-target" style="--trig-delay: .2s;">
 					<p class="issue">Security & Updates</p>
 					<h3>Expired SSL certificates, HTTP issues, and outdated plugins can trigger warnings</h3>
 					<div><Image src={iconIssueSSL} alt="SSL Warning icon" class="ssl" /></div>
 				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .0s;">
+				<div class="masonry-item trig-target" style="--trig-delay: .4s;">
 					<p class="issue">Google & Indexing</p>
 					<h3>Outdated Google Business Profiles, missing Analytics, no Search Console setup - reduces visibility</h3>
 					<div><Image src={iconIssueGBP} alt="Google Business Profile icon" class="gbp" /></div>
 				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .2s;">
+				<div class="masonry-item trig-target" style="--trig-delay: .s;">
 					<p class="issue">Performance & Speed</p>
 					<h3>Poor performance scores and page load times can contribute to higher bounce rates</h3>
 					<div><Image src={iconIssueSpeed} alt="Performance & Speed icon" class="speed" /></div>
 				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .6s;">
+				<div class="masonry-item trig-target" style="--trig-delay: .8s;">
 					<p class="issue">Structure & Navigation</p>
 					<h3>Navigation, layout, and naming inconsistencies can be confusing and affect SEO</h3>
 					<div><Image src={iconStructure} alt="Structure icon" class="structure" /></div>
 				</div>
-				<div class="masonry-item trig-target" style="--trig-delay: .8s;">
+				<div class="masonry-item trig-target" style="--trig-delay: 1s;">
 					<p class="issue">Responsiveness & Mobile</p>
 					<h3>Non-responsive design and poor mobile optimization can lead to a frustrating experience</h3>
 					<div><Image src={iconIssueResponsive} alt="Responsive Design icon" class="responsive" /></div>
@@ -275,7 +275,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 		<div class="container">
 			<div class="flex padding-x align-middle">
 				<div class="cell small-18 medium-8 large-8 pricing-content">
-					<h2>Pricing Overview</h2>
+					<h2>Pricing</h2>
 					<p class="txt-lrg fnt-med">Cost depends on the site size, technical complexity, and number of issues identified.</p>
 					<div class="pricing-card single-issue">
 						<div class="flex">

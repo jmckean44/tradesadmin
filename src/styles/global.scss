@@ -491,10 +491,6 @@ ul.bullets {
 	background: var.$bg-clr;
 }
 
-// #intro .container {
-// 	padding-top: clamp(7rem, 20vw, 200px);
-// }
-
 /* =================================
 	 CONTAINERS
 ==================================== */
@@ -515,12 +511,13 @@ section {
 	//border: 1px red solid;
 }
 
-/* Remove container max-width and padding for intro section to allow full-width Swiper */
-// #intro .container.top {
-// 	max-width: 100vw;
-// 	padding-left: 0;
-// 	padding-right: 0;
-// }
+.container.page-top {
+	padding: clamp(10rem, 15vw, 250px) var.$container-padding 0;
+}
+
+.container.page-top.btm {
+	padding: clamp(10rem, 15vw, 250px) var.$container-padding 0;
+}
 
 .container.top {
 	padding: 125px var.$container-padding 0;
