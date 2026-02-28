@@ -222,7 +222,8 @@ import '../styles/page-results.scss';
 			const payload = readStoredPayload('scanResultPayload') || readPayloadFromQueryParam();
 			// Populate the URL in the results header if available
 			const urlSpan = document.getElementById('results-url');
-			// Try preview.url, fallback to scan.url, fallback to payload.url, fallback to last form submission
+
+			// Try preview.url, scan.url, payload.url, or reconstruct from form fields
 			let displayUrl = '';
 			if (payload?.preview?.url) {
 				displayUrl = payload.preview.url;
@@ -230,9 +231,16 @@ import '../styles/page-results.scss';
 				displayUrl = payload.scan.url;
 			} else if (payload?.url) {
 				displayUrl = payload.url;
+			} else if (payload?.preview && payload.preview.displayUrl) {
+				displayUrl = payload.preview.displayUrl;
+			} else if (payload?.formData && payload.formData.url) {
+				displayUrl = payload.formData.url;
 			} else if (payload?.email && payload?.company && payload?.message) {
-				// Try to reconstruct from last form submission if possible (not always possible)
 				displayUrl = '[submitted, not stored]';
+			}
+			// Remove protocol for cleaner display
+			if (displayUrl && typeof displayUrl === 'string') {
+				displayUrl = displayUrl.replace(/^https?:\/\//i, '');
 			}
 			if (urlSpan) {
 				urlSpan.textContent = displayUrl ? escapeHtml(displayUrl) : '[no url]';
