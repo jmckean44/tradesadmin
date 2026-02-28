@@ -238,9 +238,12 @@ import '../styles/page-results.scss';
 			} else if (payload?.email && payload?.company && payload?.message) {
 				displayUrl = '[submitted, not stored]';
 			}
-			// Remove protocol for cleaner display
+			// Remove protocol and trailing slash for cleaner display
 			if (displayUrl && typeof displayUrl === 'string') {
 				displayUrl = displayUrl.replace(/^https?:\/\//i, '');
+				if (displayUrl.endsWith('/')) {
+					displayUrl = displayUrl.slice(0, -1);
+				}
 			}
 			if (urlSpan) {
 				urlSpan.textContent = displayUrl ? escapeHtml(displayUrl) : '[no url]';
