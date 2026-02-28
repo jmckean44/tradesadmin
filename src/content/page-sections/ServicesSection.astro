@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import iconTechnical from '../../img/icon-technical-seo.webp';
+import iconLocalseo from '../../img/icon-local-seo.webp';
+import iconStructure from '../../img/icon-structure.webp';
+import iconHosting from '../../img/icon-hosting.webp';
+---
+
+<section id="services">
+	<div class="container btm">
+		<div class="flex padding-x align-middle" id="what-we-fix">
+			<div class="cell small-18">
+				<p class="eyebrow">Services</p>
+				<h2>What Gets Fixed</h2>
+			</div>
+		</div>
+		<div class="services-grid trig-fade-up enable-trig">
+			<div class="services-card trig-target" id="performance" style="--trig-delay: 0s;">
+				<div class="service-icon"><Image src={iconTechnical} alt="Performance icon" /></div>
+				<h2>Performance & Technical Fixes</h2>
+				<p>Slow site and mobile performance issue fixes.</p>
+				<ul class="service-features">
+					<li><span class="check">✓</span> Core web vitals diagnostic</li>
+					<li><span class="check">✓</span> Mobile/responsive corrections</li>
+					<li><span class="check">✓</span> Image compression & WebP conversion</li>
+					<li><span class="check">✓</span> Lazy loading configuration</li>
+					<li><span class="check">✓</span> Layout shift and stability fixes</li>
+					<li><span class="check">✓</span> Image/Media format conversion (WebP)</li>
+					<li><span class="check">✓</span> Render-blocking resource reviews</li>
+					<li><span class="check">✓</span> Plugin audits</li>
+				</ul>
+			</div>
+			<div class="services-card trig-target" id="seo" style="--trig-delay: .2s;">
+				<div class="service-icon">
+					<Image src={iconLocalseo} alt="SEO Optimization: Technical audit, content strategy, link building" />
+				</div>
+				<h2>Technical SEO & Indexing</h2>
+				<p>Ensure Google can correctly understand and display your service pages.</p>
+				<ul class="service-features">
+					<li><span class="check">✓</span>Google Business Profile, Search Console, & Analytics setup</li>
+					<li><span class="check">✓</span>Indexing diagnostics</li>
+					<li><span class="check">✓</span>Sitemap creation/validation</li>
+					<li><span class="check">✓</span>URL structure review</li>
+					<li><span class="check">✓</span>Metadata review and refinement</li>
+					<li><span class="check">✓</span>Canonical tags checks</li>
+					<li><span class="check">✓</span>Internal linking corrections</li>
+					<li><span class="check">✓</span>Schema/structured data validation</li>
+					<li><span class="check">✓</span>Image Alt Tag checks and accuracy</li>
+				</ul>
+			</div>
+			<div class="services-card trig-target" id="structure" style="--trig-delay: .4s;">
+				<div class="service-icon">
+					<Image src={iconStructure} alt="Structure & Functional Corrections icon" />
+				</div>
+				<h2>Structural & Functional Corrections</h2>
+				<p>Fixing broken layouts, navigation, forms, and technical inconsistencies.</p>
+				<ul class="service-features">
+					<li><span class="check">✓</span> Proper page naming conventions</li>
+					<li><span class="check">✓</span> Simplifying navigation structure</li>
+					<li><span class="check">✓</span> Correcting mobile layout issues</li>
+					<li><span class="check">✓</span> Fixing spacing & alignment inconsistencies</li>
+					<li><span class="check">✓</span> Removing outdated styling conflicts</li>
+					<li><span class="check">✓</span> Fixing header/footer inconsistencies</li>
+					<li><span class="check">✓</span> Form errors and submission issues</li>
+					<li><span class="check">✓</span> Broken links (404/500)</li>
+					<li><span class="check">✓</span> Console error debugging</li>
+				</ul>
+			</div>
+			<div class="services-card trig-target" id="maintenance" style="--trig-delay: .6s;">
+				<div class="service-icon">
+					<Image src={iconHosting} alt="Maintenance, Hosting & Support icon" />
+				</div>
+				<h2>Maintenance, Hosting & Support</h2>
+				<p>Technical support for hosting, DNS, SSL certificates, backups, updates, and technical upkeep.</p>
+				<ul class="service-features">
+					<li><span class="check">✓</span> Web & Email hosting setup</li>
+					<li><span class="check">✓</span> DNS & Nameserver config</li>
+					<li><span class="check">✓</span> SSL certificate issues</li>
+					<li><span class="check">✓</span> Security monitoring</li>
+					<li><span class="check">✓</span> Domain Registration & Management</li>
+					<li><span class="check">✓</span> Website Backups & Restore Services</li>
+					<li><span class="check">✓</span> General technical support and fixes</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

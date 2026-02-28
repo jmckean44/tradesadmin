@@ -18,21 +18,23 @@
 	padding: 0;
 }
 
-.swiper-intro .slide-1 {
+.swiper-intro .slide-1 .tagline {
 	margin: 0 auto;
 	text-align: center;
 	max-width: 1000px;
 }
 
+@media (max-width: var.$mobile) {
+	.swiper-intro .slide-1 .tagline {
+		padding-top: 8%;
+	}
+}
+
 .swiper-intro .slide-1 h1 {
-	font-size: min(max(2.75rem, 6vw), 70px);
+	font-size: min(max(3.75rem, 7vw), 70px);
 	text-align: center !important;
 	color: var.$theme-clr-dark;
 }
-
-// .swiper-intro .slide-1 h1 span {
-// 	color: #526187;
-// }
 
 .swiper-intro .swiper-slide#slide1 h1 {
 	font-size: min(max(3rem, 5vw), 70px);

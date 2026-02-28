@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+import testimonials from '../../img/testimonials.webp';
+import wyse from '../../img/wyse.webp';
+import shiupong from '../../img/shiupong.webp';
+import riverscape from '../../img/riverscape.webp';
+import gia from '../../img/gia.webp';
+import fortune from '../../img/fortune.webp';
+---
+
+<section id="testimonials">
+	<div class="container top">
+		<div class="flex padding-x align-middle enable-trig trig-fade-up">
+			<div class="cell small-18 medium-9 trig-target" style="--trig-delay: 0s;">
+				<p class="eyebrow">Testimonials</p>
+				<h2>Client Comments</h2>
+			</div>
+			<div class="cell small-18 medium-9 testimonials">
+				<Image src={testimonials} alt="Client testimonials for TradesAdmin  website technical support services" />
+			</div>
+		</div>
+		<div class="swiper swiper-testimonials">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide">
+					<Image src={wyse} alt="Wyse Construction Group website" />
+					<p>
+						<span class="quote top">&rdquo;</span>
+						<span class="semibold">TradesAdmin</span> rebuilt our WordPress site, improved the overall performance and resolved the technical challenges we were experiencing, which made a noticeable difference
+						in our online visibility.<span class="quote btm">&rdquo;</span>
+					</p>
+					<div class="author">
+						<strong>Mireet</strong><br />
+						<span class="semibold">Wyse Construction</span><br />
+						<em class="reg">Accounting Manager</em><br />
+						<span><a target="_blank" href="https://wyseconstruction.ca" class="underline" role="link" aria-label="offsite link to wyseconstruction.ca">wyseconstruction.ca</a></span>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<Image src={shiupong} alt="Shiupong corporate site" />
+					<p>
+						<span class="quote top">&rdquo;</span>
+						We had <span class="semibold">TradesAdmin</span> review our corporate site and are very pleased with how well the site is performing. They corrected several technical issues, explained everything
+						clearly, and are always accessible.<span class="quote btm">&rdquo;</span>
+					</p>
+					<div class="author">
+						<strong>Carmen</strong><br />
+						<span class="semibold">Shiupong Group</span><br />
+						<em class="reg">National Account Manager</em><br />
+						<span><a target="_blank" href="https://shiupong.com" class="underline" role="link" aria-label="offsite link to shiupong.com">shiupong.com</a></span>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<Image src={riverscape} alt="Riverscape residential community project" />
+					<p>
+						<span class="quote top">&rdquo;</span>
+						<span class="semibold">TradesAdmin</span> significantly accelerated our site’s loading times and resolved persistent mobile layout issues, all without requiring a complete redesign. Their targeted
+						optimizations enhanced both user experience and site performance across devices.<span class="quote btm">&rdquo;</span>
+					</p>
+					<div class="author">
+						<strong>Mark</strong><br />
+						<span class="semibold">Upperview Homes</span><br />
+						<em class="reg">President & Owner</em><br />
+						<span><a target="_blank" href="https://riverscape.ca/" class="underline" role="link" aria-label="offsite link to riverscape.ca">riverscape.ca</a></span>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<Image src={gia} alt="Gia Property Management" />
+					<p>
+						<span class="quote top">&rdquo;</span>
+						<span class="semibold">TradesAdmin</span> made the process of building our WordPress site easy, straightforward, and perfect for us to manage our own content. Our site functions great, and is
+						responsive. They corrected multiple technical issues, explained the root causes clearly, and restored our site stability.<span class="quote btm">&rdquo;</span>
+					</p>
+					<div class="author">
+						<strong>Mike</strong><br />
+						<span class="semibold">Gia Property Management</span><br />
+						<em class="reg">Co-Founder & Vice President</em><br />
+						<span><a target="_blank" href="https://giapm.ca/" class="underline" role="link" aria-label="offsite link to giapm.ca">giapm.ca</a></span>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<Image src={fortune} alt="Fortune District website" />
+					<p>
+						<span class="quote top">&rdquo;</span>
+						<span class="semibold">TradesAdmin</span> have continually been attentive with any technical questions or concerns that we had, responded quickly, and handled the job thoroughly. <span
+							class="quote btm">&rdquo;</span
+						>
+					</p>
+					<div class="author">
+						<strong>Kent</strong><br />
+						<span class="semibold">Fortune CCP - Pre-Delivery Inspections (PDI)</span><br />
+						<em class="reg">Founder & Owner</em><br />
+						<span><a target="_blank" href="https://fortuneccp.com" class="underline" role="link" aria-label="offsite link to fortuneccp.com">fortuneccp.com</a></span>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</div>
+</section>

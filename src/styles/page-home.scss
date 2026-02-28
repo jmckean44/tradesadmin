@@ -401,7 +401,7 @@
 }
 
 #pricing .line-btm {
-	border-bottom: 1px #ddd dashed;
+	border-bottom: 1px #ccc dashed;
 	margin-bottom: 1.25rem;
 	padding-bottom: 0.25rem;
 }
@@ -410,7 +410,7 @@
 	padding: 2rem 1rem 0 clamp(1.5rem, 3vw, 3rem);
 	width: 100%;
 	margin-top: 35px;
-	border-left: 1px #ccc solid;
+	border-left: 2px #ccc solid;
 	z-index: 2;
 }
 
@@ -422,7 +422,6 @@
 }
 
 .pricing-card.single-issue {
-	background: #fff;
 	padding: 0;
 	border-left: 0;
 	box-shadow: none;
@@ -478,7 +477,7 @@
 		border-left: 0;
 	}
 	.pricing-card.single-issue {
-		border-bottom: 1px #ccc solid;
+		border-bottom: 2px #ccc solid;
 		margin-bottom: 0;
 	}
 	.pricing-card.single-issue .pricing-amount {
@@ -495,7 +494,17 @@
 	}
 }
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
+	#pricing {
+		background: #f9f8f6;
+	}
+	#pricing .container {
+		padding: 100px 0 1rem;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background: none;
+	}
 	.pricing-amount {
 		text-align: left !important;
 	}

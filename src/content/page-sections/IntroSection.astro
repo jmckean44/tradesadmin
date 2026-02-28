@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import technical from '../../img/technical.webp';
+import localseo from '../../img/local-seo.webp';
+import iconStructure from '../../img/icon-structure.webp';
+import hosting from '../../img/icon-audit.webp';
+---
+
+<section id="intro">
+	<div class="container page-top">
+		<div class="swiper swiper-intro">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide slide-1">
+					<div class="flex padding-x align-middle">
+						<div class="cell small-18 center">
+							<div class="tagline">
+								<h1><strong>Technical support</strong> <span class="txt-light">for HVAC, plumbing, electrical &</span> <strong>contractor websites</strong></h1>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="flex padding-x align-middle">
+						<div class="cell small-18 medium-8 medium-order-1 small-order-2 center performance">
+							<Image src={technical} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
+						</div>
+						<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+							<h1><strong>Performance Optimization</strong></h1>
+							<p>
+								<span class="semibold">Core Web Vitals</span> diagnostics, layout stabilization, and <span class="semibold">performance corrections</span>.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="flex padding-x align-middle">
+						<div class="cell small-18 medium-10">
+							<h1><strong>Technical SEO & Indexing</strong></h1>
+							<p>Ensuring your <span class="semibold">business shows up correctly</span> when people search for your services <span class="semibold">"near me".</span></p>
+						</div>
+						<div class="cell small-18 medium-8 center technical">
+							<Image src={localseo} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="flex padding-x align-middle">
+						<div class="cell small-18 medium-8 medium-order-1 small-order-2 center structure">
+							<Image src={iconStructure} alt="Structure icon" class="structure" />
+						</div>
+						<div class="cell small-18 medium-10 medium-order-2 small-order-1">
+							<h1><strong>Structural & Functional Corrections</strong></h1>
+							<p>
+								Fixing <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other technical inconsistencies.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="flex padding-x align-middle">
+						<div class="cell small-18 medium-10">
+							<strong>Maintenance, Hosting & Support</strong>
+							<p>Technical support for <span class="semibold">hosting, DNS, SSL certificates, security,</span> and more.</p>
+						</div>
+						<div class="cell small-18 medium-8 hosting">
+							<Image src={hosting} alt="Website Hosting, Maintenance & Support Illustration" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</div>
+</section>

@@ -205,6 +205,36 @@ button:hover,
 	transition: all ease 0.3s;
 }
 
+// Spinner for submit button
+.btn-spinner {
+	display: inline-block;
+	position: absolute;
+	right: 1.5rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 1.2em;
+	height: 1.2em;
+	border: 2.5px solid #fff;
+	border-top: 2.5px solid var.$theme-clr;
+	border-radius: 50%;
+	animation: btn-spin 0.7s linear infinite;
+	background: transparent;
+	pointer-events: none;
+}
+.btn.arrow {
+	position: relative;
+	overflow: hidden;
+}
+
+@keyframes btn-spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 /* =============================================
 	 INPUTS
 ================================================ */

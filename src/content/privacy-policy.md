@@ -1,8 +1,8 @@
 # Privacy Policy
 
-TradesAdmin collects and stores only the information submitted through the website scan form.
+TradesAdmin collects and stores only the information submitted through the website form.
 
-All submitted information is stored securely a Notion workspace. It is used only for:
+All submitted information is stored securely in a <a href="https://www.notion.com/" target="_blank" class="underline" rel="noopener" role="link" aria-label="Notion website (opens in new window)">Notion</a> workspace. It is used only for:
 
 - Reviewing your website
 - Preparing technical scan results

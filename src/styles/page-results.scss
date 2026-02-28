@@ -229,12 +229,6 @@ h1.center {
 	border-top-color: var.$note;
 }
 
-@media (max-width: 500px) {
-	.review-vitals {
-		grid-template-columns: 1fr;
-	}
-}
-
 .review-fixes {
 	margin-top: 0.75rem;
 }
@@ -250,7 +244,7 @@ h1.center {
 	padding-left: 1.5rem;
 	list-style: decimal;
 	list-style-position: outside;
-	font-size: 1.2rem;
+	font-size: 1.5rem;
 	line-height: 1.35;
 	max-width: 650px;
 	font-family: var.$font-sans-serif-med;
@@ -260,13 +254,18 @@ h1.center {
 	margin-bottom: 1rem;
 }
 
-// .review-download {
-// 	margin: 4rem auto;
-// 	max-width: 500px;
-// 	text-align: center;
-// 	font-family: var.$font-sans-serif-semibold;
-// }
-
-// .review-download span {
-// 	font-family: var.$font-sans-serif-reg;
-// }
+@media (max-width: 500px) {
+	.review-score-circle span {
+		font-size: 2rem;
+	}
+	.review-score-item {
+		padding: 1.5rem 1rem;
+	}
+	.review-score-circle {
+		height: 100px;
+		width: 100px;
+	}
+	.review-score-circle:before {
+		inset: 5px;
+	}
+}

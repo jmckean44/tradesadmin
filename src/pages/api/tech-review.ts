@@ -412,9 +412,6 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('phone_number', ['phone', 'telephone'], input.phone);
 	setTextLikeProperty('rich_text', ['message', 'details', 'comments', 'notes'], input.message);
 
-	const statusKey = findPropertyKeyByType(propertiesSchema, 'checkbox', ['scan available', 'available', 'has live data']);
-	if (statusKey) properties[statusKey] = { checkbox: input.preview.available === true };
-
 	const submittedAtKey = findPropertyKeyByType(propertiesSchema, 'date', ['submitted at', 'submitted', 'date']);
 	if (submittedAtKey) properties[submittedAtKey] = { date: { start: new Date().toISOString() } };
 
@@ -438,9 +435,9 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	}
 
 	// Only set Status = New if creating a new page (not updating)
-	const statusSelectKey = findPropertyKeyByType(propertiesSchema, 'select', ['status']);
-	if (statusSelectKey && !existingPageId) {
-		properties[statusSelectKey] = { select: { name: 'New' } };
+	const statusKey = findPropertyKeyByType(propertiesSchema, 'status', ['status']);
+	if (statusKey && !existingPageId) {
+		properties[statusKey] = { status: { name: 'New' } };
 	}
 
 	await createOrUpdateNotionPage(notionToken, notionDatabaseId, existingPageId, properties);
