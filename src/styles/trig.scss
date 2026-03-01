@@ -8,7 +8,7 @@
 
 .trig {
 	--trig-delay: 0s;
-	--trig-duration: 2s;
+	--trig-duration: 1.5s;
 	--trig-blend: ease-out;
 	--trig-direction: normal backwards;
 
@@ -1348,6 +1348,13 @@
 	transition: transform var(--trig-blend) var(--trig-duration);
 }
 
+.trig-parallax-up-lrg.trig-target,
+.trig-parallax-up-lrg .trig-target {
+	display: inline-block;
+	transform: translateY(calc(var(--trig-reverse) * 1.25));
+	transition: transform var(--trig-blend) var(--trig-duration);
+}
+
 /* END */
 
 /* Parallax Down */
@@ -1359,6 +1366,13 @@
 	transition: transform var(--trig-blend) var(--trig-duration);
 }
 
+.trig-parallax-down-lrg.trig-target,
+.trig-parallax-down-lrg .trig-target {
+	display: inline-block;
+	transform: translateY(calc(var(--trig) * 1.25));
+	transition: transform var(--trig-blend) var(--trig-duration);
+}
+
 /* END */
 
 /* Parallax Left */
@@ -1367,6 +1381,13 @@
 .trig-parallax-left .trig-target {
 	display: inline-block;
 	transform: translateX(calc(var(--trig) / 2));
+	transition: transform var(--trig-blend) var(--trig-duration);
+}
+
+.trig-parallax-left-lrg.trig-target,
+.trig-parallax-left-lrg .trig-target {
+	display: inline-block;
+	transform: translateX(calc(var(--trig) * 1.5));
 	transition: transform var(--trig-blend) var(--trig-duration);
 }
 

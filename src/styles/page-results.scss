@@ -128,7 +128,7 @@ h1.center {
 .review-score-circle span {
 	position: relative;
 	z-index: 1;
-	font-size: 3rem;
+	font-size: clamp(2.25rem, 5vw, 3rem);
 	font-family: var.$font-sans-serif-semibold;
 	line-height: 1;
 }
@@ -193,7 +193,7 @@ h1.center {
 
 .review-vital-status {
 	margin-top: 1rem;
-	font-size: 1rem;
+	font-size: clamp(0.9rem, 2.5vw, 1.2rem);
 	font-family: var.$font-sans-serif-semibold;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
@@ -255,9 +255,6 @@ h1.center {
 }
 
 @media (max-width: 500px) {
-	.review-score-circle span {
-		font-size: 2rem;
-	}
 	.review-score-item {
 		padding: 1.5rem 1rem;
 	}

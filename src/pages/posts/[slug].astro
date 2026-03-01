@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
 	const blogPosts = await getCollection('blog');
 	return blogPosts.map((post) => ({

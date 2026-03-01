@@ -98,6 +98,14 @@ type NotionSubmissionInput = {
 	preview: ReviewPreview;
 	review: Review | null;
 	reviewError: string;
+	siteChecks: {
+		sslValid: boolean | null;
+		httpStatus: number | null;
+		dnsFound: boolean | null;
+		sitemapExists: boolean | null;
+		cspPresent: boolean | null;
+		error: string;
+	};
 };
 
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
@@ -438,7 +446,12 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['interactive', 'tti'], input.preview.vitals.interactive || 'N/A');
 	setTextLikeProperty('rich_text', ['tbt', 'total blocking time'], input.preview.vitals.tbt || 'N/A');
 	setTextLikeProperty('rich_text', ['cls'], input.preview.vitals.cls || 'N/A');
-	setTextLikeProperty('rich_text', ['review error', 'scan error', 'error'], input.reviewError || input.preview.reviewError || '');
+	setTextLikeProperty('rich_text', ['ssl valid'], input.siteChecks.sslValid == null ? 'Unknown' : input.siteChecks.sslValid ? 'Yes' : 'No');
+	setTextLikeProperty('rich_text', ['http status'], input.siteChecks.httpStatus == null ? '' : String(input.siteChecks.httpStatus));
+	setTextLikeProperty('rich_text', ['dns found'], input.siteChecks.dnsFound == null ? 'Unknown' : input.siteChecks.dnsFound ? 'Yes' : 'No');
+	setTextLikeProperty('rich_text', ['sitemap exists'], input.siteChecks.sitemapExists == null ? 'Unknown' : input.siteChecks.sitemapExists ? 'Yes' : 'No');
+	setTextLikeProperty('rich_text', ['csp present'], input.siteChecks.cspPresent == null ? 'Unknown' : input.siteChecks.cspPresent ? 'Yes' : 'No');
+	setTextLikeProperty('rich_text', ['review error', 'scan error', 'error'], input.reviewError || input.preview.reviewError || input.siteChecks.error || '');
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
 
@@ -495,6 +508,66 @@ async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
 	}
 
 	return { recommendedFixes: fixes.slice(0, 4) };
+}
+
+async function runSubmissionSiteChecks(url: string): Promise<NotionSubmissionInput['siteChecks']> {
+	const result: NotionSubmissionInput['siteChecks'] = {
+		sslValid: null,
+		httpStatus: null,
+		dnsFound: null,
+		sitemapExists: null,
+		cspPresent: null,
+		error: '',
+	};
+
+	if (!url) return result;
+
+	let hostname = '';
+	try {
+		hostname = new URL(normalizeUrl(url)).hostname;
+	} catch {
+		result.error = 'Invalid URL for site checks.';
+		return result;
+	}
+
+	try {
+		await dns.lookup(hostname);
+		result.dnsFound = true;
+	} catch {
+		result.dnsFound = false;
+	}
+
+	try {
+		const pageResponse = await withTimeout(fetch(normalizeUrl(url), { method: 'GET', redirect: 'follow' }), 15000, 'HTTP status check');
+		result.httpStatus = pageResponse.status;
+		result.cspPresent = Boolean(pageResponse.headers.get('content-security-policy'));
+
+		let resolvedProtocol = '';
+		try {
+			resolvedProtocol = new URL(pageResponse.url || normalizeUrl(url)).protocol;
+		} catch {
+			resolvedProtocol = '';
+		}
+
+		result.sslValid = resolvedProtocol === 'https:';
+	} catch (err) {
+		result.error = err instanceof Error ? err.message : String(err);
+	}
+
+	try {
+		const sitemapUrl = new URL('/sitemap.xml', normalizeUrl(url)).toString();
+		let sitemapResponse = await withTimeout(fetch(sitemapUrl, { method: 'HEAD', redirect: 'follow' }), 10000, 'Sitemap check');
+
+		if (sitemapResponse.status === 405) {
+			sitemapResponse = await withTimeout(fetch(sitemapUrl, { method: 'GET', redirect: 'follow' }), 10000, 'Sitemap check fallback');
+		}
+
+		result.sitemapExists = sitemapResponse.ok;
+	} catch {
+		result.sitemapExists = false;
+	}
+
+	return result;
 }
 
 function buildReviewPreview(review: Review | null, reviewError: string, fallbackFixes: string[] = [], forceUnavailable = false): ReviewPreview {
@@ -1002,6 +1075,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
 		const preview = buildReviewPreview(review, reviewError, fallbackFixes, forceUnavailablePreview);
+		const siteChecks = await runSubmissionSiteChecks(url);
 		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
@@ -1020,6 +1094,7 @@ export const POST: APIRoute = async ({ request }) => {
 				preview,
 				review,
 				reviewError,
+				siteChecks,
 			});
 			notionSynced = true;
 		} catch (notionErr) {

@@ -34,13 +34,7 @@ import ProcessSection from '../content/page-sections/ProcessSection.astro';
 import TestimonialsSection from '../content/page-sections/TestimonialsSection.astro';
 import ContactSection from '../content/page-sections/ContactSection.astro';
 
-import { defineMiddleware } from 'astro/middleware';
 import TopCTA from '../content/page-sections/TopCTA.astro';
-export const onRequest = defineMiddleware(async (_, next) => {
-	const response = await next();
-	response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' https://challenges.cloudflare.com");
-	return response;
-});
 ---
 
 <Layout pageTitle="description" pageSiteTitles="">
@@ -59,6 +53,6 @@ export const onRequest = defineMiddleware(async (_, next) => {
 	<script src="../scripts/swiper-intro.js"></script>
 	<script src="../scripts/swiper-testimonials.js"></script>
 	<script src="../scripts/nav-active-scroll.js"></script>
-	<script is:inline src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
 	<script src="../scripts/lazyload-videos.js"></script>
+	<script is:inline src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
 </Layout>
