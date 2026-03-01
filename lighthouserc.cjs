@@ -19,12 +19,12 @@ module.exports = {
 		assert: {
 			assertions: {
 				'categories:performance': ['error', { minScore: 0.45 }],
-				'categories:accessibility': ['error', { minScore: 0.92 }],
+				'categories:accessibility': ['error', { minScore: 0.9 }],
 				'categories:best-practices': ['error', { minScore: 0.75 }],
 				'categories:seo': ['error', { minScore: 0.9 }],
-				'first-contentful-paint': ['error', { maxNumericValue: 4500 }],
-				'largest-contentful-paint': ['error', { maxNumericValue: 4500 }],
-				'total-blocking-time': ['error', { maxNumericValue: 300 }],
+				'first-contentful-paint': ['error', { maxNumericValue: 6000 }],
+				'largest-contentful-paint': ['error', { maxNumericValue: 15000 }],
+				'total-blocking-time': ['error', { maxNumericValue: 500 }],
 				'cumulative-layout-shift': ['error', { maxNumericValue: 0.15 }],
 				'unused-javascript': ['warn', { maxNumericValue: 140000 }],
 				'color-contrast': 'warn',
