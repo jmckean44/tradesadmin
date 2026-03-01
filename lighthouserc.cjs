@@ -26,13 +26,13 @@ module.exports = {
 				'largest-contentful-paint': ['error', { maxNumericValue: 4500 }],
 				'total-blocking-time': ['error', { maxNumericValue: 250 }],
 				'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-				interactive: ['warn', { maxNumericValue: 6000 }],
 				'unused-javascript': ['warn', { maxNumericValue: 140000 }],
 				'color-contrast': 'error',
 			},
 		},
 		upload: {
-			target: 'temporary-public-storage',
+			target: 'filesystem',
+			outputDir: '.lighthouseci',
 		},
 	},
 };

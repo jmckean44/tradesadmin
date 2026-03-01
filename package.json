@@ -9,7 +9,7 @@
 		"astro": "astro",
 		"ci:build": "astro build",
 		"ci:serve": "astro dev --host 127.0.0.1 --port 4321",
-		"ci:lhci": "lhci autorun --config=./lighthouserc.cjs",
+		"ci:lhci": "lhci collect --config=./lighthouserc.cjs && lhci assert --config=./lighthouserc.cjs && lhci upload --config=./lighthouserc.cjs",
 		"ci:a11y": "pa11y-ci --config ./.pa11yci.json",
 		"ci:guardrails": "pnpm run ci:build && start-server-and-test 'pnpm run ci:serve' http://127.0.0.1:4321 'pnpm run ci:lhci && pnpm run ci:a11y'"
 	},

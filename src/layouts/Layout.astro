@@ -25,6 +25,8 @@ import { ClientRouter } from 'astro:transitions';
 
 <html lang="en" dir="ltr" class="light lenis">
 	<head>
+		<script src="../scripts/layout-init.js"></script>
+
 		<meta charset="UTF-8" />
 		<meta http-equiv="x-ua-compatible" content="ie=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -61,16 +63,6 @@ import { ClientRouter } from 'astro:transitions';
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<meta name="apple-mobile-web-app-title" content="TradesAdmin" />
 		<link rel="manifest" href="/site.webmanifest" />
-
-		<script is:inline>
-			if (window.trustedTypes && !window.trustedTypes.defaultPolicy) {
-				window.trustedTypes.createPolicy('default', {
-					createHTML: (value) => value,
-					createScript: (value) => value,
-					createScriptURL: (value) => value,
-				});
-			}
-		</script>
 
 		<!-- Accessibility: skip to content -->
 		<style>
@@ -173,50 +165,6 @@ import { ClientRouter } from 'astro:transitions';
 					]
 				}
 			}
-		</script>
-
-		<script is:inline>
-			window.dataLayer = window.dataLayer || [];
-			window.gtag =
-				window.gtag ||
-				function gtag() {
-					window.dataLayer.push(arguments);
-				};
-
-			(function initAnalytics() {
-				let loaded = false;
-				const measurementId = 'G-ES0ZCH7R7T';
-
-				const loadAnalytics = () => {
-					if (loaded) return;
-					loaded = true;
-
-					const script = document.createElement('script');
-					script.async = true;
-					script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-					document.head.appendChild(script);
-
-					window.gtag('js', new Date());
-					window.gtag('config', measurementId);
-				};
-
-				const onFirstInteraction = () => {
-					loadAnalytics();
-					window.removeEventListener('pointerdown', onFirstInteraction);
-					window.removeEventListener('keydown', onFirstInteraction);
-					window.removeEventListener('touchstart', onFirstInteraction);
-				};
-
-				window.addEventListener('pointerdown', onFirstInteraction, { once: true, passive: true });
-				window.addEventListener('keydown', onFirstInteraction, { once: true });
-				window.addEventListener('touchstart', onFirstInteraction, { once: true, passive: true });
-
-				if ('requestIdleCallback' in window) {
-					window.requestIdleCallback(() => loadAnalytics(), { timeout: 6000 });
-				} else {
-					window.setTimeout(loadAnalytics, 6000);
-				}
-			})();
 		</script>
 
 		<ClientRouter />

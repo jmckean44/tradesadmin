@@ -1,0 +1,50 @@
+[
+  {
+    "url": "http://127.0.0.1:4321/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_-2026_03_01_17_57_13.report.html",
+    "jsonPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_-2026_03_01_17_57_13.report.json",
+    "summary": {
+      "performance": 0.49,
+      "accessibility": 0.93,
+      "best-practices": 0.79,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://127.0.0.1:4321/results/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_results_-2026_03_01_17_57_57.report.html",
+    "jsonPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_results_-2026_03_01_17_57_57.report.json",
+    "summary": {
+      "performance": 0.69,
+      "accessibility": 0.91,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://127.0.0.1:4321/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_-2026_03_01_17_57_37.report.html",
+    "jsonPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_-2026_03_01_17_57_37.report.json",
+    "summary": {
+      "performance": 0.54,
+      "accessibility": 0.93,
+      "best-practices": 0.79,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://127.0.0.1:4321/results/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_results_-2026_03_01_17_58_10.report.html",
+    "jsonPath": "/Users/design3/Jeff/www/Business/Trades Admin/.lighthouseci/127_0_0_1-_results_-2026_03_01_17_58_10.report.json",
+    "summary": {
+      "performance": 0.6,
+      "accessibility": 0.91,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  }
+]

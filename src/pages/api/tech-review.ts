@@ -331,16 +331,22 @@ async function getNotionDatabaseProperties(token: string, databaseId: string): P
 	return data.properties ?? {};
 }
 
-async function findExistingNotionPageIdByEmail(token: string, databaseId: string, emailPropertyName: string, email: string): Promise<string | null> {
+async function findExistingNotionPageIdByWebsite(token: string, databaseId: string, websitePropertyName: string, websitePropertyType: 'url' | 'rich_text', websiteUrl: string): Promise<string | null> {
 	const response = await withTimeout(
 		fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
 			method: 'POST',
 			headers: getNotionHeaders(token),
 			body: JSON.stringify({
-				filter: {
-					property: emailPropertyName,
-					email: { equals: email },
-				},
+				filter:
+					websitePropertyType === 'url'
+						? {
+								property: websitePropertyName,
+								url: { equals: websiteUrl },
+						  }
+						: {
+								property: websitePropertyName,
+								rich_text: { equals: stripUrlProtocol(websiteUrl) },
+						  },
 				page_size: 1,
 			}),
 		}),
@@ -456,9 +462,18 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
 
 	let existingPageId: string | null = null;
-	if (emailKey && input.email) {
-		const emailPropertyName = propertiesSchema[emailKey]?.name || emailKey;
-		existingPageId = await findExistingNotionPageIdByEmail(notionToken, notionDatabaseId, emailPropertyName, input.email);
+	if (normalizedWebsiteUrl) {
+		const websiteUrlKey = findPropertyKeyByType(propertiesSchema, 'url', ['url', 'website', 'site', 'domain']);
+		if (websiteUrlKey) {
+			const websitePropertyName = propertiesSchema[websiteUrlKey]?.name || websiteUrlKey;
+			existingPageId = await findExistingNotionPageIdByWebsite(notionToken, notionDatabaseId, websitePropertyName, 'url', normalizedWebsiteUrl);
+		} else {
+			const websiteTextKey = findPropertyKeyByType(propertiesSchema, 'rich_text', ['url', 'website', 'site', 'domain']);
+			if (websiteTextKey) {
+				const websitePropertyName = propertiesSchema[websiteTextKey]?.name || websiteTextKey;
+				existingPageId = await findExistingNotionPageIdByWebsite(notionToken, notionDatabaseId, websitePropertyName, 'rich_text', normalizedWebsiteUrl);
+			}
+		}
 	}
 
 	// Only set Status = New if creating a new page (not updating)

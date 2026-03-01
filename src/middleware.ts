@@ -5,7 +5,7 @@ const SECURITY_CSP = [
 	"base-uri 'self'",
 	"object-src 'none'",
 	"frame-ancestors 'none'",
-	"script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com",
+	"script-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com",
 	"connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://region1.google-analytics.com",
 	"img-src 'self' data: https:",
 	"style-src 'self' 'unsafe-inline'",

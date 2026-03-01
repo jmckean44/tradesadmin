@@ -2,10 +2,10 @@
   {
     "name": "minScore",
     "expected": 0.75,
-    "actual": 0.66,
+    "actual": 0.45,
     "values": [
-      0.46,
-      0.66
+      0.45,
+      0.41
     ],
     "operator": ">=",
     "passed": false,
@@ -32,10 +32,10 @@
   {
     "name": "minScore",
     "expected": 0.85,
-    "actual": 0.79,
+    "actual": 0.75,
     "values": [
-      0.79,
-      0.79
+      0.75,
+      0.75
     ],
     "operator": ">=",
     "passed": false,
@@ -62,10 +62,10 @@
   {
     "name": "maxNumericValue",
     "expected": 2800,
-    "actual": 2884.9359999999997,
+    "actual": 6581.877375,
     "values": [
-      13097.847274999998,
-      2884.9359999999997
+      11750.203,
+      6581.877375
     ],
     "operator": "<=",
     "passed": false,
@@ -78,10 +78,10 @@
   {
     "name": "maxNumericValue",
     "expected": 4500,
-    "actual": 14218.616,
+    "actual": 13880.26425,
     "values": [
-      28485.213999999967,
-      14218.616
+      23134.90400000001,
+      13880.26425
     ],
     "operator": "<=",
     "passed": false,
@@ -93,19 +93,19 @@
   },
   {
     "name": "maxNumericValue",
-    "expected": 6000,
-    "actual": 17941.952400000002,
+    "expected": 250,
+    "actual": 413,
     "values": [
-      30247.223242499982,
-      17941.952400000002
+      413,
+      752.5
     ],
     "operator": "<=",
     "passed": false,
-    "auditId": "interactive",
-    "level": "warn",
+    "auditId": "total-blocking-time",
+    "level": "error",
     "url": "http://127.0.0.1:4321/",
-    "auditTitle": "Time to Interactive",
-    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/interactive/"
+    "auditTitle": "Total Blocking Time",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/"
   },
   {
     "name": "minScore",
@@ -122,21 +122,6 @@
     "url": "http://127.0.0.1:4321/",
     "auditTitle": "Background and foreground colors do not have a sufficient contrast ratio.",
     "auditDocumentationLink": "https://dequeuniversity.com/rules/axe/4.9/color-contrast"
-  },
-  {
-    "name": "minScore",
-    "expected": 0.75,
-    "actual": 0.71,
-    "values": [
-      0.71,
-      0.66
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "performance",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/results/"
   },
   {
     "name": "minScore",
@@ -170,26 +155,10 @@
   },
   {
     "name": "maxNumericValue",
-    "expected": 2800,
-    "actual": 3659.9784,
-    "values": [
-      3659.9784,
-      3940.2689
-    ],
-    "operator": "<=",
-    "passed": false,
-    "auditId": "first-contentful-paint",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/results/",
-    "auditTitle": "First Contentful Paint",
-    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/"
-  },
-  {
-    "name": "maxNumericValue",
     "expected": 0.1,
     "actual": 0.12647657418623784,
     "values": [
-      0.13153379453621133,
+      0.12647657418623784,
       0.12647657418623784
     ],
     "operator": "<=",
@@ -199,22 +168,6 @@
     "url": "http://127.0.0.1:4321/results/",
     "auditTitle": "Cumulative Layout Shift",
     "auditDocumentationLink": "https://web.dev/articles/cls"
-  },
-  {
-    "name": "maxNumericValue",
-    "expected": 6000,
-    "actual": 12041.341965000001,
-    "values": [
-      12457.904470000001,
-      12041.341965000001
-    ],
-    "operator": "<=",
-    "passed": false,
-    "auditId": "interactive",
-    "level": "warn",
-    "url": "http://127.0.0.1:4321/results/",
-    "auditTitle": "Time to Interactive",
-    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/interactive/"
   },
   {
     "name": "minScore",

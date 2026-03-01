@@ -1,7 +1,3 @@
----
-import { useEffect, useState } from 'react';
----
-
 <html lang="en">
 	<head>
 		<title>Admin Dashboard</title>
@@ -11,57 +7,6 @@ import { useEffect, useState } from 'react';
 	<body>
 		<h1>Form Submissions Dashboard</h1>
 		<div id="dashboard-root"></div>
-		<script type="module" is:inline>
-			import { h, render } from 'preact';
-			import { useEffect, useState } from 'preact/hooks';
-
-			function Dashboard() {
-				const [submissions, setSubmissions] = useState([]);
-				const [loading, setLoading] = useState(true);
-				const [error, setError] = useState('');
-
-				useEffect(() => {
-					fetch('/api/submissions')
-						.then((r) => r.json())
-						.then((data) => {
-							setSubmissions(Array.isArray(data) ? data : []);
-							setLoading(false);
-						})
-						.catch((e) => {
-							setError('Failed to load submissions');
-							setLoading(false);
-						});
-				}, []);
-
-				if (loading) return h('p', null, 'Loading...');
-				if (error) return h('p', { style: 'color:red' }, error);
-				if (!submissions.length) return h('p', null, 'No submissions yet.');
-
-				return h('table', { border: 1, cellPadding: 6 }, [
-					h(
-						'thead',
-						null,
-						h('tr', null, [h('th', null, 'Date'), h('th', null, 'Company'), h('th', null, 'Email'), h('th', null, 'URL'), h('th', null, 'Status'), h('th', null, 'Error'), h('th', null, 'Results')]),
-					),
-					h(
-						'tbody',
-						null,
-						submissions.map((s, i) =>
-							h('tr', { key: i }, [
-								h('td', null, new Date(s.submitted_at).toLocaleString()),
-								h('td', null, s.company),
-								h('td', null, s.email),
-								h('td', null, s.url),
-								h('td', null, s.error ? 'Failure' : 'Success'),
-								h('td', null, s.error || ''),
-								h('td', null, s.results ? JSON.stringify(s.results) : ''),
-							]),
-						),
-					),
-				]);
-			}
-
-			render(h(Dashboard), document.getElementById('dashboard-root'));
-		</script>
+		<script src="../scripts/admin-dashboard.js"></script>
 	</body>
 </html>

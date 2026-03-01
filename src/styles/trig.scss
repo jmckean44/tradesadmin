@@ -15,6 +15,16 @@
 	position: relative;
 }
 
+html.trig-js [class*='trig-fade'].trig-target,
+html.trig-js [class*='trig-fade'] .trig-target {
+	opacity: 0;
+}
+
+html.trig-js [class*='trig-fade'].trig.trig-target,
+html.trig-js [class*='trig-fade'].trig .trig-target {
+	opacity: 1;
+}
+
 /* END */
 
 /* END */
