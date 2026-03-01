@@ -62,6 +62,16 @@ import { ClientRouter } from 'astro:transitions';
 		<meta name="apple-mobile-web-app-title" content="TradesAdmin" />
 		<link rel="manifest" href="/site.webmanifest" />
 
+		<script is:inline>
+			if (window.trustedTypes && !window.trustedTypes.defaultPolicy) {
+				window.trustedTypes.createPolicy('default', {
+					createHTML: (value) => value,
+					createScript: (value) => value,
+					createScriptURL: (value) => value,
+				});
+			}
+		</script>
+
 		<!-- Accessibility: skip to content -->
 		<style>
 			.skip-link {
