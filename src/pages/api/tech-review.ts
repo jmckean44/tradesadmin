@@ -5,9 +5,44 @@ export const DOMAIN_NOT_FOUND_ERROR = 'The website address you entered could not
 // Check if domain resolves
 async function isDomainResolvable(url: string): Promise<boolean> {
 	try {
-		const { hostname } = new URL(normalizeUrl(url));
-		await dns.lookup(hostname);
-		return true;
+		const normalized = normalizeUrl(url);
+		const parsed = new URL(normalized);
+		const hostname = String(parsed.hostname || '')
+			.trim()
+			.toLowerCase();
+		if (!hostname) return false;
+
+		const hostCandidates = Array.from(new Set([hostname, hostname.startsWith('www.') ? hostname.slice(4) : `www.${hostname}`].filter(Boolean)));
+
+		for (const hostCandidate of hostCandidates) {
+			try {
+				await dns.lookup(hostCandidate);
+				return true;
+			} catch {
+				// continue trying fallbacks
+			}
+		}
+
+		for (const hostCandidate of hostCandidates) {
+			try {
+				const candidateUrl = new URL(normalized);
+				candidateUrl.hostname = hostCandidate;
+				const response = await withTimeout(
+					fetch(candidateUrl.toString(), {
+						method: 'HEAD',
+						redirect: 'follow',
+					}),
+					7000,
+					'Website reachability check',
+				);
+
+				if (response.status >= 100) return true;
+			} catch {
+				// continue trying fallbacks
+			}
+		}
+
+		return false;
 	} catch {
 		return false;
 	}

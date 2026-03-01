@@ -19,11 +19,44 @@ document.addEventListener('astro:page-load', () => {
 	form.dataset.scanFormBound = 'true';
 
 	let submitted = false;
+	let turnstileScriptPromise = null;
+
+	function loadTurnstileScriptOnce() {
+		if (window.turnstile && typeof window.turnstile.render === 'function') {
+			return Promise.resolve(true);
+		}
+
+		if (turnstileScriptPromise) return turnstileScriptPromise;
+
+		turnstileScriptPromise = new Promise((resolve) => {
+			const existing = document.querySelector('script[data-turnstile-loader="true"]');
+			if (existing) {
+				existing.addEventListener('load', () => resolve(true), { once: true });
+				existing.addEventListener('error', () => resolve(false), { once: true });
+				return;
+			}
+
+			const script = document.createElement('script');
+			script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+			script.async = true;
+			script.defer = true;
+			script.setAttribute('data-turnstile-loader', 'true');
+			script.addEventListener('load', () => resolve(true), { once: true });
+			script.addEventListener('error', () => resolve(false), { once: true });
+			document.head.appendChild(script);
+		});
+
+		return turnstileScriptPromise;
+	}
 
 	function ensureTurnstileRendered() {
 		if (!turnstileContainer) return false;
 		const siteKey = turnstileContainer.getAttribute('data-sitekey')?.trim();
-		if (!siteKey || !window.turnstile || typeof window.turnstile.render !== 'function') return false;
+		if (!siteKey) return false;
+		if (!window.turnstile || typeof window.turnstile.render !== 'function') {
+			void loadTurnstileScriptOnce();
+			return false;
+		}
 
 		const existingWidgetId = turnstileContainer.dataset.widgetId;
 		if (existingWidgetId) return true;
@@ -37,6 +70,7 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	if (!ensureTurnstileRendered()) {
+		void loadTurnstileScriptOnce();
 		let attempts = 0;
 		const interval = setInterval(() => {
 			attempts += 1;
@@ -438,6 +472,7 @@ document.addEventListener('astro:page-load', () => {
 		submitted = true;
 		applyUrlAutocorrect();
 		applyEmailAutocorrect();
+		void loadTurnstileScriptOnce();
 
 		if (!validateAllFields()) {
 			form.querySelector(':invalid')?.focus();
@@ -454,4 +489,12 @@ document.addEventListener('astro:page-load', () => {
 
 		submitForm(turnstileToken);
 	});
+
+	form.addEventListener(
+		'focusin',
+		() => {
+			void loadTurnstileScriptOnce();
+		},
+		{ once: true },
+	);
 });
