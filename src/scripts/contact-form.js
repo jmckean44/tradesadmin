@@ -1,12 +1,4 @@
 document.addEventListener('astro:page-load', () => {
-	// If user navigated back from results page, clear the form
-	if (window.performance && window.performance.getEntriesByType) {
-		const navEntries = window.performance.getEntriesByType('navigation');
-		if (navEntries.length && navEntries[0].type === 'back_forward') {
-			const form = document.getElementById('form');
-			if (form) form.reset();
-		}
-	}
 	const form = document.getElementById('form');
 	const result = document.getElementById('result');
 	const reviewPreview = document.getElementById('review-preview');
@@ -20,6 +12,12 @@ document.addEventListener('astro:page-load', () => {
 
 	let submitted = false;
 	let turnstileScriptPromise = null;
+
+	function isHistoryNavigationRestore() {
+		if (!window.performance || typeof window.performance.getEntriesByType !== 'function') return false;
+		const navEntries = window.performance.getEntriesByType('navigation');
+		return Boolean(navEntries.length && navEntries[0]?.type === 'back_forward');
+	}
 
 	function loadTurnstileScriptOnce() {
 		if (window.turnstile && typeof window.turnstile.render === 'function') {
@@ -236,8 +234,31 @@ document.addEventListener('astro:page-load', () => {
 		ensureTurnstileRendered();
 	}
 
-	function resetFormUiState() {
+	function resetFormUiState(options = {}) {
+		const { preserveAllExceptUrl = false } = options;
+		const preservedEntries = preserveAllExceptUrl ? Array.from(new FormData(form).entries()).filter(([key]) => key !== 'url') : [];
+
 		form.reset();
+
+		if (preserveAllExceptUrl) {
+			for (const [key, value] of preservedEntries) {
+				if (typeof value !== 'string') continue;
+				const field = form.elements.namedItem(key);
+				if (field instanceof RadioNodeList) {
+					for (const element of Array.from(field)) {
+						if (element instanceof HTMLInputElement && (element.type === 'checkbox' || element.type === 'radio')) {
+							element.checked = element.value === value;
+						}
+					}
+					continue;
+				}
+
+				if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) {
+					field.value = value;
+				}
+			}
+		}
+
 		form.classList.remove('was-validated');
 		form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
 			el.classList.remove('is-valid', 'is-invalid');
@@ -250,6 +271,24 @@ document.addEventListener('astro:page-load', () => {
 		submitted = false;
 		resetTurnstileIfAvailable();
 	}
+
+	function resetForHistoryNavigationRestore() {
+		resetFormUiState();
+		result.style.display = 'none';
+		result.textContent = '';
+		reviewPreview.style.display = 'none';
+		reviewPreview.innerHTML = '';
+	}
+
+	if (isHistoryNavigationRestore()) {
+		resetForHistoryNavigationRestore();
+	}
+
+	window.addEventListener('pageshow', (event) => {
+		if (event.persisted || isHistoryNavigationRestore()) {
+			resetForHistoryNavigationRestore();
+		}
+	});
 
 	function isFormField(el) {
 		return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
@@ -400,7 +439,7 @@ document.addEventListener('astro:page-load', () => {
 					result.textContent = data.error;
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';
-					resetFormUiState();
+					resetFormUiState({ preserveAllExceptUrl: true });
 					urlInput.focus();
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
