@@ -209,14 +209,46 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	function resetTurnstileIfAvailable() {
-		if (!window.turnstile || typeof window.turnstile.reset !== 'function') return;
+		if (!turnstileContainer) return;
+		if (!window.turnstile || typeof window.turnstile.render !== 'function') return;
 		const widgetId = turnstileContainer?.dataset?.widgetId;
-		if (!widgetId) return;
-		try {
-			window.turnstile.reset(widgetId);
-		} catch {
-			// no-op
+		if (!widgetId) {
+			ensureTurnstileRendered();
+			return;
 		}
+
+		try {
+			if (typeof window.turnstile.remove === 'function') {
+				window.turnstile.remove(widgetId);
+			}
+		} catch {
+			if (typeof window.turnstile.reset === 'function') {
+				try {
+					window.turnstile.reset(widgetId);
+				} catch {
+					// no-op
+				}
+			}
+		}
+
+		delete turnstileContainer.dataset.widgetId;
+		turnstileContainer.innerHTML = '';
+		ensureTurnstileRendered();
+	}
+
+	function resetFormUiState() {
+		form.reset();
+		form.classList.remove('was-validated');
+		form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
+			el.classList.remove('is-valid', 'is-invalid');
+		});
+		form.querySelectorAll('[data-touched]').forEach((el) => {
+			el.removeAttribute('data-touched');
+		});
+		urlInput.setCustomValidity('');
+		emailInput.setCustomValidity('');
+		submitted = false;
+		resetTurnstileIfAvailable();
 	}
 
 	function isFormField(el) {
@@ -368,17 +400,20 @@ document.addEventListener('astro:page-load', () => {
 					result.textContent = data.error;
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';
+					resetFormUiState();
+					urlInput.focus();
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
 					result.textContent = 'Verification expired. Please complete the verification checkbox again and resubmit.';
 					reviewPreview.style.display = 'none';
 					reviewPreview.innerHTML = '';
+					resetTurnstileIfAvailable();
 				} else {
 					reviewPreview.style.display = 'block';
 					reviewPreview.innerHTML = `<div class="review-preview-card"><p>${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</p></div>`;
 					result.textContent = '';
+					resetTurnstileIfAvailable();
 				}
-				resetTurnstileIfAvailable();
 				return;
 			}
 
@@ -423,23 +458,7 @@ document.addEventListener('astro:page-load', () => {
 
 			renderReviewPreview(data?.preview);
 
-			form.reset();
-			form.classList.remove('was-validated');
-			form.querySelectorAll('.is-valid, .is-invalid').forEach((el) => {
-				el.classList.remove('is-valid', 'is-invalid');
-			});
-			form.querySelectorAll('[data-touched]').forEach((el) => {
-				el.removeAttribute('data-touched');
-			});
-			urlInput.setCustomValidity('');
-			submitted = false;
-
-			if (window.turnstile && typeof window.turnstile.reset === 'function') {
-				const widgetId = turnstileContainer?.dataset?.widgetId;
-				if (widgetId) {
-					window.turnstile.reset(widgetId);
-				}
-			}
+			resetFormUiState();
 		} catch (err) {
 			reviewPreview.style.display = 'none';
 			reviewPreview.innerHTML = '';
