@@ -7,7 +7,17 @@ import 'swiper/scss/autoplay';
 import 'swiper/scss/pagination';
 
 document.addEventListener('astro:page-load', () => {
-	const swiper = new Swiper('.swiper-intro', {
+	const container = document.querySelector('.swiper-intro');
+	if (!container) return;
+
+	if (container.swiper && typeof container.swiper.destroy === 'function') {
+		container.swiper.destroy(true, true);
+	}
+
+	const paginationEl = container.querySelector('.swiper-pagination');
+	if (!paginationEl) return;
+
+	const swiper = new Swiper(container, {
 		modules: [Autoplay, EffectFade, Pagination], // EffectCards, EffectCoverflow, EffectCreative,
 		grabCursor: true,
 		effect: 'fade', // 'cards', 'coverflow', 'creative',
@@ -24,12 +34,11 @@ document.addEventListener('astro:page-load', () => {
 		// 	},
 		// },
 		pagination: {
-			el: '.swiper-pagination',
+			el: paginationEl,
 			clickable: true,
 		},
 		spaceBetween: 0,
 		speed: 1000,
-		autoHeight: true,
 		autoplay: {
 			delay: 8000,
 			//disableOnInteraction: true,
@@ -37,4 +46,6 @@ document.addEventListener('astro:page-load', () => {
 		loop: true,
 		autoHeight: false,
 	});
+
+	container.swiper = swiper;
 });

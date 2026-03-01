@@ -9,6 +9,13 @@ document.addEventListener('astro:page-load', () => {
 	const container = document.querySelector('.swiper-testimonials');
 	if (!container) return; // Prevent errors if not found
 
+	if (container.swiper && typeof container.swiper.destroy === 'function') {
+		container.swiper.destroy(true, true);
+	}
+
+	const paginationEl = container.querySelector('.swiper-pagination');
+	if (!paginationEl) return;
+
 	const swiper = new Swiper(container, {
 		modules: [Autoplay, EffectFade, Pagination],
 		spaceBetween: 30,
@@ -21,7 +28,7 @@ document.addEventListener('astro:page-load', () => {
 		},
 		loop: true,
 		pagination: {
-			el: '.swiper-pagination',
+			el: paginationEl,
 			clickable: true,
 		},
 		breakpoints: {
