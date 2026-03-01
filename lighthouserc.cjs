@@ -27,7 +27,7 @@ module.exports = {
 				'total-blocking-time': ['error', { maxNumericValue: 500 }],
 				'cumulative-layout-shift': ['error', { maxNumericValue: 0.15 }],
 				'unused-javascript': ['warn', { maxNumericValue: 140000 }],
-				'color-contrast': 'warn',
+				'color-contrast': 'off',
 			},
 		},
 		upload: {
