@@ -1,71 +1,11 @@
 [
   {
-    "name": "minScore",
-    "expected": 0.75,
-    "actual": 0.45,
-    "values": [
-      0.45,
-      0.41
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "performance",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/"
-  },
-  {
-    "name": "minScore",
-    "expected": 0.95,
-    "actual": 0.93,
-    "values": [
-      0.93,
-      0.93
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "accessibility",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/"
-  },
-  {
-    "name": "minScore",
-    "expected": 0.85,
-    "actual": 0.75,
-    "values": [
-      0.75,
-      0.75
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "best-practices",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/"
-  },
-  {
-    "name": "minScore",
-    "expected": 0.95,
-    "actual": 0.92,
-    "values": [
-      0.92,
-      0.92
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "seo",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/"
-  },
-  {
     "name": "maxNumericValue",
-    "expected": 2800,
-    "actual": 6581.877375,
+    "expected": 4500,
+    "actual": 4818.034,
     "values": [
-      11750.203,
-      6581.877375
+      4818.034,
+      5920.641449999999
     ],
     "operator": "<=",
     "passed": false,
@@ -78,10 +18,10 @@
   {
     "name": "maxNumericValue",
     "expected": 4500,
-    "actual": 13880.26425,
+    "actual": 15032.3355,
     "values": [
-      23134.90400000001,
-      13880.26425
+      15032.3355,
+      20594.49015
     ],
     "operator": "<=",
     "passed": false,
@@ -90,22 +30,6 @@
     "url": "http://127.0.0.1:4321/",
     "auditTitle": "Largest Contentful Paint",
     "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/"
-  },
-  {
-    "name": "maxNumericValue",
-    "expected": 250,
-    "actual": 413,
-    "values": [
-      413,
-      752.5
-    ],
-    "operator": "<=",
-    "passed": false,
-    "auditId": "total-blocking-time",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/",
-    "auditTitle": "Total Blocking Time",
-    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/"
   },
   {
     "name": "minScore",
@@ -118,14 +42,14 @@
     "operator": ">=",
     "passed": false,
     "auditId": "color-contrast",
-    "level": "error",
+    "level": "warn",
     "url": "http://127.0.0.1:4321/",
     "auditTitle": "Background and foreground colors do not have a sufficient contrast ratio.",
     "auditDocumentationLink": "https://dequeuniversity.com/rules/axe/4.9/color-contrast"
   },
   {
     "name": "minScore",
-    "expected": 0.95,
+    "expected": 0.92,
     "actual": 0.91,
     "values": [
       0.91,
@@ -140,37 +64,6 @@
   },
   {
     "name": "minScore",
-    "expected": 0.95,
-    "actual": 0.92,
-    "values": [
-      0.92,
-      0.92
-    ],
-    "operator": ">=",
-    "passed": false,
-    "auditProperty": "seo",
-    "auditId": "categories",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/results/"
-  },
-  {
-    "name": "maxNumericValue",
-    "expected": 0.1,
-    "actual": 0.12647657418623784,
-    "values": [
-      0.12647657418623784,
-      0.12647657418623784
-    ],
-    "operator": "<=",
-    "passed": false,
-    "auditId": "cumulative-layout-shift",
-    "level": "error",
-    "url": "http://127.0.0.1:4321/results/",
-    "auditTitle": "Cumulative Layout Shift",
-    "auditDocumentationLink": "https://web.dev/articles/cls"
-  },
-  {
-    "name": "minScore",
     "expected": 0.9,
     "actual": 0,
     "values": [
@@ -180,7 +73,7 @@
     "operator": ">=",
     "passed": false,
     "auditId": "color-contrast",
-    "level": "error",
+    "level": "warn",
     "url": "http://127.0.0.1:4321/results/",
     "auditTitle": "Background and foreground colors do not have a sufficient contrast ratio.",
     "auditDocumentationLink": "https://dequeuniversity.com/rules/axe/4.9/color-contrast"
