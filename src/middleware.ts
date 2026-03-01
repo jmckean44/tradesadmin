@@ -12,7 +12,7 @@ const SECURITY_CSP = [
 	"font-src 'self' data:",
 	'frame-src https://challenges.cloudflare.com',
 	"form-action 'self'",
-	'trusted-types default',
+	"trusted-types default 'allow-duplicates' goog#html lit-html",
 	"require-trusted-types-for 'script'",
 	'upgrade-insecure-requests',
 ].join('; ');
