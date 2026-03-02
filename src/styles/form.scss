@@ -254,6 +254,11 @@ button:hover,
 	transition: all ease 0.3s;
 }
 
+.btn.arrow {
+	position: relative;
+	overflow: hidden;
+}
+
 .btn.arrow:hover {
 	padding-right: 2.5rem;
 	background: var.$highlight !important;
@@ -261,33 +266,42 @@ button:hover,
 	transition: all ease 0.3s;
 }
 
-// Spinner for submit button
-.btn-spinner {
-	display: inline-block;
-	position: absolute;
-	right: 1.5rem;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 1.2em;
-	height: 1.2em;
-	border: 2.5px solid #fff;
-	border-top: 2.5px solid var.$theme-clr;
-	border-radius: 50%;
-	animation: btn-spin 0.7s linear infinite;
-	background: transparent;
-	pointer-events: none;
-}
-.btn.arrow {
-	position: relative;
-	overflow: hidden;
+/* =============================================
+	 LOADING
+================================================ */
+.loader {
+	width: 60px;
+	padding-right: 1rem;
+	aspect-ratio: 2;
+	--_g: no-repeat radial-gradient(circle closest-side, var.$theme-clr 90%, #0000);
+	background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+	background-size: calc(100% / 3) 50%;
+	animation: l3 1s infinite linear;
 }
 
-@keyframes btn-spin {
-	0% {
-		transform: rotate(0deg);
+.btn .loader {
+	width: 26px;
+	margin-left: 0.55rem;
+	vertical-align: middle;
+	--_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #0000);
+}
+
+.btn[aria-busy='true'] {
+	pointer-events: none;
+}
+
+@keyframes l3 {
+	20% {
+		background-position: 0% 0%, 50% 50%, 100% 50%;
 	}
-	100% {
-		transform: rotate(360deg);
+	40% {
+		background-position: 0% 100%, 50% 0%, 100% 50%;
+	}
+	60% {
+		background-position: 0% 50%, 50% 100%, 100% 0%;
+	}
+	80% {
+		background-position: 0% 50%, 50% 50%, 100% 100%;
 	}
 }
 

@@ -255,7 +255,7 @@ document.addEventListener('astro:page-load', () => {
 
 	if (!payload?.preview) {
 		root.innerHTML = `
-			<div class="review-preview-card">
+			<div class="review-preview">
 				<h3>No recent scan results found</h3>
 				<p class="review-subtitle">Run a new free scan from the homepage to view results here.</p>
 				<a href="/#contact" class="btn">Go to Homepage</a>
@@ -275,7 +275,8 @@ document.addEventListener('astro:page-load', () => {
 			: typeof preview.reviewError === 'string' && preview.reviewError.trim()
 			? preview.reviewError.trim()
 			: 'Live scan data is currently unavailable. Showing fallback guidance.';
-	const reviewUnavailableMessage = preview.available === false ? `<p class="review-subtitle">${escapeHtml(normalizeUnavailableMessage(unavailableMessageText))}</p>` : '';
+	const reviewUnavailableMessage =
+		preview.available === false ? `<div class="review-preview"><p class="review-subtitle">${escapeHtml(normalizeUnavailableMessage(unavailableMessageText))}</p></div>` : '';
 
 	const scoreHtml = [
 		scoreRow('Performance', parseScore(scores.performance)),
@@ -329,8 +330,8 @@ document.addEventListener('astro:page-load', () => {
 	const resultsListHtml = combinedItemsHtml ? `<ul class="result-list">${combinedItemsHtml}</ul>` : '<p>No recommended fixes returned.</p>';
 
 	root.innerHTML = `
+		${reviewUnavailableMessage}
 		<div class="review-preview-card">
-			${reviewUnavailableMessage}
 			<div class="review-score-grid">${scoreHtml}</div>
 			<div class="review-vitals">${vitalsHtml}</div>
 			<div class="review-fixes">

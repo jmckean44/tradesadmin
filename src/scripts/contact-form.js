@@ -5,6 +5,8 @@ document.addEventListener('astro:page-load', () => {
 	const urlInput = document.getElementById('url');
 	const emailInput = document.getElementById('email_address');
 	const turnstileContainer = document.getElementById('turnstile-container');
+	const submitButton = document.getElementById('submit-btn');
+	const submitLoader = submitButton?.querySelector('.loader');
 
 	if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
 	if (form.dataset.scanFormBound === 'true') return;
@@ -13,6 +15,16 @@ document.addEventListener('astro:page-load', () => {
 	let submitted = false;
 	let turnstileScriptPromise = null;
 	let turnstileWarmupStarted = false;
+
+	function setSubmittingState(isSubmitting) {
+		if (submitButton instanceof HTMLButtonElement) {
+			submitButton.disabled = isSubmitting;
+			submitButton.setAttribute('aria-busy', isSubmitting ? 'true' : 'false');
+		}
+		if (submitLoader instanceof HTMLElement) {
+			submitLoader.style.display = isSubmitting ? 'inline-block' : 'none';
+		}
+	}
 
 	function isHistoryNavigationRestore() {
 		if (!window.performance || typeof window.performance.getEntriesByType !== 'function') return false;
@@ -424,6 +436,7 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	async function submitForm(turnstileToken) {
+		setSubmittingState(true);
 		const formData = new FormData(form);
 		const endpoint = form.dataset.apiPath || '/api/tech-review/';
 		const resultPage = form.dataset.resultsPath || '/results/';
@@ -543,6 +556,8 @@ document.addEventListener('astro:page-load', () => {
 			reviewPreview.innerHTML = '';
 			result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 			resetTurnstileIfAvailable();
+		} finally {
+			setSubmittingState(false);
 		}
 	}
 

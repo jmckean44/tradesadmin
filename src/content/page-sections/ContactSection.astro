@@ -32,8 +32,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						<div>
 							<label for="email_address" class="visually-hidden">Email</label>
 							<input type="email" name="email" id="email_address" placeholder="Email" autocomplete="email" spellcheck="false" />
-							<span class="helperText">Email</span>
-							<div class="empty-feedback">Please provide your email address</div>
+							<span class="helperText">Email (optional)</span>
 							<div class="invalid-feedback">Please provide a valid email address</div>
 						</div>
 						<div>
@@ -60,8 +59,8 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<p id="result" style="display:none;"></p>
 						<div id="review-preview" class="review-preview" style="display:none;"></div>
-						<button type="submit" class="btn arrow" id="submit-btn">
-							RUN FREE SCAN <span class="btn-spinner" style="display:none;" aria-hidden="true"></span>
+						<button type="submit" class="btn" id="submit-btn">
+							RUN FREE SCAN <em class="loader" style="display:none;" aria-hidden="true"></em>
 						</button>
 					</form>
 				</div>

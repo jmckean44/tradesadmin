@@ -1443,11 +1443,11 @@ export const POST: APIRoute = async ({ request }) => {
 		const message = typeof body.message === 'string' ? body.message.trim() : '';
 		const selectedModules = normalizeScanModules(body.scanModules);
 
-		if (!company || !email) {
-			return new Response(JSON.stringify({ error: 'Company and email are required.' }), { status: 400 });
+		if (!company) {
+			return new Response(JSON.stringify({ error: 'Company is required.' }), { status: 400 });
 		}
 
-		if (!isValidEmail(email)) {
+		if (email && !isValidEmail(email)) {
 			return new Response(JSON.stringify({ error: 'Invalid email address.' }), { status: 400 });
 		}
 
