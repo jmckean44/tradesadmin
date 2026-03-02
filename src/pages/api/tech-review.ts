@@ -1293,11 +1293,19 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 	form.append('response', token);
 	if (remoteIp) form.append('remoteip', remoteIp);
 
-	const resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		body: form.toString(),
-	});
+	let resp: Response;
+	try {
+		resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: form.toString(),
+		});
+	} catch {
+		return {
+			success: false,
+			errorCodes: ['siteverify-network-error'],
+		};
+	}
 
 	if (!resp.ok) {
 		return {
@@ -1306,7 +1314,15 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 		};
 	}
 
-	const data = (await resp.json()) as TurnstileVerifyResponse;
+	let data: TurnstileVerifyResponse;
+	try {
+		data = (await resp.json()) as TurnstileVerifyResponse;
+	} catch {
+		return {
+			success: false,
+			errorCodes: ['siteverify-parse-error'],
+		};
+	}
 
 	if (!data.success) {
 		console.error('Turnstile verify failed:', {

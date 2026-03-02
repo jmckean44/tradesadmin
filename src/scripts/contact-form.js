@@ -489,7 +489,7 @@ document.addEventListener('astro:page-load', () => {
 					resetTurnstileIfAvailable();
 				} else {
 					reviewPreview.style.display = 'block';
-					reviewPreview.innerHTML = `<div class="review-preview-card"><p>${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</p></div>`;
+					reviewPreview.innerHTML = `<div class="review-preview-card">${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</div>`;
 					result.textContent = '';
 					resetTurnstileIfAvailable();
 				}
