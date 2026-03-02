@@ -46,6 +46,14 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
 							<span class="helperText">Details</span>
 						</div>
+						<fieldset class="scan-modules margin-top-med" aria-label="Scan modules">
+							<legend class="helperText">Scan Modules</legend>
+							<label><input type="checkbox" name="scanModules" value="dns" checked /> Domain & DNS Health</label>
+							<label><input type="checkbox" name="scanModules" value="ssl" checked /> SSL & Security Basics</label>
+							<label><input type="checkbox" name="scanModules" value="forms" checked /> Form Reliability Check</label>
+							<label><input type="checkbox" name="scanModules" value="links" checked /> Broken Link Check</label>
+							<label><input type="checkbox" name="scanModules" value="nap" checked /> Local NAP Consistency</label>
+						</fieldset>
 						<div class="margin-top-med margin-btm-sm">
 							<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
 						</div>

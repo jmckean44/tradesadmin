@@ -246,6 +246,28 @@ document.addEventListener('astro:page-load', () => {
 	);
 
 	const fixesHtml = fixes.length ? `<ol>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>` : '<p>No recommended fixes returned.</p>';
+	const moduleResults = scan?.modules && typeof scan.modules === 'object' ? scan.modules : null;
+	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap'];
+	const moduleLabels = {
+		dns: 'DNS',
+		ssl: 'SSL',
+		forms: 'Forms',
+		links: 'Links',
+		nap: 'NAP',
+	};
+
+	const modulesHtml = moduleResults
+		? `<div class="review-fixes"><h4>Extended Technical Modules</h4><ul>${moduleOrder
+				.map((moduleKey) => {
+					const module = moduleResults[moduleKey];
+					if (!module || module.status === 'skipped') return '';
+					const issues = Array.isArray(module.issues) && module.issues.length ? `<ul>${module.issues.map((issue) => `<li>${escapeHtml(issue)}</li>`).join('')}</ul>` : '';
+					const summary = typeof module.summary === 'string' ? module.summary : 'No summary available.';
+					return `<li><strong>${moduleLabels[moduleKey] || moduleKey.toUpperCase()}:</strong> ${escapeHtml(summary)}${issues}</li>`;
+				})
+				.filter(Boolean)
+				.join('')}</ul></div>`
+		: '';
 
 	root.innerHTML = `
 		<div class="review-preview-card">
@@ -256,6 +278,7 @@ document.addEventListener('astro:page-load', () => {
 				<h4>Recommended Fixes</h4>
 				${fixesHtml}
 			</div>
+			${modulesHtml}
 		</div>
 	`;
 });

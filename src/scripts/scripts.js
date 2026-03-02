@@ -149,6 +149,7 @@ function initMobileNav() {
 		hamburger.classList.remove('active');
 		hamburger.setAttribute('aria-expanded', 'false');
 		overlay.setAttribute('aria-hidden', 'true');
+		overlay.setAttribute('inert', '');
 	};
 
 	const openMenu = () => {
@@ -156,6 +157,7 @@ function initMobileNav() {
 		hamburger.classList.add('active');
 		hamburger.setAttribute('aria-expanded', 'true');
 		overlay.setAttribute('aria-hidden', 'false');
+		overlay.removeAttribute('inert');
 		navMobile.focus();
 	};
 

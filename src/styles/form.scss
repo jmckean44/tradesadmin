@@ -133,6 +133,51 @@ label {
 	cursor: pointer;
 }
 
+.scan-modules {
+	border: 1px solid #d7dce7;
+	border-radius: $input-border-radius;
+	padding: 0.75rem;
+	margin: 0 0 1rem;
+	background: rgba(255, 255, 255, 0.9);
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0.4rem 1rem;
+}
+
+.scan-modules legend.helperText {
+	position: static;
+	opacity: 1;
+	margin-bottom: 0.5rem;
+	font-size: 0.75rem;
+	line-height: 1.2;
+	display: block;
+	grid-column: 1 / -1;
+}
+
+.scan-modules label {
+	display: flex;
+	justify-content: flex-start;
+	font-size: 0.9rem;
+	line-height: 1.2;
+	margin-bottom: 0;
+	text-transform: uppercase;
+	font-family: var.$font-sans-serif-med;
+	color: var.$theme-clr-dark;
+}
+
+.scan-modules input[type='checkbox'] {
+	width: auto;
+	height: auto;
+	margin: 0;
+	accent-color: var.$theme-clr;
+}
+
+@media (min-width: 700px) {
+	.scan-modules {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
 form input:focus + span,
 form textarea:focus + span,
 form input:focus ~ label + span {

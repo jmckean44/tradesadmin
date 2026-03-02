@@ -19,6 +19,8 @@ footer a:link:hover {
 #site-footer {
 	background: var.$theme-clr-dark;
 	color: #b7bac4;
+	padding-top: 80px;
+	padding-bottom: 50px;
 }
 
 .container.top {
@@ -152,13 +154,13 @@ footer a:link:hover {
 	margin-top: 0;
 }
 
-.footer-bottom-content {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 1rem;
-}
+// .footer-bottom-content {
+// 	display: flex;
+// 	justify-content: space-between;
+// 	align-items: center;
+// 	flex-wrap: wrap;
+// 	background: red;
+// }
 
 .copyright,
 .copyright a {

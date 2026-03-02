@@ -427,6 +427,14 @@ document.addEventListener('astro:page-load', () => {
 		const formData = new FormData(form);
 		const endpoint = form.dataset.apiPath || '/api/tech-review/';
 		const resultPage = form.dataset.resultsPath || '/results/';
+		const selectedModules = formData
+			.getAll('scanModules')
+			.map((value) =>
+				String(value || '')
+					.trim()
+					.toLowerCase(),
+			)
+			.filter(Boolean);
 
 		const payload = {
 			company: String(formData.get('company') || '').trim(),
@@ -436,6 +444,7 @@ document.addEventListener('astro:page-load', () => {
 			url: normalizeUrl(String(formData.get('url') || '').trim()),
 			phone: String(formData.get('phone') || '').trim(),
 			message: String(formData.get('details') || formData.get('message') || '').trim(),
+			scanModules: selectedModules.length ? selectedModules : ['dns', 'ssl', 'forms', 'links', 'nap'],
 			turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
 		};
 
