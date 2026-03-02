@@ -1263,11 +1263,15 @@ async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<T
 
 	let resp: Response;
 	try {
-		resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: form.toString(),
-		});
+		resp = await withTimeout(
+			fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: form.toString(),
+			}),
+			8000,
+			'Turnstile verification',
+		);
 	} catch {
 		return {
 			success: false,
