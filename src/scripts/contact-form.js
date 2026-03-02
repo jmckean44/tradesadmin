@@ -12,6 +12,7 @@ document.addEventListener('astro:page-load', () => {
 
 	let submitted = false;
 	let turnstileScriptPromise = null;
+	let turnstileWarmupStarted = false;
 
 	function isHistoryNavigationRestore() {
 		if (!window.performance || typeof window.performance.getEntriesByType !== 'function') return false;
@@ -19,8 +20,22 @@ document.addEventListener('astro:page-load', () => {
 		return Boolean(navEntries.length && navEntries[0]?.type === 'back_forward');
 	}
 
+	function waitForTurnstileRender(maxAttempts = 20, delayMs = 250) {
+		return new Promise((resolve) => {
+			let attempts = 0;
+			const interval = setInterval(() => {
+				attempts += 1;
+				if (ensureTurnstileRendered() || attempts >= maxAttempts) {
+					clearInterval(interval);
+					resolve(true);
+				}
+			}, delayMs);
+		});
+	}
+
 	function loadTurnstileScriptOnce() {
 		if (window.turnstile && typeof window.turnstile.render === 'function') {
+			ensureTurnstileRendered();
 			return Promise.resolve(true);
 		}
 
@@ -29,7 +44,14 @@ document.addEventListener('astro:page-load', () => {
 		turnstileScriptPromise = new Promise((resolve) => {
 			const existing = document.querySelector('script[data-turnstile-loader="true"]');
 			if (existing) {
-				existing.addEventListener('load', () => resolve(true), { once: true });
+				existing.addEventListener(
+					'load',
+					() => {
+						ensureTurnstileRendered();
+						resolve(true);
+					},
+					{ once: true },
+				);
 				existing.addEventListener('error', () => resolve(false), { once: true });
 				return;
 			}
@@ -39,12 +61,33 @@ document.addEventListener('astro:page-load', () => {
 			script.async = true;
 			script.defer = true;
 			script.setAttribute('data-turnstile-loader', 'true');
-			script.addEventListener('load', () => resolve(true), { once: true });
+			script.addEventListener(
+				'load',
+				() => {
+					ensureTurnstileRendered();
+					resolve(true);
+				},
+				{ once: true },
+			);
 			script.addEventListener('error', () => resolve(false), { once: true });
 			document.head.appendChild(script);
 		});
 
 		return turnstileScriptPromise;
+	}
+
+	function warmupTurnstileOnDemand() {
+		if (turnstileWarmupStarted) return;
+		turnstileWarmupStarted = true;
+
+		if (ensureTurnstileRendered()) return;
+
+		void loadTurnstileScriptOnce().then((loaded) => {
+			if (!loaded) return;
+			if (!ensureTurnstileRendered()) {
+				void waitForTurnstileRender();
+			}
+		});
 	}
 
 	function ensureTurnstileRendered() {
@@ -65,17 +108,6 @@ document.addEventListener('astro:page-load', () => {
 		});
 		turnstileContainer.dataset.widgetId = String(widgetId);
 		return true;
-	}
-
-	if (!ensureTurnstileRendered()) {
-		void loadTurnstileScriptOnce();
-		let attempts = 0;
-		const interval = setInterval(() => {
-			attempts += 1;
-			if (ensureTurnstileRendered() || attempts >= 20) {
-				clearInterval(interval);
-			}
-		}, 250);
 	}
 
 	// Normalizes URLs to match backend (normalizeUrlForNotion)
@@ -550,9 +582,19 @@ document.addEventListener('astro:page-load', () => {
 
 	form.addEventListener(
 		'focusin',
-		() => {
-			void loadTurnstileScriptOnce();
+		(e) => {
+			if (!isFormField(e.target)) return;
+			warmupTurnstileOnDemand();
 		},
-		{ once: true },
+		{ passive: true },
+	);
+
+	form.addEventListener(
+		'mouseover',
+		(e) => {
+			if (!isFormField(e.target)) return;
+			warmupTurnstileOnDemand();
+		},
+		{ passive: true },
 	);
 });
