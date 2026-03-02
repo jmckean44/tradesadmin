@@ -185,20 +185,28 @@ document.addEventListener('astro:page-load', () => {
 	const payload = readStoredPayload('scanResultPayload') || readPayloadFromQueryParam();
 	const urlSpan = document.getElementById('results-url');
 
-	let displayUrl = '';
+	let sourceUrl = '';
 	if (payload?.preview?.url) {
-		displayUrl = payload.preview.url;
+		sourceUrl = payload.preview.url;
 	} else if (payload?.scan?.url) {
-		displayUrl = payload.scan.url;
+		sourceUrl = payload.scan.url;
 	} else if (payload?.url) {
-		displayUrl = payload.url;
+		sourceUrl = payload.url;
 	} else if (payload?.preview && payload.preview.displayUrl) {
-		displayUrl = payload.preview.displayUrl;
+		sourceUrl = payload.preview.displayUrl;
 	} else if (payload?.formData && payload.formData.url) {
-		displayUrl = payload.formData.url;
+		sourceUrl = payload.formData.url;
 	} else if (payload?.email && payload?.company && payload?.message) {
-		displayUrl = '[submitted, not stored]';
+		sourceUrl = '[submitted, not stored]';
 	}
+
+	let fullUrl = '';
+	if (sourceUrl && typeof sourceUrl === 'string' && sourceUrl !== '[submitted, not stored]') {
+		const trimmed = sourceUrl.trim();
+		fullUrl = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+	}
+
+	let displayUrl = sourceUrl;
 
 	if (displayUrl && typeof displayUrl === 'string') {
 		displayUrl = displayUrl.replace(/^https?:\/\//i, '');
@@ -207,7 +215,17 @@ document.addEventListener('astro:page-load', () => {
 		}
 	}
 	if (urlSpan) {
-		urlSpan.textContent = displayUrl ? escapeHtml(displayUrl) : '[no url]';
+		const urlAnchor = urlSpan.querySelector('a');
+		if (urlAnchor) {
+			urlAnchor.textContent = displayUrl || '[no url]';
+			if (fullUrl) {
+				urlAnchor.setAttribute('href', fullUrl);
+			} else {
+				urlAnchor.setAttribute('href', '#');
+			}
+		} else {
+			urlSpan.textContent = displayUrl || '[no url]';
+		}
 	}
 
 	if (!payload?.preview) {
