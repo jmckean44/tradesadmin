@@ -295,14 +295,13 @@ document.addEventListener('astro:page-load', () => {
 		})
 		.join('');
 	const moduleResults = scan?.modules && typeof scan.modules === 'object' ? scan.modules : null;
-	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
+	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap'];
 	const moduleLabels = {
 		dns: 'DNS',
 		ssl: 'SSL',
 		forms: 'Forms',
 		links: 'Links',
 		nap: 'NAP',
-		platform: 'Platform',
 	};
 
 	const moduleItemsHtml = moduleResults

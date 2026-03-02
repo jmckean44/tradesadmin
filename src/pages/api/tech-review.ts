@@ -94,7 +94,7 @@ type ReviewPreview = {
 	reviewError?: string;
 };
 
-type ScanModuleKey = 'dns' | 'ssl' | 'forms' | 'links' | 'nap' | 'platform';
+type ScanModuleKey = 'dns' | 'ssl' | 'forms' | 'links' | 'nap';
 
 type ScanModuleResult = {
 	status: 'ok' | 'warning' | 'error' | 'skipped';
@@ -168,7 +168,7 @@ const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
-const ALL_SCAN_MODULES: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
+const ALL_SCAN_MODULES: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
 
 // PageSpeed Insights API key is loaded from Netlify environment as PAGESPEED_API_KEY
 // To use, set PAGESPEED_API_KEY in netlify.toml or Netlify dashboard
@@ -182,23 +182,6 @@ function normalizeUrl(input: string): string {
 	const value = (input || '').trim();
 	if (!value) return '';
 	return /^https?:\/\//i.test(value) ? value : `https://${value}`;
-}
-
-function detectPlatformHeuristics(signalText: string): string[] {
-	const detected = new Set<string>();
-
-	if (/wp-content|wp-includes|wordpress|xmlrpc\.php/i.test(signalText)) detected.add('WordPress');
-	if (/cdn\.shopify\.com|x-shopify|shopify/i.test(signalText)) detected.add('Shopify');
-	if (/wixstatic|_wix|wix\.com/i.test(signalText)) detected.add('Wix');
-	if (/squarespace\.com|static1\.squarespace\.com/i.test(signalText)) detected.add('Squarespace');
-	if (/webflow|data-wf-|webflow\.js/i.test(signalText)) detected.add('Webflow');
-	if (/_astro\//i.test(signalText) || /generator["'][^>]*astro/i.test(signalText)) detected.add('Astro');
-	if (/_next\//i.test(signalText) || /__next_data__/i.test(signalText)) detected.add('Next.js');
-	if (/react|data-reactroot/i.test(signalText)) detected.add('React');
-	if (/googletagmanager|gtag\(|google-analytics/i.test(signalText)) detected.add('Google Analytics/Tag Manager');
-	if (/cloudflare|cf-ray/i.test(signalText)) detected.add('Cloudflare');
-
-	return Array.from(detected);
 }
 
 function normalizeScanModules(input: unknown): ScanModuleKey[] {
@@ -221,7 +204,6 @@ function normalizeScanModules(input: unknown): ScanModuleKey[] {
 			if (value === 'forms') return 'forms';
 			if (value === 'links') return 'links';
 			if (value === 'nap') return 'nap';
-			if (value === 'platform') return 'platform';
 			return null;
 		})
 		.filter((value): value is ScanModuleKey => Boolean(value));
@@ -600,14 +582,13 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 
 	const moduleResults = input.extendedScan?.modules;
 	if (moduleResults) {
-		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
+		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
 		const moduleLabel: Record<ScanModuleKey, string> = {
 			dns: 'DNS',
 			ssl: 'SSL',
 			forms: 'Forms',
 			links: 'Links',
 			nap: 'NAP',
-			platform: 'Platform',
 		};
 
 		const moduleLines = moduleOrder
@@ -640,19 +621,6 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		setModuleProperty('forms', ['forms module', 'forms results']);
 		setModuleProperty('links', ['links module', 'links results']);
 		setModuleProperty('nap', ['nap module', 'name address phone module', 'name address phone results']);
-		setModuleProperty('platform', ['platform', 'platform module', 'platform detection', 'technology stack results']);
-
-		const platformResult = moduleResults.platform;
-		if (platformResult && platformResult.status !== 'skipped') {
-			const stackValue = typeof platformResult.metrics?.detected === 'string' ? platformResult.metrics.detected : '';
-			const sourceValue = typeof platformResult.metrics?.source === 'string' ? platformResult.metrics.source : '';
-			setTextLikeProperty('rich_text', ['platform', 'platform stack', 'technology stack', 'detected platform stack'], stackValue || platformResult.summary);
-			const sourceText = sourceValue || 'Heuristic scan';
-			const wroteExactPlatformSource = setRichTextPropertyExact(['platform source', 'technology source', 'platform scan source'], sourceText);
-			if (!wroteExactPlatformSource) {
-				// Intentionally skip fuzzy matching for source to avoid overwriting "Platform" stack values.
-			}
-		}
 	}
 
 	let existingPageId: string | null = null;
@@ -1056,44 +1024,6 @@ async function runNapModule(url: string): Promise<ScanModuleResult> {
 	}
 }
 
-async function runPlatformModule(url: string): Promise<ScanModuleResult> {
-	try {
-		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'Platform detection check');
-		const html = await response.text();
-		const body = String(html || '');
-
-		const signalText = [body, response.headers.get('server') || '', response.headers.get('x-powered-by') || '', response.headers.get('via') || ''].join('\n').toLowerCase();
-		const heuristicList = detectPlatformHeuristics(signalText);
-		const detectedList = Array.from(new Set(heuristicList));
-		const hasDetections = detectedList.length > 0;
-		const source = 'Heuristic scan';
-
-		return {
-			status: hasDetections ? 'ok' : 'warning',
-			summary: hasDetections ? `Platform signals detected: ${detectedList.slice(0, 6).join(', ')}.` : 'Platform detection returned N/A for this scan.',
-			issues: [],
-			metrics: {
-				detectedCount: detectedList.length,
-				detected: detectedList.join(', ') || 'N/A',
-				source,
-				heuristicCount: heuristicList.length,
-			},
-		};
-	} catch (err) {
-		return {
-			status: 'warning',
-			summary: 'Platform detection returned N/A for this scan.',
-			issues: [],
-			metrics: {
-				detectedCount: 0,
-				detected: 'N/A',
-				source: 'Heuristic scan',
-				heuristicCount: 0,
-			},
-		};
-	}
-}
-
 function getModuleFixes(moduleKey: ScanModuleKey, moduleResult: ScanModuleResult): string[] {
 	if (moduleResult.status === 'skipped' || moduleResult.status === 'ok') return [];
 
@@ -1121,17 +1051,9 @@ async function runExtendedScanModules(url: string, selectedModules: ScanModuleKe
 		forms: selectedSet.has('forms') ? runFormsModule(url) : Promise.resolve(baseSkipped),
 		links: selectedSet.has('links') ? runLinksModule(url) : Promise.resolve(baseSkipped),
 		nap: selectedSet.has('nap') ? runNapModule(url) : Promise.resolve(baseSkipped),
-		platform: selectedSet.has('platform') ? runPlatformModule(url) : Promise.resolve(baseSkipped),
 	};
 
-	const [dnsResult, sslResult, formsResult, linksResult, napResult, platformResult] = await Promise.all([
-		modulePromises.dns,
-		modulePromises.ssl,
-		modulePromises.forms,
-		modulePromises.links,
-		modulePromises.nap,
-		modulePromises.platform,
-	]);
+	const [dnsResult, sslResult, formsResult, linksResult, napResult] = await Promise.all([modulePromises.dns, modulePromises.ssl, modulePromises.forms, modulePromises.links, modulePromises.nap]);
 
 	const modules: ExtendedScanModules = {
 		dns: dnsResult,
@@ -1139,7 +1061,6 @@ async function runExtendedScanModules(url: string, selectedModules: ScanModuleKe
 		forms: formsResult,
 		links: linksResult,
 		nap: napResult,
-		platform: platformResult,
 	};
 
 	const moduleFixes = ALL_SCAN_MODULES.flatMap((moduleKey) => getModuleFixes(moduleKey, modules[moduleKey]));
@@ -1580,7 +1501,6 @@ export const POST: APIRoute = async ({ request }) => {
 				forms: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 				links: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 				nap: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-				platform: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 			},
 			recommendedFixes: [],
 		};

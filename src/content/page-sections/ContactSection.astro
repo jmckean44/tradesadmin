@@ -31,7 +31,7 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 						</div>
 						<div>
 							<label for="email_address" class="visually-hidden">Email</label>
-							<input type="email" name="email" id="email_address" placeholder="Email *" required autocomplete="email" spellcheck="false" />
+							<input type="email" name="email" id="email_address" placeholder="Email" autocomplete="email" spellcheck="false" />
 							<span class="helperText">Email</span>
 							<div class="empty-feedback">Please provide your email address</div>
 							<div class="invalid-feedback">Please provide a valid email address</div>
@@ -54,7 +54,6 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<label><input type="checkbox" name="scanModules" value="forms" checked /> Form Reliability Check</label>
 							<label><input type="checkbox" name="scanModules" value="links" checked /> Broken Link Check</label>
 							<label><input type="checkbox" name="scanModules" value="nap" checked /> Local NAP Consistency</label>
-							<label><input type="checkbox" name="scanModules" value="platform" checked /> Platform Detection</label>
 						</fieldset>
 						<div class="margin-top-med margin-btm-sm">
 							<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>

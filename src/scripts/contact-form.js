@@ -444,7 +444,7 @@ document.addEventListener('astro:page-load', () => {
 			url: normalizeUrl(String(formData.get('url') || '').trim()),
 			phone: String(formData.get('phone') || '').trim(),
 			message: String(formData.get('details') || formData.get('message') || '').trim(),
-			scanModules: selectedModules.length ? selectedModules : ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'],
+			scanModules: selectedModules.length ? selectedModules : ['dns', 'ssl', 'forms', 'links', 'nap'],
 			turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
 		};
 
