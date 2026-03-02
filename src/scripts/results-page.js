@@ -265,13 +265,14 @@ document.addEventListener('astro:page-load', () => {
 
 	const fixesHtml = fixes.length ? `<ol>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>` : '<p>No recommended fixes returned.</p>';
 	const moduleResults = scan?.modules && typeof scan.modules === 'object' ? scan.modules : null;
-	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap'];
+	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
 	const moduleLabels = {
 		dns: 'DNS',
 		ssl: 'SSL',
 		forms: 'Forms',
 		links: 'Links',
 		nap: 'NAP',
+		platform: 'Platform',
 	};
 
 	const moduleItemsHtml = moduleResults

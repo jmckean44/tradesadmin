@@ -94,7 +94,7 @@ type ReviewPreview = {
 	reviewError?: string;
 };
 
-type ScanModuleKey = 'dns' | 'ssl' | 'forms' | 'links' | 'nap';
+type ScanModuleKey = 'dns' | 'ssl' | 'forms' | 'links' | 'nap' | 'platform';
 
 type ScanModuleResult = {
 	status: 'ok' | 'warning' | 'error' | 'skipped';
@@ -167,7 +167,7 @@ const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
-const ALL_SCAN_MODULES: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
+const ALL_SCAN_MODULES: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
 
 // PageSpeed Insights API key is loaded from Netlify environment as PAGESPEED_API_KEY
 // To use, set PAGESPEED_API_KEY in netlify.toml or Netlify dashboard
@@ -181,6 +181,85 @@ function normalizeUrl(input: string): string {
 	const value = (input || '').trim();
 	if (!value) return '';
 	return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+
+function normalizeHostname(inputUrl: string): string {
+	try {
+		return new URL(normalizeUrl(inputUrl)).hostname.toLowerCase();
+	} catch {
+		return '';
+	}
+}
+
+function detectPlatformHeuristics(signalText: string): string[] {
+	const detected = new Set<string>();
+
+	if (/wp-content|wp-includes|wordpress|xmlrpc\.php/i.test(signalText)) detected.add('WordPress');
+	if (/cdn\.shopify\.com|x-shopify|shopify/i.test(signalText)) detected.add('Shopify');
+	if (/wixstatic|_wix|wix\.com/i.test(signalText)) detected.add('Wix');
+	if (/squarespace\.com|static1\.squarespace\.com/i.test(signalText)) detected.add('Squarespace');
+	if (/webflow|data-wf-|webflow\.js/i.test(signalText)) detected.add('Webflow');
+	if (/_astro\//i.test(signalText) || /generator["'][^>]*astro/i.test(signalText)) detected.add('Astro');
+	if (/_next\//i.test(signalText) || /__next_data__/i.test(signalText)) detected.add('Next.js');
+	if (/react|data-reactroot/i.test(signalText)) detected.add('React');
+	if (/googletagmanager|gtag\(|google-analytics/i.test(signalText)) detected.add('Google Analytics/Tag Manager');
+	if (/cloudflare|cf-ray/i.test(signalText)) detected.add('Cloudflare');
+
+	return Array.from(detected);
+}
+
+async function fetchBuiltWithTechnologies(inputUrl: string): Promise<{ technologies: string[]; error?: string }> {
+	const apiKey = getEnv('BUILTWITH_API_KEY');
+	if (!apiKey) return { technologies: [] };
+
+	const hostname = normalizeHostname(inputUrl);
+	if (!hostname) return { technologies: [], error: 'Invalid hostname for BuiltWith lookup.' };
+
+	const apiUrlFromEnv = getEnv('BUILTWITH_API_URL');
+	const endpoint = apiUrlFromEnv || 'https://api.builtwith.com/v20/api.json';
+
+	const lookupUrl = new URL(endpoint);
+	lookupUrl.searchParams.set('KEY', apiKey);
+	lookupUrl.searchParams.set('LOOKUP', hostname);
+
+	try {
+		const response = await withTimeout(fetch(lookupUrl.toString(), { redirect: 'follow' }), 12000, 'BuiltWith lookup');
+		const raw = await response.text();
+
+		if (!response.ok) {
+			return { technologies: [], error: `BuiltWith request failed (${response.status}).` };
+		}
+
+		let parsed: any = null;
+		try {
+			parsed = raw ? JSON.parse(raw) : null;
+		} catch {
+			return { technologies: [], error: 'BuiltWith response was not valid JSON.' };
+		}
+
+		const technologies = new Set<string>();
+		const paths = Array.isArray(parsed?.Results?.[0]?.Result?.Paths) ? parsed.Results[0].Result.Paths : [];
+		for (const path of paths) {
+			const technologiesArray = Array.isArray(path?.Technologies) ? path.Technologies : [];
+			for (const technology of technologiesArray) {
+				const name = String(technology?.Name || '').trim();
+				if (name) technologies.add(name);
+			}
+		}
+
+		if (!technologies.size) {
+			const fallbackArr = Array.isArray(parsed?.Results?.[0]?.Result?.Technologies) ? parsed.Results[0].Result.Technologies : [];
+			for (const technology of fallbackArr) {
+				const name = String(technology?.Name || '').trim();
+				if (name) technologies.add(name);
+			}
+		}
+
+		return { technologies: Array.from(technologies).slice(0, 20) };
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		return { technologies: [], error: message || 'BuiltWith lookup failed.' };
+	}
 }
 
 function normalizeScanModules(input: unknown): ScanModuleKey[] {
@@ -203,6 +282,7 @@ function normalizeScanModules(input: unknown): ScanModuleKey[] {
 			if (value === 'forms') return 'forms';
 			if (value === 'links') return 'links';
 			if (value === 'nap') return 'nap';
+			if (value === 'platform') return 'platform';
 			return null;
 		})
 		.filter((value): value is ScanModuleKey => Boolean(value));
@@ -547,13 +627,14 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 
 	const moduleResults = input.extendedScan?.modules;
 	if (moduleResults) {
-		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
+		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
 		const moduleLabel: Record<ScanModuleKey, string> = {
 			dns: 'DNS',
 			ssl: 'SSL',
 			forms: 'Forms',
 			links: 'Links',
 			nap: 'NAP',
+			platform: 'Platform',
 		};
 
 		const moduleLines = moduleOrder
@@ -581,6 +662,15 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		setModuleProperty('forms', ['forms module', 'forms results']);
 		setModuleProperty('links', ['links module', 'links results']);
 		setModuleProperty('nap', ['nap module', 'name address phone module', 'name address phone results']);
+		setModuleProperty('platform', ['platform', 'platform module', 'platform detection', 'technology stack results']);
+
+		const platformResult = moduleResults.platform;
+		if (platformResult && platformResult.status !== 'skipped') {
+			const stackValue = typeof platformResult.metrics?.detected === 'string' ? platformResult.metrics.detected : '';
+			const sourceValue = typeof platformResult.metrics?.source === 'string' ? platformResult.metrics.source : '';
+			setTextLikeProperty('rich_text', ['platform', 'platform stack', 'technology stack', 'detected platform stack'], stackValue || platformResult.summary);
+			setTextLikeProperty('rich_text', ['platform source', 'technology source', 'platform scan source'], sourceValue || 'Heuristic scan');
+		}
 	}
 
 	let existingPageId: string | null = null;
@@ -984,6 +1074,55 @@ async function runNapModule(url: string): Promise<ScanModuleResult> {
 	}
 }
 
+async function runPlatformModule(url: string): Promise<ScanModuleResult> {
+	try {
+		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'Platform detection check');
+		const html = await response.text();
+		const body = String(html || '');
+
+		const signalText = [body, response.headers.get('server') || '', response.headers.get('x-powered-by') || '', response.headers.get('via') || ''].join('\n').toLowerCase();
+		const heuristicList = detectPlatformHeuristics(signalText);
+		const builtWith = await fetchBuiltWithTechnologies(url);
+		const merged = Array.from(new Set([...builtWith.technologies, ...heuristicList]));
+		const detectedList = merged;
+		const hasDetections = detectedList.length > 0;
+		const sourceParts: string[] = [];
+		if (builtWith.technologies.length) sourceParts.push('BuiltWith API');
+		if (heuristicList.length) sourceParts.push('Heuristic scan');
+		if (!sourceParts.length) sourceParts.push('Heuristic scan');
+		const source = sourceParts.join(' + ');
+
+		const issues: string[] = [];
+		if (!hasDetections) {
+			issues.push('Technology stack appears custom, hidden, or server-rendered without clear public signatures.');
+		}
+		if (builtWith.error) {
+			issues.push(`BuiltWith enrichment unavailable: ${builtWith.error}`);
+		}
+
+		return {
+			status: hasDetections ? 'ok' : 'warning',
+			summary: hasDetections ? `Platform signals detected: ${detectedList.slice(0, 6).join(', ')}.` : 'No clear platform fingerprint was detected from page HTML and headers.',
+			issues: issues.slice(0, 4),
+			metrics: {
+				detectedCount: detectedList.length,
+				detected: detectedList.join(', ') || 'none',
+				source,
+				builtWithCount: builtWith.technologies.length,
+				heuristicCount: heuristicList.length,
+			},
+		};
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		return {
+			status: 'error',
+			summary: 'Platform detection could not complete.',
+			issues: [],
+			error: message,
+		};
+	}
+}
+
 function getModuleFixes(moduleKey: ScanModuleKey, moduleResult: ScanModuleResult): string[] {
 	if (moduleResult.status === 'skipped' || moduleResult.status === 'ok') return [];
 
@@ -1011,9 +1150,17 @@ async function runExtendedScanModules(url: string, selectedModules: ScanModuleKe
 		forms: selectedSet.has('forms') ? runFormsModule(url) : Promise.resolve(baseSkipped),
 		links: selectedSet.has('links') ? runLinksModule(url) : Promise.resolve(baseSkipped),
 		nap: selectedSet.has('nap') ? runNapModule(url) : Promise.resolve(baseSkipped),
+		platform: selectedSet.has('platform') ? runPlatformModule(url) : Promise.resolve(baseSkipped),
 	};
 
-	const [dnsResult, sslResult, formsResult, linksResult, napResult] = await Promise.all([modulePromises.dns, modulePromises.ssl, modulePromises.forms, modulePromises.links, modulePromises.nap]);
+	const [dnsResult, sslResult, formsResult, linksResult, napResult, platformResult] = await Promise.all([
+		modulePromises.dns,
+		modulePromises.ssl,
+		modulePromises.forms,
+		modulePromises.links,
+		modulePromises.nap,
+		modulePromises.platform,
+	]);
 
 	const modules: ExtendedScanModules = {
 		dns: dnsResult,
@@ -1021,6 +1168,7 @@ async function runExtendedScanModules(url: string, selectedModules: ScanModuleKe
 		forms: formsResult,
 		links: linksResult,
 		nap: napResult,
+		platform: platformResult,
 	};
 
 	const moduleFixes = ALL_SCAN_MODULES.flatMap((moduleKey) => getModuleFixes(moduleKey, modules[moduleKey]));
@@ -1449,6 +1597,7 @@ export const POST: APIRoute = async ({ request }) => {
 				forms: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 				links: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 				nap: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
+				platform: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
 			},
 			recommendedFixes: [],
 		};

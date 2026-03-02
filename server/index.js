@@ -16,8 +16,6 @@ const { logSubmissionToNotion } = require('./notion');
 
 // Log a form submission
 app.post('/api/submit', async (req, res) => {
-	const { company, email, url, phone, message, results, error } = req.body;
-app.post('/api/submit', async (req, res) => {
 	const { company, email, url, phone, message, results, error, performance, seo, accessibility, best_practices } = req.body;
 	// Run site checks in parallel
 	let domain = '';
