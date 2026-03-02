@@ -26,15 +26,10 @@
 .review-preview-card {
 	max-width: 1000px;
 	margin: 0 auto;
-	// border: 1px #ddd solid;
-	// border-radius: 10px;
-	// padding: 1.5rem 1.5rem 2rem;
-	// background: #fff;
-	// box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .results-cta {
-	max-width: 900px;
+	max-width: 1000px;
 	margin: 0 auto 100px;
 
 	padding: 1.5rem 1.25rem;
@@ -244,28 +239,66 @@ h1.center {
 }
 
 .review-fixes {
-	margin-top: 0.75rem;
+	background: #fff;
+	margin: 0 auto;
+	max-width: 1300px !important;
+	padding: 70px clamp(1.25rem, 4vw, 3rem) 70px;
+	border: 1px #ddd solid;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .review-fixes h4 {
 	margin: 0 auto 2rem;
 	font-size: 2rem;
-	text-align: center;
+}
+
+.review-fixes ol,
+.review-fixes ul {
+	font-family: var.$font-sans-serif-reg;
+}
+
+.review-fixes li {
+	line-height: 1.4;
 }
 
 .review-fixes ol {
-	margin: 0 auto;
-	padding-left: 1.5rem;
-	list-style: decimal;
+	margin-left: 2rem;
+	margin-bottom: 2rem;
+	list-style: disc;
 	list-style-position: outside;
 	font-size: 1.5rem;
 	line-height: 1.35;
-	max-width: 650px;
-	font-family: var.$font-sans-serif-med;
 }
 
-.review-fixes ol li {
-	margin-bottom: 1rem;
+.review-fixes ul {
+	margin: 0;
+	padding-left: 0.5rem;
+	list-style: none;
+	font-size: 1.5rem;
+	line-height: 1.35;
+}
+
+.review-fixes > ul > li {
+	border-bottom: 1px #b9b9b9 solid;
+	margin-bottom: 1.25rem;
+	padding-bottom: 1.25rem;
+}
+
+.review-fixes > ul > li:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.review-fixes ul ul {
+	list-style: disc;
+	list-style-position: outside;
+	margin: 1rem 0 0 1.5rem;
+}
+
+.review-fixes ul ul li:last-child {
+	margin-bottom: 0;
 }
 
 @media (max-width: 500px) {

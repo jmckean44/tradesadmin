@@ -675,7 +675,7 @@ async function runDnsModule(url: string): Promise<ScanModuleResult> {
 		const [aRecords, aaaaRecords, mxRecords, txtRecords, nsRecords] = await Promise.all([
 			dns.resolve4(hostname).catch(() => [] as string[]),
 			dns.resolve6(hostname).catch(() => [] as string[]),
-			dns.resolveMx(hostname).catch(() => [] as dns.MxRecord[]),
+			dns.resolveMx(hostname).catch(() => [] as Array<{ exchange: string; priority: number }>),
 			dns.resolveTxt(hostname).catch(() => [] as string[][]),
 			dns.resolveNs(hostname).catch(() => [] as string[]),
 		]);
@@ -911,7 +911,7 @@ async function runLinksModule(url: string): Promise<ScanModuleResult> {
 
 async function runNapModule(url: string): Promise<ScanModuleResult> {
 	try {
-		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'NAP check');
+		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'Name, Address, Phone check');
 		const html = await response.text();
 		const issues: string[] = [];
 
@@ -921,12 +921,12 @@ async function runNapModule(url: string): Promise<ScanModuleResult> {
 
 		if (!hasLocalBusinessSchema) issues.push('No local business schema markup detected.');
 		if (!phoneMatches.length) issues.push('No visible phone number detected in page content/schema.');
-		if (phoneMatches.length > 1) issues.push('Multiple phone number formats were detected. Normalize NAP phone usage.');
-		if (!hasAddressSignals) issues.push('No clear address signals detected for NAP consistency.');
+		if (phoneMatches.length > 1) issues.push('Multiple phone number formats were detected. Normalize Name, Address, Phone details.');
+		if (!hasAddressSignals) issues.push('No clear address signals detected for Name, Address, Phone consistency.');
 
 		return {
 			status: issues.length ? 'warning' : 'ok',
-			summary: issues.length ? 'NAP consistency signals need improvement.' : 'NAP and local business signals look consistent.',
+			summary: issues.length ? 'Name, Address, Phone consistency signals need improvement.' : 'Name, Address, Phone and local business signals look consistent.',
 			issues: issues.slice(0, 4),
 			metrics: {
 				hasLocalBusinessSchema,
@@ -938,7 +938,7 @@ async function runNapModule(url: string): Promise<ScanModuleResult> {
 		const message = err instanceof Error ? err.message : String(err);
 		return {
 			status: 'error',
-			summary: 'NAP checks could not complete.',
+			summary: 'Name, Address, Phone checks could not complete.',
 			issues: [],
 			error: message,
 		};

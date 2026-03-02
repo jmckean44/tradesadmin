@@ -154,13 +154,10 @@ footer a:link:hover {
 	margin-top: 0;
 }
 
-// .footer-bottom-content {
-// 	display: flex;
-// 	justify-content: space-between;
-// 	align-items: center;
-// 	flex-wrap: wrap;
-// 	background: red;
-// }
+.copyright {
+	padding-top: 1rem;
+	border-top: 1px rgba(255, 255, 255, 0.25) solid;
+}
 
 .copyright,
 .copyright a {

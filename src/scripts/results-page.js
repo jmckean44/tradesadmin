@@ -256,8 +256,8 @@ document.addEventListener('astro:page-load', () => {
 		nap: 'NAP',
 	};
 
-	const modulesHtml = moduleResults
-		? `<div class="review-fixes"><h4>Extended Technical Modules</h4><ul>${moduleOrder
+	const moduleItemsHtml = moduleResults
+		? moduleOrder
 				.map((moduleKey) => {
 					const module = moduleResults[moduleKey];
 					if (!module || module.status === 'skipped') return '';
@@ -266,8 +266,10 @@ document.addEventListener('astro:page-load', () => {
 					return `<li><strong>${moduleLabels[moduleKey] || moduleKey.toUpperCase()}:</strong> ${escapeHtml(summary)}${issues}</li>`;
 				})
 				.filter(Boolean)
-				.join('')}</ul></div>`
+				.join('')
 		: '';
+
+	const modulesHtml = moduleItemsHtml ? `<ul>${moduleItemsHtml}</ul>` : '';
 
 	root.innerHTML = `
 		<div class="review-preview-card">
@@ -277,8 +279,8 @@ document.addEventListener('astro:page-load', () => {
 			<div class="review-fixes">
 				<h4>Recommended Fixes</h4>
 				${fixesHtml}
+				${modulesHtml}
 			</div>
-			${modulesHtml}
 		</div>
 	`;
 });
