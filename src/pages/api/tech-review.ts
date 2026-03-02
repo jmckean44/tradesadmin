@@ -1429,7 +1429,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const isDev = import.meta.env.DEV;
-		const reviewTimeoutMs = isDev ? 60000 : 12000;
+		const reviewTimeoutMs = 60000;
 		const extendedModulesTimeoutMs = isDev ? 25000 : 9000;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
 		const siteChecksTimeoutMs = isDev ? 15000 : 5000;

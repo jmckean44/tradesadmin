@@ -99,6 +99,15 @@ document.addEventListener('astro:page-load', () => {
 		`;
 	}
 
+	function normalizeUnavailableMessage(value) {
+		const text = String(value || '').trim();
+		if (!text) return 'Live scan data is currently unavailable. Showing fallback guidance.';
+		if (/429|rate limit|quota/i.test(text)) return 'Live scan data is temporarily unavailable due to scan capacity limits. Recommendations below are based on best practices.';
+		if (/api key|forbidden|401|403|accessnotconfigured/i.test(text)) return 'Live scan data is temporarily unavailable due to configuration limits. Recommendations below are based on best practices.';
+		if (/timed out|timeout|504/i.test(text)) return 'Live scan request timed out. Recommendations below are based on best practices.';
+		return 'Live scan data is currently unavailable. Recommendations below are based on best practices.';
+	}
+
 	function readStoredPayload(key) {
 		try {
 			const raw = sessionStorage.getItem(key);
@@ -250,7 +259,7 @@ document.addEventListener('astro:page-load', () => {
 			: typeof preview.reviewError === 'string' && preview.reviewError.trim()
 			? preview.reviewError.trim()
 			: 'Live scan data is currently unavailable. Showing fallback guidance.';
-	const reviewUnavailableMessage = preview.available === false ? `<p class="review-subtitle">${escapeHtml(unavailableMessageText)}</p>` : '';
+	const reviewUnavailableMessage = preview.available === false ? `<p class="review-subtitle">${escapeHtml(normalizeUnavailableMessage(unavailableMessageText))}</p>` : '';
 
 	const scoreHtml = [
 		scoreRow('Performance', parseScore(scores.performance)),
@@ -292,7 +301,7 @@ document.addEventListener('astro:page-load', () => {
 
 	root.innerHTML = `
 		<div class="review-preview-card">
-			${preview.available === false ? `<p class="review-subtitle">Live scan data is temporarily unavailable. Recommendations below are based on best practices, not a real-time scan.</p>` : ''}
+			${reviewUnavailableMessage}
 			<div class="review-score-grid">${scoreHtml}</div>
 			<div class="review-vitals">${vitalsHtml}</div>
 			<div class="review-fixes">
