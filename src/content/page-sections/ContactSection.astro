@@ -47,7 +47,8 @@ const resultsPath = `${import.meta.env.BASE_URL}results/`;
 							<span class="helperText">Details</span>
 						</div>
 						<fieldset class="scan-modules margin-top-med" aria-label="Scan modules">
-							<legend class="helperText">Scan Modules</legend>
+							<legend class="helperText">Performance Checks</legend>
+							<p class="scan-modules-note"><em class="bold">Core Web Vitals</em> scores are included automatically in addition to the checks below.</p>
 							<label><input type="checkbox" name="scanModules" value="dns" checked /> Domain & DNS Health</label>
 							<label><input type="checkbox" name="scanModules" value="ssl" checked /> SSL & Security Basics</label>
 							<label><input type="checkbox" name="scanModules" value="forms" checked /> Form Reliability Check</label>

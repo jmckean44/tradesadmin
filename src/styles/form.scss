@@ -134,24 +134,34 @@ label {
 }
 
 .scan-modules {
-	border: 1px solid #d7dce7;
+	border: 1px solid var.$note;
 	border-radius: $input-border-radius;
-	padding: 0.75rem;
-	margin: 0 0 1rem;
+	padding: var.$container-padding;
+	margin: 2rem 0 1rem;
 	background: rgba(255, 255, 255, 0.9);
 	display: grid;
 	grid-template-columns: 1fr;
-	gap: 0.4rem 1rem;
+	gap: 0.5rem 1rem;
 }
 
 .scan-modules legend.helperText {
 	position: static;
 	opacity: 1;
-	margin-bottom: 0.5rem;
-	font-size: 0.75rem;
+	margin-bottom: 0;
+	padding: 0 0.5rem;
+	font-size: 1.2rem;
+	font-family: var.$font-sans-serif-med;
 	line-height: 1.2;
 	display: block;
 	grid-column: 1 / -1;
+}
+
+.scan-modules .scan-modules-note {
+	grid-column: 1 / -1;
+	margin: 0 0 0.6rem;
+	font-size: 0.9rem;
+	line-height: 1.3;
+	font-family: var.$font-sans-serif-med;
 }
 
 .scan-modules label {
