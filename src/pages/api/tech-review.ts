@@ -183,14 +183,6 @@ function normalizeUrl(input: string): string {
 	return /^https?:\/\//i.test(value) ? value : `https://${value}`;
 }
 
-function normalizeHostname(inputUrl: string): string {
-	try {
-		return new URL(normalizeUrl(inputUrl)).hostname.toLowerCase();
-	} catch {
-		return '';
-	}
-}
-
 function detectPlatformHeuristics(signalText: string): string[] {
 	const detected = new Set<string>();
 
@@ -206,60 +198,6 @@ function detectPlatformHeuristics(signalText: string): string[] {
 	if (/cloudflare|cf-ray/i.test(signalText)) detected.add('Cloudflare');
 
 	return Array.from(detected);
-}
-
-async function fetchBuiltWithTechnologies(inputUrl: string): Promise<{ technologies: string[]; error?: string }> {
-	const apiKey = getEnv('BUILTWITH_API_KEY');
-	if (!apiKey) return { technologies: [] };
-
-	const hostname = normalizeHostname(inputUrl);
-	if (!hostname) return { technologies: [], error: 'Invalid hostname for BuiltWith lookup.' };
-
-	const apiUrlFromEnv = getEnv('BUILTWITH_API_URL');
-	const endpoint = apiUrlFromEnv || 'https://api.builtwith.com/v20/api.json';
-
-	const lookupUrl = new URL(endpoint);
-	lookupUrl.searchParams.set('KEY', apiKey);
-	lookupUrl.searchParams.set('LOOKUP', hostname);
-
-	try {
-		const response = await withTimeout(fetch(lookupUrl.toString(), { redirect: 'follow' }), 12000, 'BuiltWith lookup');
-		const raw = await response.text();
-
-		if (!response.ok) {
-			return { technologies: [], error: `BuiltWith request failed (${response.status}).` };
-		}
-
-		let parsed: any = null;
-		try {
-			parsed = raw ? JSON.parse(raw) : null;
-		} catch {
-			return { technologies: [], error: 'BuiltWith response was not valid JSON.' };
-		}
-
-		const technologies = new Set<string>();
-		const paths = Array.isArray(parsed?.Results?.[0]?.Result?.Paths) ? parsed.Results[0].Result.Paths : [];
-		for (const path of paths) {
-			const technologiesArray = Array.isArray(path?.Technologies) ? path.Technologies : [];
-			for (const technology of technologiesArray) {
-				const name = String(technology?.Name || '').trim();
-				if (name) technologies.add(name);
-			}
-		}
-
-		if (!technologies.size) {
-			const fallbackArr = Array.isArray(parsed?.Results?.[0]?.Result?.Technologies) ? parsed.Results[0].Result.Technologies : [];
-			for (const technology of fallbackArr) {
-				const name = String(technology?.Name || '').trim();
-				if (name) technologies.add(name);
-			}
-		}
-
-		return { technologies: Array.from(technologies).slice(0, 20) };
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return { technologies: [], error: message || 'BuiltWith lookup failed.' };
-	}
 }
 
 function normalizeScanModules(input: unknown): ScanModuleKey[] {
@@ -1082,43 +1020,32 @@ async function runPlatformModule(url: string): Promise<ScanModuleResult> {
 
 		const signalText = [body, response.headers.get('server') || '', response.headers.get('x-powered-by') || '', response.headers.get('via') || ''].join('\n').toLowerCase();
 		const heuristicList = detectPlatformHeuristics(signalText);
-		const builtWith = await fetchBuiltWithTechnologies(url);
-		const merged = Array.from(new Set([...builtWith.technologies, ...heuristicList]));
-		const detectedList = merged;
+		const detectedList = Array.from(new Set(heuristicList));
 		const hasDetections = detectedList.length > 0;
-		const sourceParts: string[] = [];
-		if (builtWith.technologies.length) sourceParts.push('BuiltWith API');
-		if (heuristicList.length) sourceParts.push('Heuristic scan');
-		if (!sourceParts.length) sourceParts.push('Heuristic scan');
-		const source = sourceParts.join(' + ');
-
-		const issues: string[] = [];
-		if (!hasDetections) {
-			issues.push('Technology stack appears custom, hidden, or server-rendered without clear public signatures.');
-		}
-		if (builtWith.error) {
-			issues.push(`BuiltWith enrichment unavailable: ${builtWith.error}`);
-		}
+		const source = 'Heuristic scan';
 
 		return {
 			status: hasDetections ? 'ok' : 'warning',
-			summary: hasDetections ? `Platform signals detected: ${detectedList.slice(0, 6).join(', ')}.` : 'No clear platform fingerprint was detected from page HTML and headers.',
-			issues: issues.slice(0, 4),
+			summary: hasDetections ? `Platform signals detected: ${detectedList.slice(0, 6).join(', ')}.` : 'Platform detection returned N/A for this scan.',
+			issues: [],
 			metrics: {
 				detectedCount: detectedList.length,
-				detected: detectedList.join(', ') || 'none',
+				detected: detectedList.join(', ') || 'N/A',
 				source,
-				builtWithCount: builtWith.technologies.length,
 				heuristicCount: heuristicList.length,
 			},
 		};
 	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
 		return {
-			status: 'error',
-			summary: 'Platform detection could not complete.',
+			status: 'warning',
+			summary: 'Platform detection returned N/A for this scan.',
 			issues: [],
-			error: message,
+			metrics: {
+				detectedCount: 0,
+				detected: 'N/A',
+				source: 'Heuristic scan',
+				heuristicCount: 0,
+			},
 		};
 	}
 }
@@ -1502,6 +1429,12 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const isDev = import.meta.env.DEV;
+		const reviewTimeoutMs = isDev ? 60000 : 12000;
+		const extendedModulesTimeoutMs = isDev ? 25000 : 9000;
+		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
+		const siteChecksTimeoutMs = isDev ? 15000 : 5000;
+		const notionSyncTimeoutMs = isDev ? 20000 : 6000;
+		const smtpSendTimeoutMs = isDev ? 25000 : 7000;
 		const body = await parseRequestBody(request);
 
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
@@ -1580,24 +1513,9 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 
 		try {
-			await withTimeout(transporter.verify(), 10000, 'SMTP verify');
+			await withTimeout(transporter.verify(), smtpVerifyTimeoutMs, 'SMTP verify');
 		} catch (err) {
-			const smtpErr = err as { code?: string; responseCode?: number; message?: string };
-			return new Response(
-				JSON.stringify(
-					isDev
-						? {
-								error: 'SMTP authentication/config failed.',
-								smtp: {
-									code: smtpErr?.code,
-									responseCode: smtpErr?.responseCode,
-									message: smtpErr?.message,
-								},
-						  }
-						: { error: 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.' },
-				),
-				{ status: 500 },
-			);
+			console.warn('SMTP verify skipped due to timeout/error:', err);
 		}
 
 		let review: Review | null = null;
@@ -1629,7 +1547,7 @@ export const POST: APIRoute = async ({ request }) => {
 					review = cachedReview;
 					scanSource = 'cache-fresh';
 				} else {
-					const runResult = await withTimeout(runReview(url), 60000, 'Lighthouse review');
+					const runResult = await withTimeout(runReview(url), reviewTimeoutMs, 'Lighthouse review');
 					review = runResult.review;
 					scanSource = runResult.source;
 					setCachedReview(url, review);
@@ -1673,7 +1591,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 
 			try {
-				extendedScan = await withTimeout(runExtendedScanModules(url, selectedModules), 25000, 'Extended module checks');
+				extendedScan = await withTimeout(runExtendedScanModules(url, selectedModules), extendedModulesTimeoutMs, 'Extended module checks');
 			} catch (moduleErr) {
 				console.error('Extended module checks failed:', moduleErr);
 			}
@@ -1721,7 +1639,20 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
 		const preview = buildReviewPreview(review, reviewError, Array.from(new Set([...fallbackFixes, ...extendedScan.recommendedFixes])).slice(0, 6), forceUnavailablePreview);
-		const siteChecks = await runSubmissionSiteChecks(url);
+		let siteChecks: NotionSubmissionInput['siteChecks'] = {
+			sslValid: null,
+			httpStatus: null,
+			dnsFound: null,
+			sitemapExists: null,
+			cspPresent: null,
+			error: '',
+		};
+		try {
+			siteChecks = await withTimeout(runSubmissionSiteChecks(url), siteChecksTimeoutMs, 'Submission site checks');
+		} catch (siteCheckErr) {
+			console.warn('Submission site checks skipped due to timeout/error:', siteCheckErr);
+			siteChecks.error = 'Submission site checks timed out.';
+		}
 		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
@@ -1730,19 +1661,23 @@ export const POST: APIRoute = async ({ request }) => {
 		let emailError = '';
 
 		try {
-			await logSubmissionToNotion({
-				company,
-				email,
-				url: notionUrl,
-				phone,
-				message,
-				reportFilename,
-				preview,
-				review,
-				extendedScan,
-				reviewError,
-				siteChecks,
-			});
+			await withTimeout(
+				logSubmissionToNotion({
+					company,
+					email,
+					url: notionUrl,
+					phone,
+					message,
+					reportFilename,
+					preview,
+					review,
+					extendedScan,
+					reviewError,
+					siteChecks,
+				}),
+				notionSyncTimeoutMs,
+				'Notion sync',
+			);
 			notionSynced = true;
 		} catch (notionErr) {
 			console.error('Notion sync failed:', notionErr);
@@ -1761,7 +1696,7 @@ export const POST: APIRoute = async ({ request }) => {
 					subject: `New submission: ${company}`,
 					html,
 				}),
-				25000,
+				smtpSendTimeoutMs,
 				'SMTP send',
 			);
 			emailSent = true;
@@ -1784,7 +1719,7 @@ export const POST: APIRoute = async ({ request }) => {
 							subject: `New submission: ${company}`,
 							html,
 						}),
-						25000,
+						smtpSendTimeoutMs,
 						'SMTP send retry',
 					);
 					emailSent = true;
