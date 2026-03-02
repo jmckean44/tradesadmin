@@ -1429,7 +1429,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const isDev = import.meta.env.DEV;
-		const reviewTimeoutMs = 60000;
+		const reviewTimeoutMs = isDev ? 60000 : 15000;
 		const extendedModulesTimeoutMs = isDev ? 25000 : 9000;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
 		const siteChecksTimeoutMs = isDev ? 15000 : 5000;
@@ -1768,11 +1768,39 @@ export const POST: APIRoute = async ({ request }) => {
 		const errorObj = err instanceof Error ? err : new Error(String(err));
 		return new Response(
 			JSON.stringify({
-				errorType: errorObj.name || 'Error',
-				errorMessage: message,
-				stack: isDev ? errorObj.stack : undefined,
+				ok: true,
+				message: 'Submitted with fallback scan data.',
+				preview: {
+					available: false,
+					scores: {
+						performance: null,
+						seo: null,
+						accessibility: null,
+						bestPractices: null,
+					},
+					vitals: {
+						lcp: 'N/A',
+						interactive: 'N/A',
+						tbt: 'N/A',
+						cls: 'N/A',
+					},
+					recommendedFixes: ['Live scan data is currently unavailable. Please try again shortly.'],
+					reviewError: 'Live scan data is currently unavailable.',
+				},
+				scan: {
+					available: false,
+					source: 'fallback',
+					selectedModules: [],
+					modules: {},
+					error: isDev ? message : 'Live scan data is currently unavailable.',
+				},
+				error: {
+					errorType: errorObj.name || 'Error',
+					errorMessage: message,
+					stack: isDev ? errorObj.stack : undefined,
+				},
 			}),
-			{ status: 502 },
+			{ status: 200 },
 		);
 	}
 };
