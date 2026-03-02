@@ -461,7 +461,6 @@ document.addEventListener('astro:page-load', () => {
 			});
 
 			const text = await response.text();
-			console.log('API status/body:', response.status, text);
 			let data = {};
 			if (text) {
 				try {

@@ -151,6 +151,7 @@ type NotionSubmissionInput = {
 	reportFilename: string;
 	preview: ReviewPreview;
 	review: Review | null;
+	extendedScan?: ExtendedScanReport;
 	reviewError: string;
 	siteChecks: {
 		sslValid: boolean | null;
@@ -543,6 +544,44 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['review error', 'scan error', 'error'], input.reviewError || input.preview.reviewError || input.siteChecks.error || '');
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
+
+	const moduleResults = input.extendedScan?.modules;
+	if (moduleResults) {
+		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
+		const moduleLabel: Record<ScanModuleKey, string> = {
+			dns: 'DNS',
+			ssl: 'SSL',
+			forms: 'Forms',
+			links: 'Links',
+			nap: 'NAP',
+		};
+
+		const moduleLines = moduleOrder
+			.map((key) => {
+				const result = moduleResults[key];
+				if (!result || result.status === 'skipped') return '';
+				const issues = Array.isArray(result.issues) && result.issues.length ? ` | Issues: ${result.issues.join(' ; ')}` : '';
+				return `${moduleLabel[key]} (${result.status.toUpperCase()}): ${result.summary}${issues}`;
+			})
+			.filter(Boolean);
+
+		if (moduleLines.length) {
+			setTextLikeProperty('rich_text', ['extended scan modules', 'scan modules', 'module results'], moduleLines.join('\n'));
+		}
+
+		const setModuleProperty = (key: ScanModuleKey, names: string[]): void => {
+			const result = moduleResults[key];
+			if (!result || result.status === 'skipped') return;
+			const issues = Array.isArray(result.issues) && result.issues.length ? ` | Issues: ${result.issues.join(' ; ')}` : '';
+			setTextLikeProperty('rich_text', names, `${result.status.toUpperCase()}: ${result.summary}${issues}`);
+		};
+
+		setModuleProperty('dns', ['dns module', 'dns results']);
+		setModuleProperty('ssl', ['ssl module', 'ssl results']);
+		setModuleProperty('forms', ['forms module', 'forms results']);
+		setModuleProperty('links', ['links module', 'links results']);
+		setModuleProperty('nap', ['nap module', 'name address phone module', 'name address phone results']);
+	}
 
 	let existingPageId: string | null = null;
 	if (normalizedWebsiteUrl) {
@@ -1535,6 +1574,7 @@ export const POST: APIRoute = async ({ request }) => {
 				reportFilename,
 				preview,
 				review,
+				extendedScan,
 				reviewError,
 				siteChecks,
 			});
