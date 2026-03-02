@@ -392,6 +392,18 @@ function findPropertyKeyByType(properties: Record<string, NotionDatabaseProperty
 	return null;
 }
 
+function findPropertyKeyByTypeExact(properties: Record<string, NotionDatabaseProperty>, type: NotionPropertyType, candidates: string[] = []): string | null {
+	const exactNames = new Set(candidates.map((name) => normalizePropertyName(name)));
+	if (!exactNames.size) return null;
+
+	for (const [key, property] of Object.entries(properties)) {
+		if (property.type !== type) continue;
+		if (exactNames.has(normalizePropertyName(property.name || key))) return key;
+	}
+
+	return null;
+}
+
 function buildNotionTextValue(value: string): Array<{ type: 'text'; text: { content: string } }> {
 	const content = String(value || '').trim();
 	if (!content) return [];
@@ -524,11 +536,25 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		properties[key] = { phone_number: value };
 	};
 
+	const setRichTextPropertyExact = (names: string[], value: string): boolean => {
+		if (!value) return false;
+		const key = findPropertyKeyByTypeExact(propertiesSchema, 'rich_text', names);
+		if (!key) return false;
+		properties[key] = { rich_text: buildNotionTextValue(value) };
+		return true;
+	};
+
 	const setNumberProperty = (names: string[], value: number | null | undefined): void => {
 		if (value == null || !Number.isFinite(value)) return;
 		const key = findPropertyKeyByType(propertiesSchema, 'number', names);
 		if (!key) return;
 		properties[key] = { number: value };
+	};
+
+	const setCheckboxProperty = (names: string[], value: boolean): void => {
+		const key = findPropertyKeyByType(propertiesSchema, 'checkbox', names);
+		if (!key) return;
+		properties[key] = { checkbox: value };
 	};
 
 	const emailKey = findPropertyKeyByType(propertiesSchema, 'email', ['email', 'e-mail']);
@@ -563,6 +589,13 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
 
+	const scanFailureReason = String(input.reviewError || input.preview.reviewError || input.siteChecks.error || '').trim();
+	const scanFailed = input.preview.available === false || Boolean(scanFailureReason);
+	setCheckboxProperty(['scan failed', 'live scan failed', 'cwv failed'], scanFailed);
+	if (scanFailed) {
+		setTextLikeProperty('rich_text', ['scan failure reason', 'failure reason', 'scan fail reason'], scanFailureReason || 'Live scan data is currently unavailable.');
+	}
+
 	const moduleResults = input.extendedScan?.modules;
 	if (moduleResults) {
 		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
@@ -585,7 +618,11 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 			.filter(Boolean);
 
 		if (moduleLines.length) {
-			setTextLikeProperty('rich_text', ['extended scan modules', 'scan modules', 'module results'], moduleLines.join('\n'));
+			const moduleSummaryText = moduleLines.join('\n');
+			const wroteExactModuleSummary = setRichTextPropertyExact(['extended scan modules', 'scan modules', 'module results'], moduleSummaryText);
+			if (!wroteExactModuleSummary) {
+				setTextLikeProperty('rich_text', ['extended scan modules', 'scan modules', 'module results'], moduleSummaryText);
+			}
 		}
 
 		const setModuleProperty = (key: ScanModuleKey, names: string[]): void => {
@@ -607,7 +644,11 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 			const stackValue = typeof platformResult.metrics?.detected === 'string' ? platformResult.metrics.detected : '';
 			const sourceValue = typeof platformResult.metrics?.source === 'string' ? platformResult.metrics.source : '';
 			setTextLikeProperty('rich_text', ['platform', 'platform stack', 'technology stack', 'detected platform stack'], stackValue || platformResult.summary);
-			setTextLikeProperty('rich_text', ['platform source', 'technology source', 'platform scan source'], sourceValue || 'Heuristic scan');
+			const sourceText = sourceValue || 'Heuristic scan';
+			const wroteExactPlatformSource = setRichTextPropertyExact(['platform source', 'technology source', 'platform scan source'], sourceText);
+			if (!wroteExactPlatformSource) {
+				// Intentionally skip fuzzy matching for source to avoid overwriting "Platform" stack values.
+			}
 		}
 	}
 
@@ -1429,7 +1470,8 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const isDev = import.meta.env.DEV;
-		const reviewTimeoutMs = isDev ? 60000 : 15000;
+		const configuredReviewTimeout = Number(getEnv('TECH_REVIEW_REVIEW_TIMEOUT_MS'));
+		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : isDev ? 60000 : 25000;
 		const extendedModulesTimeoutMs = isDev ? 25000 : 9000;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
 		const siteChecksTimeoutMs = isDev ? 15000 : 5000;
@@ -1621,6 +1663,7 @@ export const POST: APIRoute = async ({ request }) => {
 			'cache-stale': 'Cached live result (stale fallback)',
 			fallback: 'Fallback site checks only',
 		};
+		const displayLiveScanError = liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : '';
 
 		const html = `
             <h2>New Contact Submission</h2>
@@ -1629,7 +1672,7 @@ export const POST: APIRoute = async ({ request }) => {
                 <li><strong>Email:</strong> ${escapeHtml(email)}</li>
 				<li><strong>URL:</strong> ${escapeHtml(displayUrl)}</li>
 				<li><strong>Scan Source:</strong> ${escapeHtml(scanSourceLabel[scanSource])}</li>
-				${liveScanError ? `<li><strong>Scan Error:</strong> ${escapeHtml(liveScanError)}</li>` : ''}
+				${displayLiveScanError ? `<li><strong>Scan Error:</strong> ${escapeHtml(displayLiveScanError)}</li>` : ''}
                 ${phone ? `<li><strong>Phone:</strong> ${escapeHtml(phone)}</li>` : ''}
                 ${message ? `<li><strong>Message:</strong> ${escapeHtml(message)}</li>` : ''}
             </ul>
