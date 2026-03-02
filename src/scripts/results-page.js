@@ -75,13 +75,21 @@ document.addEventListener('astro:page-load', () => {
 	function vitalCard(metric, label, value) {
 		const shown = value ? escapeHtml(value) : 'N/A';
 		const classification = classifyVital(metric, value);
+		const symbol = statusSymbolForClass(classification.status);
 		return `
 			<div class="review-vital-card ${classification.status}">
 				<p class="review-vital-label">${label}</p>
 				<p class="review-vital-value">${shown}</p>
-				<p class="review-vital-status">${classification.label}</p>
+				<p class="review-vital-status ${classification.status}">${symbol ? `<span class="status-symbol ${classification.status}" aria-hidden="true">${symbol}</span>` : ''}${classification.label}</p>
 			</div>
 		`;
+	}
+
+	function statusSymbolForClass(statusClass) {
+		if (statusClass === 'is-good') return '✓';
+		if (statusClass === 'is-average' || statusClass === 'is-warning') return '⚠';
+		if (statusClass === 'is-poor') return '✕';
+		return '';
 	}
 
 	function scoreRow(label, value) {
@@ -106,6 +114,14 @@ document.addEventListener('astro:page-load', () => {
 		if (/api key|forbidden|401|403|accessnotconfigured/i.test(text)) return 'Live scan data is temporarily unavailable due to configuration limits. Recommendations below are based on best practices.';
 		if (/timed out|timeout|504/i.test(text)) return 'Live scan request timed out. Recommendations below are based on best practices.';
 		return 'Live scan data is currently unavailable. Recommendations below are based on best practices.';
+	}
+
+	function classifyFixStatus(item) {
+		const text = String(item || '').toLowerCase();
+		if (!text) return 'is-average';
+		if (/strong|healthy|continue monitoring|keep monitoring|overall technical baseline/.test(text)) return 'is-good';
+		if (/first priority|http \d{3}|mixed-content|insecure|critical|failed|unavailable|no url/.test(text)) return 'is-poor';
+		return 'is-average';
 	}
 
 	function readStoredPayload(key) {
@@ -272,7 +288,12 @@ document.addEventListener('astro:page-load', () => {
 		'',
 	);
 
-	const fixesHtml = fixes.length ? `<ol>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>` : '<p>No recommended fixes returned.</p>';
+	const fixItemsHtml = fixes
+		.map((item) => {
+			const statusClass = classifyFixStatus(item);
+			return `<li class="result-list-item ${statusClass}"><span class="result-item-content">${escapeHtml(item)}</span></li>`;
+		})
+		.join('');
 	const moduleResults = scan?.modules && typeof scan.modules === 'object' ? scan.modules : null;
 	const moduleOrder = ['dns', 'ssl', 'forms', 'links', 'nap', 'platform'];
 	const moduleLabels = {
@@ -289,15 +310,24 @@ document.addEventListener('astro:page-load', () => {
 				.map((moduleKey) => {
 					const module = moduleResults[moduleKey];
 					if (!module || module.status === 'skipped') return '';
-					const issues = Array.isArray(module.issues) && module.issues.length ? `<ul>${module.issues.map((issue) => `<li>${escapeHtml(issue)}</li>`).join('')}</ul>` : '';
+					const statusClass = module.status === 'ok' ? 'is-good' : module.status === 'warning' ? 'is-average' : 'is-poor';
+					const issueStatusClass = statusClass;
+					const issues =
+						Array.isArray(module.issues) && module.issues.length
+							? `<ul>${module.issues.map((issue) => `<li class="result-list-item ${issueStatusClass}"><span class="result-item-content">${escapeHtml(issue)}</span></li>`).join('')}</ul>`
+							: '';
 					const summary = typeof module.summary === 'string' ? module.summary : 'No summary available.';
-					return `<li><strong>${moduleLabels[moduleKey] || moduleKey.toUpperCase()}:</strong> ${escapeHtml(summary)}${issues}</li>`;
+					const statusLabel = module.status === 'ok' ? 'Good' : module.status === 'warning' ? 'Needs Improvement' : 'Poor';
+					return `<li class="module-result-item result-list-item ${statusClass}"><span class="module-result-content"><strong>${
+						moduleLabels[moduleKey] || moduleKey.toUpperCase()
+					}:</strong> ${escapeHtml(summary)}</span><span class="visually-hidden">Status: ${statusLabel}</span>${issues}</li>`;
 				})
 				.filter(Boolean)
 				.join('')
 		: '';
 
-	const modulesHtml = moduleItemsHtml ? `<ul>${moduleItemsHtml}</ul>` : '';
+	const combinedItemsHtml = `${fixItemsHtml}${moduleItemsHtml}`;
+	const resultsListHtml = combinedItemsHtml ? `<ul class="result-list">${combinedItemsHtml}</ul>` : '<p>No recommended fixes returned.</p>';
 
 	root.innerHTML = `
 		<div class="review-preview-card">
@@ -306,8 +336,7 @@ document.addEventListener('astro:page-load', () => {
 			<div class="review-vitals">${vitalsHtml}</div>
 			<div class="review-fixes">
 				<h4>Recommended Fixes</h4>
-				${fixesHtml}
-				${modulesHtml}
+				${resultsListHtml}
 			</div>
 		</div>
 	`;

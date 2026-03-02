@@ -148,6 +148,7 @@ type NotionSubmissionInput = {
 	url: string;
 	phone: string;
 	message: string;
+	liveScanError: string;
 	reportFilename: string;
 	preview: ReviewPreview;
 	review: Review | null;
@@ -585,11 +586,12 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['dns found'], input.siteChecks.dnsFound == null ? 'Unknown' : input.siteChecks.dnsFound ? 'Yes' : 'No');
 	setTextLikeProperty('rich_text', ['sitemap exists'], input.siteChecks.sitemapExists == null ? 'Unknown' : input.siteChecks.sitemapExists ? 'Yes' : 'No');
 	setTextLikeProperty('rich_text', ['csp present'], input.siteChecks.cspPresent == null ? 'Unknown' : input.siteChecks.cspPresent ? 'Yes' : 'No');
-	setTextLikeProperty('rich_text', ['review error', 'scan error', 'error'], input.reviewError || input.preview.reviewError || input.siteChecks.error || '');
+	const notionErrorText = String(input.liveScanError || input.reviewError || input.preview.reviewError || input.siteChecks.error || '').trim();
+	setTextLikeProperty('rich_text', ['review error', 'scan error', 'errors', 'error'], notionErrorText);
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
 
-	const scanFailureReason = String(input.reviewError || input.preview.reviewError || input.siteChecks.error || '').trim();
+	const scanFailureReason = notionErrorText;
 	const scanFailed = input.preview.available === false || Boolean(scanFailureReason);
 	setCheckboxProperty(['scan failed', 'live scan failed', 'cwv failed'], scanFailed);
 	if (scanFailed) {
@@ -619,9 +621,10 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 
 		if (moduleLines.length) {
 			const moduleSummaryText = moduleLines.join('\n');
-			const wroteExactModuleSummary = setRichTextPropertyExact(['extended scan modules', 'scan modules', 'module results'], moduleSummaryText);
+			const moduleSummaryFieldNames = ['extended scan modules', 'extended scan module', 'extended scan', 'scan modules', 'scan module', 'module results'];
+			const wroteExactModuleSummary = setRichTextPropertyExact(moduleSummaryFieldNames, moduleSummaryText);
 			if (!wroteExactModuleSummary) {
-				setTextLikeProperty('rich_text', ['extended scan modules', 'scan modules', 'module results'], moduleSummaryText);
+				setTextLikeProperty('rich_text', moduleSummaryFieldNames, moduleSummaryText);
 			}
 		}
 
@@ -1715,6 +1718,7 @@ export const POST: APIRoute = async ({ request }) => {
 					url: notionUrl,
 					phone,
 					message,
+					liveScanError,
 					reportFilename,
 					preview,
 					review,
