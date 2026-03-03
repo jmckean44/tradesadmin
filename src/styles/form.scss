@@ -67,12 +67,11 @@ form input ~ label + span {
 }
 
 form .btn:hover:not(:disabled) {
-	background: var.$theme-clr;
-	transform: translateY(-1px);
+	background: var.$theme-clr-dark;
 }
 
 form .btn:disabled {
-	opacity: 0.6;
+	//opacity: 0.6;
 	cursor: not-allowed;
 }
 
@@ -233,7 +232,7 @@ button {
 	padding: 1rem 1.5rem;
 	cursor: pointer;
 	position: relative;
-	background: var.$theme-clr-dark;
+	background: var.$theme-clr;
 	color: #fff !important;
 	cursor: pointer;
 	display: inline-block;
@@ -242,7 +241,7 @@ button {
 
 button:hover,
 .btn:hover {
-	background: var.$theme-clr;
+	background: var.$theme-clr-dark;
 	color: #fff !important;
 	transition: all ease 0.3s;
 }

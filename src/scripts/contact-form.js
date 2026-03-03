@@ -574,7 +574,11 @@ document.addEventListener('astro:page-load', () => {
 			} else {
 				setResultsUrl(payload.url);
 				renderReviewPreview(data?.preview);
-				reviewPreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				// Scroll to #contact section on scan complete
+				const contactSection = document.getElementById('contact');
+				if (contactSection) {
+					contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
 			}
 
 			resetFormUiState();
