@@ -504,9 +504,10 @@ document.addEventListener('astro:page-load', () => {
 			message: String(formData.get('details') || formData.get('message') || '').trim(),
 			turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
 		};
+		const hasSubmittedUrl = Boolean(String(payload.url || '').trim());
 
 		result.style.display = 'block';
-		result.textContent = 'Scanning... please wait about 30 seconds.';
+		result.textContent = hasSubmittedUrl ? 'Scanning... please wait about 15 seconds.' : 'Submitting...';
 		setScanCompleteView(false);
 		setCellphoneHidden(false);
 		if (resultsRoot) resultsRoot.innerHTML = '';
@@ -560,7 +561,6 @@ document.addEventListener('astro:page-load', () => {
 			}
 
 			result.textContent = data?.message || 'Thanks. Your request was submitted.';
-			const hasSubmittedUrl = Boolean(String(payload.url || '').trim());
 			if (!hasSubmittedUrl) {
 				setScanCompleteView(false);
 				setCellphoneHidden(false);
