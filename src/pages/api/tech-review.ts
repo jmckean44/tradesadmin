@@ -677,6 +677,19 @@ function includeKeyQuotaOrAuthFailure(message: string): boolean {
 	return /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
 }
 
+function extractPageSpeedProjectNumber(text: string): string {
+	const source = String(text || '');
+	const direct = source.match(/project_number:(\d{6,})/i)?.[1];
+	if (direct) return direct;
+	const consumer = source.match(/consumer["']?\s*[:=]\s*["']?projects\/(\d{6,})/i)?.[1];
+	if (consumer) return consumer;
+	return '';
+}
+
+function getExpectedPageSpeedProjectNumber(): string {
+	return getEnv('PAGESPEED_PROJECT_NUMBER').replace(/\D/g, '');
+}
+
 async function runReview(url: string): Promise<ReviewRunResult> {
 	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
 		// Debug log for API responses
@@ -689,6 +702,7 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 		}
 		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
 			const pageSpeedApiKey = getPageSpeedApiKeyIfUsable();
+			const expectedProjectNumber = getExpectedPageSpeedProjectNumber();
 
 			const executePageSpeedRequest = async (includeApiKey: boolean, mode: 'full' | 'minimal' = 'full'): Promise<ReviewRunResult> => {
 				const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
@@ -708,6 +722,12 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 						const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
 						if (!response.ok) {
 							const body = await response.text().catch(() => '');
+							const detectedProjectNumber = extractPageSpeedProjectNumber(body);
+							if (expectedProjectNumber && detectedProjectNumber && expectedProjectNumber !== detectedProjectNumber) {
+								throw new Error(
+									`PageSpeed API key project mismatch: expected project ${expectedProjectNumber} but request used project ${detectedProjectNumber}. Update PAGESPEED_API_KEY in this deploy context.`,
+								);
+							}
 							const message = `PageSpeed API failed (${response.status}) ${body}`.trim();
 							// Detect per-minute quota (HTTP 429)
 							if (response.status === 429) {
