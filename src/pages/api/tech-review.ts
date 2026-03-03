@@ -165,6 +165,7 @@ type NotionSubmissionInput = {
 };
 
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
+const REQUEST_TIME_BUDGET_MS_DEFAULT = 9000;
 const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
@@ -228,6 +229,14 @@ function getReviewCacheTtlMs(): number {
 	if (!raw) return REVIEW_CACHE_TTL_MS_DEFAULT;
 	const parsed = Number(raw);
 	if (!Number.isFinite(parsed) || parsed <= 0) return REVIEW_CACHE_TTL_MS_DEFAULT;
+	return Math.round(parsed);
+}
+
+function getRequestTimeBudgetMs(): number {
+	const raw = getEnv('TECH_REVIEW_REQUEST_BUDGET_MS');
+	if (!raw) return REQUEST_TIME_BUDGET_MS_DEFAULT;
+	const parsed = Number(raw);
+	if (!Number.isFinite(parsed) || parsed < 6000) return REQUEST_TIME_BUDGET_MS_DEFAULT;
 	return Math.round(parsed);
 }
 
@@ -1398,13 +1407,16 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const isDev = import.meta.env.DEV;
+		const requestStartedAt = Date.now();
+		const requestBudgetMs = isDev ? Math.max(30000, getRequestTimeBudgetMs()) : getRequestTimeBudgetMs();
+		const hasTimeBudget = (reserveMs = 0): boolean => Date.now() - requestStartedAt < requestBudgetMs - reserveMs;
 		const configuredReviewTimeout = Number(getEnv('TECH_REVIEW_REVIEW_TIMEOUT_MS'));
-		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : isDev ? 60000 : 25000;
-		const extendedModulesTimeoutMs = isDev ? 25000 : 9000;
+		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : isDev ? 30000 : 6500;
+		const extendedModulesTimeoutMs = isDev ? 12000 : 3000;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
-		const siteChecksTimeoutMs = isDev ? 15000 : 5000;
-		const notionSyncTimeoutMs = isDev ? 20000 : 6000;
-		const smtpSendTimeoutMs = isDev ? 25000 : 7000;
+		const siteChecksTimeoutMs = isDev ? 8000 : 2500;
+		const notionSyncTimeoutMs = isDev ? 12000 : 2500;
+		const smtpSendTimeoutMs = isDev ? 12000 : 2500;
 		const body = await parseRequestBody(request);
 
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
@@ -1482,10 +1494,12 @@ export const POST: APIRoute = async ({ request }) => {
 			},
 		});
 
-		try {
-			await withTimeout(transporter.verify(), smtpVerifyTimeoutMs, 'SMTP verify');
-		} catch (err) {
-			console.warn('SMTP verify skipped due to timeout/error:', err);
+		if (hasTimeBudget(4500)) {
+			try {
+				await withTimeout(transporter.verify(), smtpVerifyTimeoutMs, 'SMTP verify');
+			} catch (err) {
+				console.warn('SMTP verify skipped due to timeout/error:', err);
+			}
 		}
 
 		let review: Review | null = null;
@@ -1515,8 +1529,13 @@ export const POST: APIRoute = async ({ request }) => {
 				if (cachedReview) {
 					review = cachedReview;
 					scanSource = 'cache-fresh';
+				} else if (!hasTimeBudget(4500)) {
+					reviewError = 'Live scan skipped due to server time budget. Submission still saved.';
+					liveScanError = reviewError;
 				} else {
-					const runResult = await withTimeout(runReview(url), reviewTimeoutMs, 'Lighthouse review');
+					const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
+					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
+					const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
 					review = runResult.review;
 					scanSource = runResult.source;
 					setCachedReview(url, review);
@@ -1559,10 +1578,12 @@ export const POST: APIRoute = async ({ request }) => {
 				scanSource = 'fallback';
 			}
 
-			try {
-				extendedScan = await withTimeout(runExtendedScanModules(url, selectedModules), extendedModulesTimeoutMs, 'Extended module checks');
-			} catch (moduleErr) {
-				console.error('Extended module checks failed:', moduleErr);
+			if (hasTimeBudget(2500)) {
+				try {
+					extendedScan = await withTimeout(runExtendedScanModules(url, selectedModules), extendedModulesTimeoutMs, 'Extended module checks');
+				} catch (moduleErr) {
+					console.error('Extended module checks failed:', moduleErr);
+				}
 			}
 		}
 
@@ -1617,11 +1638,15 @@ export const POST: APIRoute = async ({ request }) => {
 			cspPresent: null,
 			error: '',
 		};
-		try {
-			siteChecks = await withTimeout(runSubmissionSiteChecks(url), siteChecksTimeoutMs, 'Submission site checks');
-		} catch (siteCheckErr) {
-			console.warn('Submission site checks skipped due to timeout/error:', siteCheckErr);
-			siteChecks.error = 'Submission site checks timed out.';
+		if (hasTimeBudget(2000)) {
+			try {
+				siteChecks = await withTimeout(runSubmissionSiteChecks(url), siteChecksTimeoutMs, 'Submission site checks');
+			} catch (siteCheckErr) {
+				console.warn('Submission site checks skipped due to timeout/error:', siteCheckErr);
+				siteChecks.error = 'Submission site checks timed out.';
+			}
+		} else {
+			siteChecks.error = 'Skipped due to request time budget.';
 		}
 		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
@@ -1630,79 +1655,87 @@ export const POST: APIRoute = async ({ request }) => {
 		let emailSent = false;
 		let emailError = '';
 
-		try {
-			await withTimeout(
-				logSubmissionToNotion({
-					company,
-					email,
-					url: notionUrl,
-					phone,
-					message,
-					liveScanError,
-					reportFilename,
-					preview,
-					review,
-					extendedScan,
-					reviewError,
-					siteChecks,
-				}),
-				notionSyncTimeoutMs,
-				'Notion sync',
-			);
-			notionSynced = true;
-		} catch (notionErr) {
-			console.error('Notion sync failed:', notionErr);
-			notionError = notionErr instanceof Error ? notionErr.message : String(notionErr);
+		if (hasTimeBudget(1200)) {
+			try {
+				await withTimeout(
+					logSubmissionToNotion({
+						company,
+						email,
+						url: notionUrl,
+						phone,
+						message,
+						liveScanError,
+						reportFilename,
+						preview,
+						review,
+						extendedScan,
+						reviewError,
+						siteChecks,
+					}),
+					notionSyncTimeoutMs,
+					'Notion sync',
+				);
+				notionSynced = true;
+			} catch (notionErr) {
+				console.error('Notion sync failed:', notionErr);
+				notionError = notionErr instanceof Error ? notionErr.message : String(notionErr);
+			}
+		} else if (notionConfigured) {
+			notionError = 'Notion sync skipped due to request time budget.';
 		}
 
-		try {
-			const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
-			const fallbackRecipient = getEnv('SMTP_USER');
+		if (hasTimeBudget(500)) {
+			try {
+				const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
+				const fallbackRecipient = getEnv('SMTP_USER');
 
-			await withTimeout(
-				transporter.sendMail({
-					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-					to: primaryRecipient,
-					replyTo: email,
-					subject: `New submission: ${company}`,
-					html,
-				}),
-				smtpSendTimeoutMs,
-				'SMTP send',
-			);
-			emailSent = true;
-		} catch (err) {
-			const primaryErr = err as { message?: string };
-			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
-			console.error('SMTP send failed:', err);
+				await withTimeout(
+					transporter.sendMail({
+						from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+						to: primaryRecipient,
+						replyTo: email,
+						subject: `New submission: ${company}`,
+						html,
+					}),
+					smtpSendTimeoutMs,
+					'SMTP send',
+				);
+				emailSent = true;
+			} catch (err) {
+				const primaryErr = err as { message?: string };
+				const primaryMessage = primaryErr?.message || 'SMTP send failed.';
+				console.error('SMTP send failed:', err);
 
-			const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
-			const fallbackRecipient = getEnv('SMTP_USER');
-			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
+				const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
+				const fallbackRecipient = getEnv('SMTP_USER');
+				const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
 
-			if (canRetryWithFallback) {
-				try {
-					await withTimeout(
-						transporter.sendMail({
-							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
-							to: fallbackRecipient,
-							replyTo: email,
-							subject: `New submission: ${company}`,
-							html,
-						}),
-						smtpSendTimeoutMs,
-						'SMTP send retry',
-					);
-					emailSent = true;
-					emailError = '';
-				} catch (retryErr) {
-					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
-					console.error('SMTP send retry failed:', retryErr);
+				if (canRetryWithFallback && hasTimeBudget(300)) {
+					try {
+						await withTimeout(
+							transporter.sendMail({
+								from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
+								to: fallbackRecipient,
+								replyTo: email,
+								subject: `New submission: ${company}`,
+								html,
+							}),
+							smtpSendTimeoutMs,
+							'SMTP send retry',
+						);
+						emailSent = true;
+						emailError = '';
+					} catch (retryErr) {
+						const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+						emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
+						console.error('SMTP send retry failed:', retryErr);
+					}
+				} else {
+					emailError = primaryMessage;
 				}
-			} else {
-				emailError = primaryMessage;
 			}
+		} else {
+			emailError = 'Email send skipped due to request time budget.';
 		}
 
 		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';

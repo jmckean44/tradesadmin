@@ -134,7 +134,7 @@ label {
 }
 
 .scan-modules {
-	border: 1px solid var.$note;
+	border: 1px solid var.$theme-clr-dark;
 	border-radius: $input-border-radius;
 	padding: var.$container-padding;
 	margin: 2rem 0 1rem;
@@ -149,8 +149,8 @@ label {
 	opacity: 1;
 	margin-bottom: 0;
 	padding: 0 0.5rem;
-	font-size: 1.2rem;
-	font-family: var.$font-sans-serif-med;
+	font-size: 1.4rem;
+	font-family: var.$font-sans-serif-semibold;
 	line-height: 1.2;
 	display: block;
 	grid-column: 1 / -1;
@@ -159,7 +159,7 @@ label {
 .scan-modules .scan-modules-note {
 	grid-column: 1 / -1;
 	margin: 0 0 0.6rem;
-	font-size: 0.9rem;
+	font-size: 1.1rem;
 	line-height: 1.3;
 	font-family: var.$font-sans-serif-med;
 }

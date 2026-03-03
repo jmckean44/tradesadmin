@@ -1,0 +1,19 @@
+---
+import { Image } from 'astro:assets';
+import scanBefore from '../../img/scan-before.webp';
+import scanAfter from '../../img/scan-after.webp';
+---
+
+<section id="before-after">
+	<div class="container top">
+		<h2 class="margin-btm-med center">Before & After Performance Results</h2>
+		<div class="flex">
+			<div class="cell small-18 medium-9">
+				<Image src={scanBefore} alt="Scan Results before" />
+			</div>
+			<div class="cell small-18 medium-9">
+				<Image src={scanAfter} alt="Scan Results after" />
+			</div>
+		</div>
+	</div>
+</section>
