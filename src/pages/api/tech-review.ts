@@ -83,13 +83,6 @@ type ReviewPreview = {
 		accessibility: number | null;
 		bestPractices: number | null;
 	};
-	vitals: {
-		lcp: string;
-		interactive: string;
-		tbt: string;
-		cls: string;
-	};
-	recommendedFixes: string[];
 	reviewError?: string;
 };
 
@@ -253,17 +246,31 @@ function hasAnyLiveScore(review: Review): boolean {
 	return [review.performance, review.seo, review.accessibility, review.bestPractices].some((value) => typeof value === 'number' && Number.isFinite(value));
 }
 
+function hasPerformanceScore(review: Review): boolean {
+	return typeof review.performance === 'number' && Number.isFinite(review.performance);
+}
+
+function getPerformanceLabDataUnavailableGuidance(): string {
+	return 'Live scan performance data is currently unavailable. Review and reduce render-blocking JavaScript/CSS, then retry the scan.';
+}
+
 function normalizeReviewErrorForUser(message: string): string {
 	const text = String(message || '');
 	if (!text) return 'Live scan data is currently unavailable.';
 	if (isLighthouseAssetErrorMessage(text)) return 'Live scan data is currently unavailable.';
 	if (/429|rate limit|quota/i.test(text)) return 'Live scan data is temporarily unavailable due to scan capacity limits.';
+	if (/performance data unavailable|performance lab data|partial category data|could not complete lab metrics/i.test(text)) {
+		return getPerformanceLabDataUnavailableGuidance();
+	}
 	return text;
 }
 
 function normalizeLiveScanErrorForUser(message: string): string {
 	const text = String(message || '');
 	if (!text) return 'Live scan data is currently unavailable.';
+	if (/performance data unavailable|performance lab data|partial category data|could not complete lab metrics/i.test(text)) {
+		return getPerformanceLabDataUnavailableGuidance();
+	}
 	if (/api key|forbidden|accessnotconfigured|permission denied|403|401/i.test(text)) {
 		return 'Live scan data is unavailable because the PageSpeed API key is missing, invalid, or restricted.';
 	}
@@ -528,13 +535,6 @@ function buildReviewPreview(review: Review | null, reviewError: string, forceUna
 				accessibility: null,
 				bestPractices: null,
 			},
-			vitals: {
-				lcp: 'N/A',
-				interactive: 'N/A',
-				tbt: 'N/A',
-				cls: 'N/A',
-			},
-			recommendedFixes: [],
 			reviewError: reviewError || undefined,
 		};
 	}
@@ -547,13 +547,6 @@ function buildReviewPreview(review: Review | null, reviewError: string, forceUna
 			accessibility: review.accessibility,
 			bestPractices: review.bestPractices,
 		},
-		vitals: {
-			lcp: 'N/A',
-			interactive: 'N/A',
-			tbt: 'N/A',
-			cls: 'N/A',
-		},
-		recommendedFixes: [],
 	};
 }
 
@@ -690,16 +683,17 @@ function getExpectedPageSpeedProjectNumber(): string {
 	return getEnv('PAGESPEED_PROJECT_NUMBER').replace(/\D/g, '');
 }
 
+function getPageSpeedPerformanceScore(categories: Record<string, { score?: number | null }> | undefined): number | null {
+	const raw = categories?.performance?.score;
+	return typeof raw === 'number' && Number.isFinite(raw) ? raw : null;
+}
+
+function shouldLogPageSpeedDebug(): boolean {
+	return getEnv('TECH_REVIEW_DEBUG_PAGESPEED').toLowerCase() === 'true';
+}
+
 async function runReview(url: string): Promise<ReviewRunResult> {
 	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
-		// Debug log for API responses
-		function logPageSpeedApiResponse(strategy: string, responsePayload: any) {
-			try {
-				console.log(`[PageSpeed API][${strategy}] Response:`, JSON.stringify(responsePayload, null, 2));
-			} catch (err) {
-				console.log(`[PageSpeed API][${strategy}] Response (raw):`, responsePayload);
-			}
-		}
 		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
 			const pageSpeedApiKey = getPageSpeedApiKeyIfUsable();
 			const expectedProjectNumber = getExpectedPageSpeedProjectNumber();
@@ -748,9 +742,20 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 							};
 						};
 
-						logPageSpeedApiResponse(strategy, payload);
+						if (shouldLogPageSpeedDebug()) {
+							console.log(`[PageSpeed API][${strategy}] categories:`, payload?.lighthouseResult?.categories ?? null);
+						}
 
 						if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
+						const performanceScore = getPageSpeedPerformanceScore(payload.lighthouseResult.categories);
+						if (performanceScore == null) {
+							const labDataError = new Error(`PageSpeed performance data unavailable (${strategy}). Lighthouse could not complete lab metrics in time for this run.`);
+							if (attempt < 3) {
+								await wait(300 * attempt);
+								continue;
+							}
+							throw labDataError;
+						}
 						return {
 							review: reviewFromLhrLike(payload.lighthouseResult),
 							source: includeApiKey ? 'pagespeed-key' : 'pagespeed-no-key',
@@ -777,24 +782,12 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 				try {
 					result = await executePageSpeedRequest(true, 'full');
 					// If metrics are missing, retry without key
-					const hasMetrics =
-						result &&
-						result.review &&
-						(typeof result.review.performance === 'number' ||
-							typeof result.review.seo === 'number' ||
-							typeof result.review.accessibility === 'number' ||
-							typeof result.review.bestPractices === 'number');
+					const hasMetrics = result && result.review && hasPerformanceScore(result.review);
 					if (!hasMetrics) {
 						// Retry without API key
 						const retryResult = await executePageSpeedRequest(false, 'full');
 						// If retry yields more metrics, use it
-						const retryHasMetrics =
-							retryResult &&
-							retryResult.review &&
-							(typeof retryResult.review.performance === 'number' ||
-								typeof retryResult.review.seo === 'number' ||
-								typeof retryResult.review.accessibility === 'number' ||
-								typeof retryResult.review.bestPractices === 'number');
+						const retryHasMetrics = retryResult && retryResult.review && hasPerformanceScore(retryResult.review);
 						if (retryHasMetrics) {
 							return retryResult;
 						}
@@ -825,12 +818,16 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 		}
 
 		const mobileResult = await requestPageSpeed('mobile');
-		if (hasAnyLiveScore(mobileResult.review)) return mobileResult;
+		if (hasPerformanceScore(mobileResult.review)) return mobileResult;
 
 		const desktopResult = await requestPageSpeed('desktop');
-		if (hasAnyLiveScore(desktopResult.review)) return desktopResult;
+		if (hasPerformanceScore(desktopResult.review)) return desktopResult;
 
-		return desktopResult;
+		if (hasAnyLiveScore(mobileResult.review) || hasAnyLiveScore(desktopResult.review)) {
+			throw new Error('PageSpeed returned partial category data, but performance lab data was unavailable.');
+		}
+
+		return hasAnyLiveScore(mobileResult.review) ? mobileResult : desktopResult;
 	}
 
 	// Always use PageSpeed API for scans (never attempt to run Lighthouse/Chrome in serverless)
