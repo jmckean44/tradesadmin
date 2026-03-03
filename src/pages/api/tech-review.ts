@@ -1,5 +1,4 @@
 import dns from 'dns/promises';
-import tls from 'tls';
 
 // Shared error message for unresolved domains
 export const DOMAIN_NOT_FOUND_ERROR = 'The website address you entered could not be found. Please check for typos and try again.';
@@ -94,28 +93,6 @@ type ReviewPreview = {
 	reviewError?: string;
 };
 
-type ScanModuleKey = 'dns' | 'ssl' | 'forms' | 'links' | 'nap';
-
-type ScanModuleResult = {
-	status: 'ok' | 'warning' | 'error' | 'skipped';
-	summary: string;
-	issues: string[];
-	metrics?: Record<string, string | number | boolean | null>;
-	error?: string;
-};
-
-type ExtendedScanModules = Record<ScanModuleKey, ScanModuleResult>;
-
-type ExtendedScanReport = {
-	selected: ScanModuleKey[];
-	modules: ExtendedScanModules;
-	recommendedFixes: string[];
-};
-
-type BasicSiteChecks = {
-	recommendedFixes: string[];
-};
-
 type CachedReview = {
 	review: Review;
 	expiresAt: number;
@@ -152,7 +129,6 @@ type NotionSubmissionInput = {
 	reportFilename: string;
 	preview: ReviewPreview;
 	review: Review | null;
-	extendedScan?: ExtendedScanReport;
 	reviewError: string;
 	siteChecks: {
 		sslValid: boolean | null;
@@ -169,7 +145,6 @@ const REQUEST_TIME_BUDGET_MS_DEFAULT = 9000;
 const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
-const ALL_SCAN_MODULES: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
 
 // PageSpeed Insights API key is loaded from Netlify environment as PAGESPEED_API_KEY
 // To use, set PAGESPEED_API_KEY in netlify.toml or Netlify dashboard
@@ -183,34 +158,6 @@ function normalizeUrl(input: string): string {
 	const value = (input || '').trim();
 	if (!value) return '';
 	return /^https?:\/\//i.test(value) ? value : `https://${value}`;
-}
-
-function normalizeScanModules(input: unknown): ScanModuleKey[] {
-	const collectFromString = (value: string): string[] =>
-		value
-			.split(',')
-			.map((item) => item.trim().toLowerCase())
-			.filter(Boolean);
-
-	const rawValues: string[] = Array.isArray(input)
-		? input.filter((value): value is string => typeof value === 'string').flatMap((value) => collectFromString(value))
-		: typeof input === 'string'
-		? collectFromString(input)
-		: [];
-
-	const mapped = rawValues
-		.map((value) => {
-			if (value === 'dns') return 'dns';
-			if (value === 'ssl') return 'ssl';
-			if (value === 'forms') return 'forms';
-			if (value === 'links') return 'links';
-			if (value === 'nap') return 'nap';
-			return null;
-		})
-		.filter((value): value is ScanModuleKey => Boolean(value));
-
-	const unique = Array.from(new Set(mapped));
-	return unique.length ? unique : [...ALL_SCAN_MODULES];
 }
 
 function isValidEmail(input: string): boolean {
@@ -300,13 +247,6 @@ function reviewFromLhrLike(lhr: { categories?: Record<string, { score?: number |
 
 function escapeHtml(value: string): string {
 	return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
-}
-
-function firstNumber(value: string): number | null {
-	const match = String(value || '').match(/[\d.]+/);
-	if (!match) return null;
-	const parsed = Number(match[0]);
-	return Number.isFinite(parsed) ? parsed : null;
 }
 
 function hasAnyLiveScore(review: Review): boolean {
@@ -528,25 +468,11 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 		properties[key] = { phone_number: value };
 	};
 
-	const setRichTextPropertyExact = (names: string[], value: string): boolean => {
-		if (!value) return false;
-		const key = findPropertyKeyByTypeExact(propertiesSchema, 'rich_text', names);
-		if (!key) return false;
-		properties[key] = { rich_text: buildNotionTextValue(value) };
-		return true;
-	};
-
 	const setNumberProperty = (names: string[], value: number | null | undefined): void => {
 		if (value == null || !Number.isFinite(value)) return;
 		const key = findPropertyKeyByType(propertiesSchema, 'number', names);
 		if (!key) return;
 		properties[key] = { number: value };
-	};
-
-	const setCheckboxProperty = (names: string[], value: boolean): void => {
-		const key = findPropertyKeyByType(propertiesSchema, 'checkbox', names);
-		if (!key) return;
-		properties[key] = { checkbox: value };
 	};
 
 	const emailKey = findPropertyKeyByType(propertiesSchema, 'email', ['email', 'e-mail']);
@@ -567,70 +493,6 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setNumberProperty(['seo', 'seo score'], input.preview.scores.seo);
 	setNumberProperty(['accessibility', 'accessibility score'], input.preview.scores.accessibility);
 	setNumberProperty(['best practices', 'best practices score'], input.preview.scores.bestPractices);
-
-	setTextLikeProperty('rich_text', ['lcp'], input.preview.vitals.lcp || 'N/A');
-	setTextLikeProperty('rich_text', ['interactive', 'tti'], input.preview.vitals.interactive || 'N/A');
-	setTextLikeProperty('rich_text', ['tbt', 'total blocking time'], input.preview.vitals.tbt || 'N/A');
-	setTextLikeProperty('rich_text', ['cls'], input.preview.vitals.cls || 'N/A');
-	setTextLikeProperty('rich_text', ['ssl valid'], input.siteChecks.sslValid == null ? 'Unknown' : input.siteChecks.sslValid ? 'Yes' : 'No');
-	setTextLikeProperty('rich_text', ['http status'], input.siteChecks.httpStatus == null ? '' : String(input.siteChecks.httpStatus));
-	setTextLikeProperty('rich_text', ['dns found'], input.siteChecks.dnsFound == null ? 'Unknown' : input.siteChecks.dnsFound ? 'Yes' : 'No');
-	setTextLikeProperty('rich_text', ['sitemap exists'], input.siteChecks.sitemapExists == null ? 'Unknown' : input.siteChecks.sitemapExists ? 'Yes' : 'No');
-	setTextLikeProperty('rich_text', ['csp present'], input.siteChecks.cspPresent == null ? 'Unknown' : input.siteChecks.cspPresent ? 'Yes' : 'No');
-	const notionErrorText = String(input.reviewError || input.preview.reviewError || input.liveScanError || input.siteChecks.error || '').trim();
-	setTextLikeProperty('rich_text', ['review error', 'scan error', 'errors', 'error'], notionErrorText);
-	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
-	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
-
-	const scanFailureReason = notionErrorText;
-	const scanFailed = input.preview.available === false || Boolean(scanFailureReason);
-	setCheckboxProperty(['scan failed', 'live scan failed', 'cwv failed'], scanFailed);
-	if (scanFailed) {
-		setTextLikeProperty('rich_text', ['scan failure reason', 'failure reason', 'scan fail reason'], scanFailureReason || 'Live scan data is currently unavailable.');
-	}
-
-	const moduleResults = input.extendedScan?.modules;
-	if (moduleResults) {
-		const moduleOrder: ScanModuleKey[] = ['dns', 'ssl', 'forms', 'links', 'nap'];
-		const moduleLabel: Record<ScanModuleKey, string> = {
-			dns: 'DNS',
-			ssl: 'SSL',
-			forms: 'Forms',
-			links: 'Links',
-			nap: 'NAP',
-		};
-
-		const moduleLines = moduleOrder
-			.map((key) => {
-				const result = moduleResults[key];
-				if (!result || result.status === 'skipped') return '';
-				const issues = Array.isArray(result.issues) && result.issues.length ? ` | Issues: ${result.issues.join(' ; ')}` : '';
-				return `${moduleLabel[key]} (${result.status.toUpperCase()}): ${result.summary}${issues}`;
-			})
-			.filter(Boolean);
-
-		if (moduleLines.length) {
-			const moduleSummaryText = moduleLines.join('\n');
-			const moduleSummaryFieldNames = ['extended scan modules', 'extended scan module', 'extended scan', 'scan modules', 'scan module', 'module results'];
-			const wroteExactModuleSummary = setRichTextPropertyExact(moduleSummaryFieldNames, moduleSummaryText);
-			if (!wroteExactModuleSummary) {
-				setTextLikeProperty('rich_text', moduleSummaryFieldNames, moduleSummaryText);
-			}
-		}
-
-		const setModuleProperty = (key: ScanModuleKey, names: string[]): void => {
-			const result = moduleResults[key];
-			if (!result || result.status === 'skipped') return;
-			const issues = Array.isArray(result.issues) && result.issues.length ? ` | Issues: ${result.issues.join(' ; ')}` : '';
-			setTextLikeProperty('rich_text', names, `${result.status.toUpperCase()}: ${result.summary}${issues}`);
-		};
-
-		setModuleProperty('dns', ['dns module', 'dns results']);
-		setModuleProperty('ssl', ['ssl module', 'ssl results']);
-		setModuleProperty('forms', ['forms module', 'forms results']);
-		setModuleProperty('links', ['links module', 'links results']);
-		setModuleProperty('nap', ['nap module', 'name address phone module', 'name address phone results']);
-	}
 
 	let existingPageId: string | null = null;
 	if (normalizedWebsiteUrl) {
@@ -656,433 +518,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	await createOrUpdateNotionPage(notionToken, notionDatabaseId, existingPageId, properties);
 }
 
-async function runBasicSiteChecks(url: string): Promise<BasicSiteChecks> {
-	const startedAt = Date.now();
-	const response = await withTimeout(fetch(url, { redirect: 'follow' }), 15000, 'Basic site check');
-	const durationMs = Date.now() - startedAt;
-
-	const contentType = (response.headers.get('content-type') || '').toLowerCase();
-	const cacheControl = (response.headers.get('cache-control') || '').toLowerCase();
-	const html = contentType.includes('text/html') ? await response.text() : '';
-
-	const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-	const titleText = titleMatch?.[1]?.trim() || '';
-	const hasMetaDescription = /<meta[^>]+name=["']description["'][^>]*content=["'][^"']{20,}["']/i.test(html) || /<meta[^>]+content=["'][^"']{20,}["'][^>]+name=["']description["']/i.test(html);
-	const h1Count = (html.match(/<h1\b/gi) || []).length;
-	const hasCanonical = /<link[^>]+rel=["']canonical["']/i.test(html);
-	const hasViewport = /<meta[^>]+name=["']viewport["']/i.test(html);
-	const imageTags = html.match(/<img\b[^>]*>/gi) || [];
-	const missingAltCount = imageTags.filter((tag) => !/\balt\s*=\s*["'][^"']*["']/i.test(tag)).length;
-	const hasMixedContent = /^https:\/\//i.test(url) && /(src|href)=["']http:\/\//i.test(html);
-
-	const fixes: string[] = [];
-
-	if (!response.ok) fixes.push(`Your page returned an HTTP ${response.status} response. Fixing this should be the first priority.`);
-	if (durationMs > 1500) fixes.push('Server response appears slow. Improve hosting performance, caching, and heavy plugin/script usage.');
-	if (!titleText || titleText.length < 10) fixes.push('Add a clear page title so search results show your service and location properly.');
-	if (!hasMetaDescription) fixes.push('Add a meta description to improve how your page appears in Google search snippets.');
-	if (h1Count === 0) fixes.push('Add one clear H1 heading that describes the page service and location.');
-	if (h1Count > 1) fixes.push('Use a single primary H1 heading and keep the rest as H2/H3 for cleaner page structure.');
-	if (!hasCanonical) fixes.push('Add canonical tags to reduce duplicate-page confusion for search engines.');
-	if (!hasViewport) fixes.push('Add a viewport meta tag to ensure proper mobile rendering and avoid usability issues.');
-	if (missingAltCount > 0) fixes.push(`Add descriptive alt text to ${missingAltCount} image${missingAltCount === 1 ? '' : 's'} for accessibility and SEO.`);
-	if (hasMixedContent) fixes.push('Remove HTTP asset links on HTTPS pages to prevent mixed-content warnings and blocked resources.');
-	if (!cacheControl) fixes.push('Set cache-control headers for static assets to improve repeat-load speed.');
-
-	if (!fixes.length) {
-		fixes.push('Core technical foundations look healthy. Continue monitoring performance and indexing regularly.');
-	}
-
-	return { recommendedFixes: fixes.slice(0, 4) };
-}
-
-async function runSubmissionSiteChecks(url: string): Promise<NotionSubmissionInput['siteChecks']> {
-	const result: NotionSubmissionInput['siteChecks'] = {
-		sslValid: null,
-		httpStatus: null,
-		dnsFound: null,
-		sitemapExists: null,
-		cspPresent: null,
-		error: '',
-	};
-
-	if (!url) return result;
-
-	let hostname = '';
-	try {
-		hostname = new URL(normalizeUrl(url)).hostname;
-	} catch {
-		result.error = 'Invalid URL for site checks.';
-		return result;
-	}
-
-	try {
-		await dns.lookup(hostname);
-		result.dnsFound = true;
-	} catch {
-		result.dnsFound = false;
-	}
-
-	try {
-		const pageResponse = await withTimeout(fetch(normalizeUrl(url), { method: 'GET', redirect: 'follow' }), 15000, 'HTTP status check');
-		result.httpStatus = pageResponse.status;
-		result.cspPresent = Boolean(pageResponse.headers.get('content-security-policy'));
-
-		let resolvedProtocol = '';
-		try {
-			resolvedProtocol = new URL(pageResponse.url || normalizeUrl(url)).protocol;
-		} catch {
-			resolvedProtocol = '';
-		}
-
-		result.sslValid = resolvedProtocol === 'https:';
-	} catch (err) {
-		result.error = err instanceof Error ? err.message : String(err);
-	}
-
-	try {
-		const sitemapUrl = new URL('/sitemap.xml', normalizeUrl(url)).toString();
-		let sitemapResponse = await withTimeout(fetch(sitemapUrl, { method: 'HEAD', redirect: 'follow' }), 10000, 'Sitemap check');
-
-		if (sitemapResponse.status === 405) {
-			sitemapResponse = await withTimeout(fetch(sitemapUrl, { method: 'GET', redirect: 'follow' }), 10000, 'Sitemap check fallback');
-		}
-
-		result.sitemapExists = sitemapResponse.ok;
-	} catch {
-		result.sitemapExists = false;
-	}
-
-	return result;
-}
-
-async function runDnsModule(url: string): Promise<ScanModuleResult> {
-	const issues: string[] = [];
-	try {
-		const hostname = new URL(normalizeUrl(url)).hostname;
-		const [aRecords, aaaaRecords, mxRecords, txtRecords, nsRecords] = await Promise.all([
-			dns.resolve4(hostname).catch(() => [] as string[]),
-			dns.resolve6(hostname).catch(() => [] as string[]),
-			dns.resolveMx(hostname).catch(() => [] as Array<{ exchange: string; priority: number }>),
-			dns.resolveTxt(hostname).catch(() => [] as string[][]),
-			dns.resolveNs(hostname).catch(() => [] as string[]),
-		]);
-
-		if (!aRecords.length && !aaaaRecords.length) issues.push('No A/AAAA DNS records were found.');
-		if (!mxRecords.length) issues.push('No MX records were found (email delivery may be misconfigured).');
-
-		const flattenedTxt = txtRecords.flat().map((entry) => String(entry || '').toLowerCase());
-		const hasSpf = flattenedTxt.some((entry) => entry.includes('v=spf1'));
-		if (!hasSpf) issues.push('No SPF TXT record was detected.');
-
-		const dmarcRecords = await dns.resolveTxt(`_dmarc.${hostname}`).catch(() => [] as string[][]);
-		const hasDmarc = dmarcRecords.flat().some((entry) =>
-			String(entry || '')
-				.toLowerCase()
-				.includes('v=dmarc1'),
-		);
-		if (!hasDmarc) issues.push('No DMARC record was detected.');
-
-		const status: ScanModuleResult['status'] = issues.length ? 'warning' : 'ok';
-		return {
-			status,
-			summary: issues.length ? 'DNS configuration has items to review.' : 'DNS configuration looks healthy.',
-			issues: issues.slice(0, 4),
-			metrics: {
-				aRecords: aRecords.length,
-				aaaaRecords: aaaaRecords.length,
-				mxRecords: mxRecords.length,
-				nsRecords: nsRecords.length,
-				hasSpf,
-				hasDmarc,
-			},
-		};
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return {
-			status: 'error',
-			summary: 'DNS checks could not complete.',
-			issues: [],
-			error: message,
-		};
-	}
-}
-
-async function runSslModule(url: string): Promise<ScanModuleResult> {
-	try {
-		const parsed = new URL(normalizeUrl(url));
-		if (parsed.protocol !== 'https:') {
-			return {
-				status: 'warning',
-				summary: 'Site is not using HTTPS by default.',
-				issues: ['Primary URL is not HTTPS.'],
-			};
-		}
-
-		const certInfo = await withTimeout(
-			new Promise<{ validTo: string; issuer: string; protocol: string; cipher: string | null }>((resolve, reject) => {
-				const socket = tls.connect(
-					{
-						host: parsed.hostname,
-						port: Number(parsed.port || 443),
-						servername: parsed.hostname,
-						rejectUnauthorized: false,
-					},
-					() => {
-						const cert = socket.getPeerCertificate();
-						const protocol = socket.getProtocol() || 'unknown';
-						const cipher = socket.getCipher()?.name || null;
-						socket.end();
-						if (!cert || !cert.valid_to) {
-							reject(new Error('SSL certificate details unavailable.'));
-							return;
-						}
-						const issuer = cert.issuer?.O || cert.issuer?.CN || 'Unknown issuer';
-						resolve({ validTo: cert.valid_to, issuer, protocol, cipher });
-					},
-				);
-				socket.on('error', (error) => reject(error));
-			}),
-			10000,
-			'SSL check',
-		);
-
-		const expiryDate = new Date(certInfo.validTo);
-		const daysRemaining = Number.isFinite(expiryDate.getTime()) ? Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null;
-		const issues: string[] = [];
-
-		if (daysRemaining != null && daysRemaining <= 21) {
-			issues.push(`SSL certificate expires in ${daysRemaining} day${daysRemaining === 1 ? '' : 's'}.`);
-		}
-		if (certInfo.protocol.toUpperCase().includes('TLSV1') && !certInfo.protocol.toUpperCase().includes('1.3')) {
-			issues.push('TLS protocol appears older than TLS 1.3.');
-		}
-
-		return {
-			status: issues.length ? 'warning' : 'ok',
-			summary: issues.length ? 'SSL is active with some risk signals.' : 'SSL certificate and protocol look healthy.',
-			issues: issues.slice(0, 4),
-			metrics: {
-				issuer: certInfo.issuer,
-				protocol: certInfo.protocol,
-				cipher: certInfo.cipher,
-				daysRemaining: daysRemaining ?? 'unknown',
-			},
-		};
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return {
-			status: 'error',
-			summary: 'SSL checks could not complete.',
-			issues: [],
-			error: message,
-		};
-	}
-}
-
-async function runFormsModule(url: string): Promise<ScanModuleResult> {
-	try {
-		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'Forms check');
-		const html = await response.text();
-		const forms = html.match(/<form\b[\s\S]*?<\/form>/gi) || [];
-		if (!forms.length) {
-			return {
-				status: 'warning',
-				summary: 'No forms detected on the scanned page.',
-				issues: ['No <form> elements were found on the submitted URL.'],
-			};
-		}
-
-		const issues: string[] = [];
-		let formsMissingAction = 0;
-		let formsWithoutSubmit = 0;
-		let formsMissingMethod = 0;
-
-		for (const formMarkup of forms) {
-			const hasAction = /\baction\s*=\s*['"][^'"]+['"]/i.test(formMarkup);
-			const hasMethod = /\bmethod\s*=\s*['"](post|get)['"]/i.test(formMarkup);
-			const hasSubmit = /<button\b[^>]*type\s*=\s*['"]submit['"][^>]*>|<input\b[^>]*type\s*=\s*['"]submit['"][^>]*>/i.test(formMarkup);
-
-			if (!hasAction) formsMissingAction += 1;
-			if (!hasMethod) formsMissingMethod += 1;
-			if (!hasSubmit) formsWithoutSubmit += 1;
-		}
-
-		if (formsMissingAction > 0) issues.push(`${formsMissingAction} form${formsMissingAction === 1 ? '' : 's'} missing explicit action URL.`);
-		if (formsMissingMethod > 0) issues.push(`${formsMissingMethod} form${formsMissingMethod === 1 ? '' : 's'} missing explicit method attribute.`);
-		if (formsWithoutSubmit > 0) issues.push(`${formsWithoutSubmit} form${formsWithoutSubmit === 1 ? '' : 's'} missing a submit control.`);
-
-		return {
-			status: issues.length ? 'warning' : 'ok',
-			summary: issues.length ? 'Form setup has potential conversion risks.' : 'Form structure appears technically healthy.',
-			issues: issues.slice(0, 4),
-			metrics: {
-				formCount: forms.length,
-				formsMissingAction,
-				formsMissingMethod,
-				formsWithoutSubmit,
-			},
-		};
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return {
-			status: 'error',
-			summary: 'Form checks could not complete.',
-			issues: [],
-			error: message,
-		};
-	}
-}
-
-async function runLinksModule(url: string): Promise<ScanModuleResult> {
-	try {
-		const base = new URL(normalizeUrl(url));
-		const response = await withTimeout(fetch(base.toString(), { redirect: 'follow' }), 12000, 'Links check');
-		const html = await response.text();
-		const hrefMatches = Array.from(html.matchAll(/<a\b[^>]*href\s*=\s*['"]([^'"]+)['"]/gi));
-		const rawHrefs = hrefMatches
-			.map((match) => (match[1] || '').trim())
-			.filter((href) => href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:'));
-
-		const normalizedInternal = Array.from(
-			new Set(
-				rawHrefs
-					.map((href) => {
-						try {
-							const absolute = new URL(href, base);
-							if (absolute.hostname !== base.hostname) return '';
-							absolute.hash = '';
-							return absolute.toString();
-						} catch {
-							return '';
-						}
-					})
-					.filter(Boolean),
-			),
-		).slice(0, 25);
-
-		let brokenCount = 0;
-		const issues: string[] = [];
-
-		for (const link of normalizedInternal) {
-			try {
-				const linkResponse = await withTimeout(fetch(link, { method: 'HEAD', redirect: 'follow' }), 8000, 'Link check');
-				if (linkResponse.status >= 400) {
-					brokenCount += 1;
-					if (issues.length < 4) issues.push(`Broken internal link detected: ${link} (${linkResponse.status}).`);
-				}
-			} catch {
-				brokenCount += 1;
-				if (issues.length < 4) issues.push(`Unreachable internal link detected: ${link}.`);
-			}
-		}
-
-		return {
-			status: brokenCount > 0 ? 'warning' : 'ok',
-			summary: brokenCount > 0 ? 'Internal link health needs review.' : 'No broken internal links found in sampled pages.',
-			issues,
-			metrics: {
-				internalLinksChecked: normalizedInternal.length,
-				brokenLinks: brokenCount,
-			},
-		};
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return {
-			status: 'error',
-			summary: 'Link checks could not complete.',
-			issues: [],
-			error: message,
-		};
-	}
-}
-
-async function runNapModule(url: string): Promise<ScanModuleResult> {
-	try {
-		const response = await withTimeout(fetch(normalizeUrl(url), { redirect: 'follow' }), 12000, 'Name, Address, Phone check');
-		const html = await response.text();
-		const issues: string[] = [];
-
-		const hasLocalBusinessSchema = /"@type"\s*:\s*"(LocalBusiness|Organization|ProfessionalService|HomeAndConstructionBusiness)"/i.test(html);
-		const phoneMatches = Array.from(new Set((html.match(/\+?\d[\d\s().-]{8,}\d/g) || []).map((value) => value.replace(/\s+/g, ' ').trim())));
-		const hasAddressSignals = /streetAddress|addressLocality|addressRegion|postalCode|addressCountry/i.test(html);
-
-		if (!hasLocalBusinessSchema) issues.push('No local business schema markup detected.');
-		if (!phoneMatches.length) issues.push('No visible phone number detected in page content/schema.');
-		if (phoneMatches.length > 1) issues.push('Multiple phone number formats were detected. Normalize Name, Address, Phone details.');
-		if (!hasAddressSignals) issues.push('No clear address signals detected for Name, Address, Phone consistency.');
-
-		return {
-			status: issues.length ? 'warning' : 'ok',
-			summary: issues.length ? 'Name, Address, Phone consistency signals need improvement.' : 'Name, Address, Phone and local business signals look consistent.',
-			issues: issues.slice(0, 4),
-			metrics: {
-				hasLocalBusinessSchema,
-				phoneVariants: phoneMatches.length,
-				hasAddressSignals,
-			},
-		};
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return {
-			status: 'error',
-			summary: 'Name, Address, Phone checks could not complete.',
-			issues: [],
-			error: message,
-		};
-	}
-}
-
-function getModuleFixes(moduleKey: ScanModuleKey, moduleResult: ScanModuleResult): string[] {
-	if (moduleResult.status === 'skipped' || moduleResult.status === 'ok') return [];
-
-	if (moduleResult.issues.length) return moduleResult.issues.slice(0, 2);
-
-	if (moduleResult.error) {
-		return [`${moduleKey.toUpperCase()} check failed during scanning: ${moduleResult.error}`];
-	}
-
-	return [];
-}
-
-async function runExtendedScanModules(url: string, selectedModules: ScanModuleKey[]): Promise<ExtendedScanReport> {
-	const selectedSet = new Set(selectedModules);
-
-	const baseSkipped: ScanModuleResult = {
-		status: 'skipped',
-		summary: 'Module was not selected for this run.',
-		issues: [],
-	};
-
-	const modulePromises: Record<ScanModuleKey, Promise<ScanModuleResult>> = {
-		dns: selectedSet.has('dns') ? runDnsModule(url) : Promise.resolve(baseSkipped),
-		ssl: selectedSet.has('ssl') ? runSslModule(url) : Promise.resolve(baseSkipped),
-		forms: selectedSet.has('forms') ? runFormsModule(url) : Promise.resolve(baseSkipped),
-		links: selectedSet.has('links') ? runLinksModule(url) : Promise.resolve(baseSkipped),
-		nap: selectedSet.has('nap') ? runNapModule(url) : Promise.resolve(baseSkipped),
-	};
-
-	const [dnsResult, sslResult, formsResult, linksResult, napResult] = await Promise.all([modulePromises.dns, modulePromises.ssl, modulePromises.forms, modulePromises.links, modulePromises.nap]);
-
-	const modules: ExtendedScanModules = {
-		dns: dnsResult,
-		ssl: sslResult,
-		forms: formsResult,
-		links: linksResult,
-		nap: napResult,
-	};
-
-	const moduleFixes = ALL_SCAN_MODULES.flatMap((moduleKey) => getModuleFixes(moduleKey, modules[moduleKey]));
-	const recommendedFixes = Array.from(new Set(moduleFixes)).slice(0, 6);
-
-	return {
-		selected: selectedModules,
-		modules,
-		recommendedFixes,
-	};
-}
-
-function buildReviewPreview(review: Review | null, reviewError: string, fallbackFixes: string[] = [], forceUnavailable = false): ReviewPreview {
+function buildReviewPreview(review: Review | null, reviewError: string, forceUnavailable = false): ReviewPreview {
 	if (!review || forceUnavailable) {
 		return {
 			available: false,
@@ -1098,28 +534,9 @@ function buildReviewPreview(review: Review | null, reviewError: string, fallback
 				tbt: 'N/A',
 				cls: 'N/A',
 			},
-			recommendedFixes: fallbackFixes.length ? fallbackFixes : ['Run a full technical review with us and we will send a prioritized fix list.'],
+			recommendedFixes: [],
 			reviewError: reviewError || undefined,
 		};
-	}
-
-	const lcpSeconds = firstNumber(review.lcp);
-	const interactiveSeconds = firstNumber(review.interactive);
-	const tbtMs = firstNumber(review.tbt);
-	const clsValue = firstNumber(review.cls);
-
-	const recommendedFixes: string[] = [];
-
-	if ((review.performance ?? 100) < 80) recommendedFixes.push('Improve page speed by compressing large images, reducing third-party scripts, and enabling stronger caching.');
-	if (lcpSeconds != null && lcpSeconds > 2.5) recommendedFixes.push('Reduce LCP by optimizing above-the-fold content and preloading your main hero image/font.');
-	if (interactiveSeconds != null && interactiveSeconds > 5) recommendedFixes.push('Improve interactivity by deferring non-critical JavaScript and splitting heavy bundles.');
-	if (tbtMs != null && tbtMs > 200) recommendedFixes.push('Lower Total Blocking Time by removing unused JavaScript and delaying long-running scripts.');
-	if ((review.bestPractices ?? 100) < 90) recommendedFixes.push('Address best-practice issues like console errors, deprecated APIs, and insecure resource requests.');
-	if (clsValue != null && clsValue > 0.1) recommendedFixes.push('Stabilize layout by reserving space for media/embeds and avoiding late-loading content shifts.');
-	if ((review.seo ?? 100) < 90) recommendedFixes.push('Strengthen SEO signals by refining meta tags, headings, crawlability, and structured data.');
-
-	if (!recommendedFixes.length) {
-		recommendedFixes.push('Overall technical baseline is strong. Keep monitoring Core Web Vitals and plugin/script changes monthly.');
 	}
 
 	return {
@@ -1131,12 +548,12 @@ function buildReviewPreview(review: Review | null, reviewError: string, fallback
 			bestPractices: review.bestPractices,
 		},
 		vitals: {
-			lcp: review.lcp,
-			interactive: review.interactive,
-			tbt: review.tbt,
-			cls: review.cls,
+			lcp: 'N/A',
+			interactive: 'N/A',
+			tbt: 'N/A',
+			cls: 'N/A',
 		},
-		recommendedFixes: recommendedFixes.slice(0, 4),
+		recommendedFixes: [],
 	};
 }
 
@@ -1412,9 +829,7 @@ export const POST: APIRoute = async ({ request }) => {
 		const hasTimeBudget = (reserveMs = 0): boolean => Date.now() - requestStartedAt < requestBudgetMs - reserveMs;
 		const configuredReviewTimeout = Number(getEnv('TECH_REVIEW_REVIEW_TIMEOUT_MS'));
 		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : isDev ? 30000 : 6500;
-		const extendedModulesTimeoutMs = isDev ? 12000 : 3000;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
-		const siteChecksTimeoutMs = isDev ? 8000 : 2500;
 		const notionSyncTimeoutMs = isDev ? 12000 : 2500;
 		const smtpSendTimeoutMs = isDev ? 12000 : 2500;
 		const body = await parseRequestBody(request);
@@ -1453,13 +868,15 @@ export const POST: APIRoute = async ({ request }) => {
 		const rawUrl = typeof body.url === 'string' ? body.url.trim() : '';
 		const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
 		const message = typeof body.message === 'string' ? body.message.trim() : '';
-		const selectedModules = normalizeScanModules(body.scanModules);
-
 		if (!company) {
 			return new Response(JSON.stringify({ error: 'Company is required.' }), { status: 400 });
 		}
 
-		if (email && !isValidEmail(email)) {
+		if (!email) {
+			return new Response(JSON.stringify({ error: 'Email is required.' }), { status: 400 });
+		}
+
+		if (!isValidEmail(email)) {
 			return new Response(JSON.stringify({ error: 'Invalid email address.' }), { status: 400 });
 		}
 
@@ -1506,18 +923,6 @@ export const POST: APIRoute = async ({ request }) => {
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
 		let reviewError = '';
 		let liveScanError = '';
-		let fallbackFixes: string[] = [];
-		let extendedScan: ExtendedScanReport = {
-			selected: selectedModules,
-			modules: {
-				dns: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-				ssl: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-				forms: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-				links: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-				nap: { status: 'skipped', summary: 'Module was not selected for this run.', issues: [] },
-			},
-			recommendedFixes: [],
-		};
 		let forceUnavailablePreview = false;
 		if (!url) {
 			reviewError = 'No URL provided.';
@@ -1550,12 +955,7 @@ export const POST: APIRoute = async ({ request }) => {
 					scanSource = 'cache-stale';
 					reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
 				}
-				try {
-					const basicChecks = await runBasicSiteChecks(url);
-					fallbackFixes = basicChecks.recommendedFixes;
-				} catch (basicErr) {
-					console.error('Basic site checks failed:', basicErr);
-				}
+				// Simplified mode: skip extra fallback checks.
 			}
 
 			if (review && !hasAnyLiveScore(review)) {
@@ -1563,28 +963,13 @@ export const POST: APIRoute = async ({ request }) => {
 				scanSource = 'fallback';
 				reviewError = reviewError || 'Live scan data is currently unavailable.';
 				liveScanError = liveScanError || reviewError;
-
-				if (!fallbackFixes.length) {
-					try {
-						const basicChecks = await runBasicSiteChecks(url);
-						fallbackFixes = basicChecks.recommendedFixes;
-					} catch (basicErr) {
-						console.error('Basic site checks failed:', basicErr);
-					}
-				}
 			}
 
 			if (!review) {
 				scanSource = 'fallback';
 			}
 
-			if (hasTimeBudget(2500)) {
-				try {
-					extendedScan = await withTimeout(runExtendedScanModules(url, selectedModules), extendedModulesTimeoutMs, 'Extended module checks');
-				} catch (moduleErr) {
-					console.error('Extended module checks failed:', moduleErr);
-				}
-			}
+			// Simplified mode: skip extended scan modules.
 		}
 
 		const reviewHtml = review
@@ -1629,7 +1014,7 @@ export const POST: APIRoute = async ({ request }) => {
         `;
 
 		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
-		const preview = buildReviewPreview(review, reviewError, Array.from(new Set([...fallbackFixes, ...extendedScan.recommendedFixes])).slice(0, 6), forceUnavailablePreview);
+		const preview = buildReviewPreview(review, reviewError, forceUnavailablePreview);
 		let siteChecks: NotionSubmissionInput['siteChecks'] = {
 			sslValid: null,
 			httpStatus: null,
@@ -1638,16 +1023,7 @@ export const POST: APIRoute = async ({ request }) => {
 			cspPresent: null,
 			error: '',
 		};
-		if (hasTimeBudget(2000)) {
-			try {
-				siteChecks = await withTimeout(runSubmissionSiteChecks(url), siteChecksTimeoutMs, 'Submission site checks');
-			} catch (siteCheckErr) {
-				console.warn('Submission site checks skipped due to timeout/error:', siteCheckErr);
-				siteChecks.error = 'Submission site checks timed out.';
-			}
-		} else {
-			siteChecks.error = 'Skipped due to request time budget.';
-		}
+		siteChecks.error = 'Skipped in simplified mode.';
 		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
@@ -1668,7 +1044,6 @@ export const POST: APIRoute = async ({ request }) => {
 						reportFilename,
 						preview,
 						review,
-						extendedScan,
 						reviewError,
 						siteChecks,
 					}),
@@ -1748,8 +1123,8 @@ export const POST: APIRoute = async ({ request }) => {
 				scan: {
 					available: preview.available === true,
 					source: scanSource,
-					selectedModules: extendedScan.selected,
-					modules: extendedScan.modules,
+					selectedModules: [],
+					modules: {},
 					pageSpeedApiKeyConfigured,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},

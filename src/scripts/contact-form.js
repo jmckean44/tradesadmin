@@ -1,7 +1,11 @@
 document.addEventListener('astro:page-load', () => {
 	const form = document.getElementById('form');
+	const formContainer = document.getElementById('form-container');
 	const result = document.getElementById('result');
 	const reviewPreview = document.getElementById('review-preview');
+	const resultsRoot = document.getElementById('results-root');
+	const resultsUrl = document.getElementById('results-url');
+	const cellphoneImage = document.querySelector('.contact-desktop .cellphone');
 	const urlInput = document.getElementById('url');
 	const emailInput = document.getElementById('email_address');
 	const turnstileContainer = document.getElementById('turnstile-container');
@@ -24,6 +28,18 @@ document.addEventListener('astro:page-load', () => {
 		if (submitLoader instanceof HTMLElement) {
 			submitLoader.style.display = isSubmitting ? 'inline-block' : 'none';
 		}
+	}
+
+	function setCellphoneHidden(isHidden) {
+		if (!(cellphoneImage instanceof HTMLElement)) return;
+		cellphoneImage.style.display = isHidden ? 'none' : '';
+	}
+
+	function setScanCompleteView(isComplete) {
+		if (formContainer instanceof HTMLElement) {
+			formContainer.style.display = isComplete ? 'none' : '';
+		}
+		reviewPreview.style.display = isComplete ? 'block' : 'none';
 	}
 
 	function isHistoryNavigationRestore() {
@@ -318,11 +334,14 @@ document.addEventListener('astro:page-load', () => {
 
 	function resetForHistoryNavigationRestore() {
 		resetFormUiState();
+		setScanCompleteView(false);
 		result.style.display = 'none';
 		result.textContent = '';
-		reviewPreview.style.display = 'none';
-		reviewPreview.innerHTML = '';
+		setCellphoneHidden(false);
+		if (resultsRoot) resultsRoot.innerHTML = '';
 	}
+
+	setScanCompleteView(false);
 
 	if (isHistoryNavigationRestore()) {
 		resetForHistoryNavigationRestore();
@@ -374,80 +393,85 @@ document.addEventListener('astro:page-load', () => {
 			.replaceAll("'", '&#39;');
 	}
 
-	function toBase64Url(value) {
-		try {
-			const utf8 = encodeURIComponent(value).replace(/%([0-9A-F]{2})/g, (_match, p1) => String.fromCharCode(parseInt(p1, 16)));
-			return btoa(utf8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-		} catch {
-			return '';
-		}
+	function getScoreClass(value) {
+		if (value == null || !Number.isFinite(value)) return 'is-na';
+		if (value >= 90) return 'is-good';
+		if (value >= 50) return 'is-average';
+		return 'is-poor';
 	}
 
-	function scoreRow(label, value) {
-		const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
-		const shown = Number.isFinite(value) ? `${safeValue}` : 'N/A';
+	function scoreCard(label, value) {
+		const numericValue = typeof value === 'number' && Number.isFinite(value) ? value : null;
+		const hasScore = numericValue != null;
+		const safeValue = hasScore ? Math.max(0, Math.min(100, Math.round(numericValue))) : 0;
+		const shown = hasScore ? `${safeValue}` : 'N/A';
+		const scoreClass = getScoreClass(hasScore ? safeValue : null);
 		return `
-				<div class="review-score-row">
-					<div class="review-score-head"><strong>${label}</strong><span>${shown}</span></div>
-					<progress max="100" value="${safeValue}" aria-label="${label} score"></progress>
+				<div class="review-score-item ${scoreClass}">
+					<div class="review-score-circle" style="--score:${safeValue}" role="img" aria-label="${escapeHtml(label)} score ${shown}">
+						<span>${shown}</span>
+					</div>
+					<strong>${escapeHtml(label)}</strong>
 				</div>
 			`;
 	}
 
 	function renderReviewPreview(preview) {
 		if (!preview || typeof preview !== 'object') {
-			reviewPreview.style.display = 'none';
-			reviewPreview.innerHTML = '';
+			setScanCompleteView(false);
+			setCellphoneHidden(false);
+			if (resultsRoot) resultsRoot.innerHTML = '';
 			return;
 		}
 
 		const scores = preview.scores || {};
-		const vitals = preview.vitals || {};
-		const fixes = Array.isArray(preview.recommendedFixes) ? preview.recommendedFixes : [];
 
 		const scoreHtml = [
-			scoreRow('Performance', Number(scores.performance)),
-			scoreRow('SEO', Number(scores.seo)),
-			scoreRow('Accessibility', Number(scores.accessibility)),
-			scoreRow('Best Practices', Number(scores.bestPractices)),
+			scoreCard('Performance', scores.performance),
+			scoreCard('SEO', scores.seo),
+			scoreCard('Accessibility', scores.accessibility),
+			scoreCard('Best Practices', scores.bestPractices),
 		].join('');
 
-		const fixesHtml = fixes.length ? `<ul>${fixes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p>No recommended fixes returned.</p>';
-
-		reviewPreview.innerHTML = `
+		if (resultsRoot) {
+			resultsRoot.innerHTML = `
 				<div class="review-preview-card">
-					<h3>Quick Technical Snapshot</h3>
-					<p class="review-subtitle">Initial automated scan of your submitted site.</p>
 					<div class="review-score-grid">${scoreHtml}</div>
-					<div class="review-vitals">
-						<p><strong>LCP:</strong> ${escapeHtml(vitals.lcp || 'N/A')}</p>
-						<p><strong>Interactive:</strong> ${escapeHtml(vitals.interactive || 'N/A')}</p>
-						<p><strong>TBT:</strong> ${escapeHtml(vitals.tbt || 'N/A')}</p>
-						<p><strong>CLS:</strong> ${escapeHtml(vitals.cls || 'N/A')}</p>
-					</div>
-					<div class="review-fixes">
-						<h4>Recommended Fixes</h4>
-						${fixesHtml}
-					</div>
 				</div>
 			`;
+		}
 
-		reviewPreview.style.display = 'block';
+		setScanCompleteView(true);
+		setCellphoneHidden(true);
+	}
+
+	function setResultsUrl(urlValue) {
+		if (!resultsUrl) return;
+		const anchor = resultsUrl.querySelector('a');
+		if (!(anchor instanceof HTMLAnchorElement)) return;
+
+		const normalized = normalizeUrl(urlValue || '');
+		let display = '[url]';
+		let href = '#';
+
+		if (normalized) {
+			try {
+				const parsed = new URL(normalized);
+				href = parsed.toString();
+				display = parsed.host + (parsed.pathname === '/' ? '' : parsed.pathname);
+			} catch {
+				display = urlValue || '[url]';
+			}
+		}
+
+		anchor.textContent = display;
+		anchor.href = href;
 	}
 
 	async function submitForm(turnstileToken) {
 		setSubmittingState(true);
 		const formData = new FormData(form);
 		const endpoint = form.dataset.apiPath || '/api/tech-review/';
-		const resultPage = form.dataset.resultsPath || '/results/';
-		const selectedModules = formData
-			.getAll('scanModules')
-			.map((value) =>
-				String(value || '')
-					.trim()
-					.toLowerCase(),
-			)
-			.filter(Boolean);
 
 		const payload = {
 			company: String(formData.get('company') || '').trim(),
@@ -457,14 +481,14 @@ document.addEventListener('astro:page-load', () => {
 			url: normalizeUrl(String(formData.get('url') || '').trim()),
 			phone: String(formData.get('phone') || '').trim(),
 			message: String(formData.get('details') || formData.get('message') || '').trim(),
-			scanModules: selectedModules.length ? selectedModules : ['dns', 'ssl', 'forms', 'links', 'nap'],
 			turnstileToken: String(turnstileToken || getTurnstileToken() || '').trim(),
 		};
 
 		result.style.display = 'block';
 		result.textContent = 'Scanning... please wait about 30 seconds.';
-		reviewPreview.style.display = 'none';
-		reviewPreview.innerHTML = '';
+		setScanCompleteView(false);
+		setCellphoneHidden(false);
+		if (resultsRoot) resultsRoot.innerHTML = '';
 
 		try {
 			const response = await fetch(endpoint, {
@@ -490,19 +514,24 @@ document.addEventListener('astro:page-load', () => {
 				if (data?.error && String(data.error).trim() === domainNotFoundError) {
 					result.style.display = 'block';
 					result.textContent = data.error;
-					reviewPreview.style.display = 'none';
-					reviewPreview.innerHTML = '';
+					setScanCompleteView(false);
+					setCellphoneHidden(false);
+					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetFormUiState({ preserveAllExceptUrl: true });
 					urlInput.focus();
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
 					result.textContent = 'Verification expired. Please complete the verification checkbox again and resubmit.';
-					reviewPreview.style.display = 'none';
-					reviewPreview.innerHTML = '';
+					setScanCompleteView(false);
+					setCellphoneHidden(false);
+					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetTurnstileIfAvailable();
 				} else {
-					reviewPreview.style.display = 'block';
-					reviewPreview.innerHTML = `<div class="review-preview-card">${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</div>`;
+					setScanCompleteView(false);
+					setCellphoneHidden(false);
+					if (resultsRoot) {
+						resultsRoot.innerHTML = `<div class="review-preview-card">${data?.error ? escapeHtml(data.error) : 'Request failed. Please try again.'}</div>`;
+					}
 					result.textContent = '';
 					resetTurnstileIfAvailable();
 				}
@@ -510,50 +539,16 @@ document.addEventListener('astro:page-load', () => {
 			}
 
 			result.textContent = data?.message || 'Thanks. Your request was submitted.';
-
-			// Always include the submitted URL for results page display
-			const payloadForStorage = {
-				preview: data?.preview || null,
-				scan: data?.scan || null,
-				email: data?.email || null,
-				notion: data?.notion || null,
-				url: payload.url || '',
-				timestamp: Date.now(),
-			};
-
-			let persistedForResults = false;
-			try {
-				sessionStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
-				persistedForResults = true;
-			} catch {
-				persistedForResults = false;
-			}
-
-			try {
-				localStorage.setItem('scanResultPayload', JSON.stringify(payloadForStorage));
-				persistedForResults = true;
-			} catch {
-				// no-op: some browsers block localStorage in privacy modes
-			}
-
-			if (persistedForResults) {
-				window.location.assign(resultPage);
-				return;
-			}
-
-			const encodedPayload = toBase64Url(JSON.stringify(payloadForStorage));
-			if (encodedPayload) {
-				const separator = resultPage.includes('?') ? '&' : '?';
-				window.location.assign(`${resultPage}${separator}payload=${encodeURIComponent(encodedPayload)}`);
-				return;
-			}
+			setResultsUrl(payload.url);
 
 			renderReviewPreview(data?.preview);
+			reviewPreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 			resetFormUiState();
 		} catch (err) {
-			reviewPreview.style.display = 'none';
-			reviewPreview.innerHTML = '';
+			setScanCompleteView(false);
+			setCellphoneHidden(false);
+			if (resultsRoot) resultsRoot.innerHTML = '';
 			result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 			resetTurnstileIfAvailable();
 		} finally {

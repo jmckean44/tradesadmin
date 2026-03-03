@@ -1,74 +1,82 @@
 ---
 import { Image } from 'astro:assets';
+import '../../styles/page-results.scss';
 import gbp from '../../img/gbp-mobile.webp';
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
-const resultsPath = `${import.meta.env.BASE_URL}results/`;
 ---
 
 <section id="contact">
 	<div class="container top btm">
-		<div class="flex padding-x align-middle">
-			<div class="cell small-18 medium-11">
-				<div id="form-container trig-fade-right enable-trig">
-					<h2>Website Report</h2>
-					<Image src={gbp} class="contact-mobile trig-target" alt="TradesAdmin Contact" />
-					<p class="semibold txt-lrg margin-btm-med">
-						Get a <span class="theme-clr">free performance review</span> of your website with recommended fixes by filling out and submitting the form below.
-					</p>
-					<form method="POST" id="form" data-api-path={apiPath} data-results-path={resultsPath} class="needs-validation" novalidate>
-						<div>
-							<label for="company" class="visually-hidden">Company Name</label>
-							<input type="text" name="company" id="company" placeholder="Company Name *" required />
-							<span class="helperText">Company Name</span>
-							<div class="empty-feedback invalid-feedback">Please provide your company name</div>
-						</div>
-						<div>
-							<label for="url" class="visually-hidden">URL</label>
-							<input type="text" name="url" id="url" placeholder="Website URL" inputmode="url" autocomplete="url" />
-							<span class="helperText">(example.com)</span>
-							<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
-						</div>
-						<div>
-							<label for="email_address" class="visually-hidden">Email</label>
-							<input type="email" name="email" id="email_address" placeholder="Email" autocomplete="email" spellcheck="false" />
-							<span class="helperText">Email (optional)</span>
-							<div class="invalid-feedback">Please provide a valid email address</div>
-						</div>
-						<div>
-							<label for="phone" class="visually-hidden">Phone</label>
-							<input type="tel" name="phone" id="phone" placeholder="Phone" />
-							<span class="helperText">Phone</span>
-						</div>
-						<div>
-							<label for="details" class="visually-hidden">Details</label>
-							<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
-							<span class="helperText">Details</span>
-						</div>
-						<fieldset class="scan-modules margin-top-med" aria-label="Scan modules">
-							<legend class="helperText">Performance Checks</legend>
-							<p class="scan-modules-note"><em class="bold">Core Web Vitals</em> scores are included automatically in addition to the checks below.</p>
-							<label><input type="checkbox" name="scanModules" value="dns" checked /> Domain & DNS Health</label>
-							<label><input type="checkbox" name="scanModules" value="ssl" checked /> SSL & Security Basics</label>
-							<label><input type="checkbox" name="scanModules" value="forms" checked /> Form Reliability Check</label>
-							<label><input type="checkbox" name="scanModules" value="links" checked /> Broken Link Check</label>
-							<label><input type="checkbox" name="scanModules" value="nap" checked /> Local NAP Consistency</label>
-						</fieldset>
-						<div class="margin-top-med margin-btm-sm">
-							<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
-						</div>
-						<p id="result" style="display:none;"></p>
-						<div id="review-preview" class="review-preview" style="display:none;"></div>
-						<button type="submit" class="btn" id="submit-btn">
-							RUN FREE SCAN <em class="loader" style="display:none;" aria-hidden="true"></em>
-						</button>
-					</form>
-				</div>
+		<h2>Website Report</h2>
+		<div class="flex padding-x align-middle" id="form-container">
+			<div class="cell small-18 medium-10">
+				<p class="semibold txt-lrg margin-btm-med">
+					Get a <span class="theme-clr">free performance review</span> of your website with recommended fixes by filling out and submitting the form below.
+				</p>
+				<form method="POST" id="form" data-api-path={apiPath} class="needs-validation" novalidate>
+					<div>
+						<label for="company" class="visually-hidden">Company Name</label>
+						<input type="text" name="company" id="company" placeholder="Company Name *" required />
+						<span class="helperText">Company Name</span>
+						<div class="empty-feedback invalid-feedback">Please provide your company name</div>
+					</div>
+					<div>
+						<label for="url" class="visually-hidden">URL</label>
+						<input type="text" name="url" id="url" placeholder="Website URL" inputmode="url" autocomplete="url" />
+						<span class="helperText">(example.com)</span>
+						<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
+					</div>
+					<div>
+						<label for="email_address" class="visually-hidden">Email</label>
+						<input type="email" name="email" id="email_address" placeholder="Email *" autocomplete="email" spellcheck="false" />
+						<span class="helperText">Email (optional)</span>
+						<div class="invalid-feedback">Please provide a valid email address</div>
+					</div>
+					<div>
+						<label for="phone" class="visually-hidden">Phone</label>
+						<input type="tel" name="phone" id="phone" placeholder="Phone" />
+						<span class="helperText">Phone</span>
+					</div>
+					<div>
+						<label for="details" class="visually-hidden">Details</label>
+						<textarea rows="10" name="details" id="details" placeholder="Questions & Comments"></textarea>
+						<span class="helperText">Details</span>
+					</div>
+					<div class="margin-top-med margin-btm-sm">
+						<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
+					</div>
+					<p id="result" style="display:none;"></p>
+					<button type="submit" class="btn" id="submit-btn">
+						RUN FREE SCAN <em class="loader" style="display:none;" aria-hidden="true"></em>
+					</button>
+				</form>
 			</div>
-			<div class="cell small-18 medium-7 trig-fade-right enable-trig contact-desktop">
+			<div class="cell small-18 medium-8 trig-fade-right enable-trig contact-desktop">
 				<Image src={gbp} class="trig-target" alt="TradesAdmin Contact" />
+			</div>
+		</div>
+
+		<div id="review-preview" class="review-preview" style="display:none;">
+			<div id="scan-results">
+				<div class="results-intro">
+					<p class="txt-lrg">
+						Here’s a live snapshot of how <span class="semibold"
+							><span id="results-url"><a href="" class="underline" target="_blank" rel="noopener noreferrer" role="link" aria-label="link to [url]">[url]</a></span></span
+						> is currently performing.
+					</p>
+					<p>
+						You’ll receive a follow-up email with next-step recommendations. If you’d prefer to talk now, call <span class="semibold"
+							><a href="tel:4169861059" class="underline" role="link" aria-label="link to 416-986-1059">416 986 1059</a></span
+						> or email <span class="semibold"
+							><a class="underline" href="mailto:hello@tradesadmin.ca?subject=Question about my website" role="link" aria-label="Email Trades Admin">hello@tradesadmin.ca</a></span
+						> and we’ll help you prioritize improvements.
+					</p>
+				</div>
+				<div id="results-root"></div>
 			</div>
 		</div>
 	</div>
 </section>
+
 <script src="../../scripts/contact-form.js"></script>

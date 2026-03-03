@@ -501,24 +501,6 @@
 	max-width: 1000px;
 }
 
-#contact #form-container {
-	margin: 0.5rem 0 0;
-	max-width: 400px;
-}
-
-#contact #form-container form {
-	width: 100%;
-}
-@media (max-width: 700px) {
-	#contact #form-container {
-		max-width: 100%;
-		margin: 0.5rem 0 0;
-	}
-	#contact #form-container p.intro {
-		max-width: 65%;
-	}
-}
-
 @media (min-width: 701px) {
 	#contact .contact-mobile {
 		display: none;
