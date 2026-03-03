@@ -577,7 +577,7 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setTextLikeProperty('rich_text', ['dns found'], input.siteChecks.dnsFound == null ? 'Unknown' : input.siteChecks.dnsFound ? 'Yes' : 'No');
 	setTextLikeProperty('rich_text', ['sitemap exists'], input.siteChecks.sitemapExists == null ? 'Unknown' : input.siteChecks.sitemapExists ? 'Yes' : 'No');
 	setTextLikeProperty('rich_text', ['csp present'], input.siteChecks.cspPresent == null ? 'Unknown' : input.siteChecks.cspPresent ? 'Yes' : 'No');
-	const notionErrorText = String(input.liveScanError || input.reviewError || input.preview.reviewError || input.siteChecks.error || '').trim();
+	const notionErrorText = String(input.reviewError || input.preview.reviewError || input.liveScanError || input.siteChecks.error || '').trim();
 	setTextLikeProperty('rich_text', ['review error', 'scan error', 'errors', 'error'], notionErrorText);
 	setTextLikeProperty('rich_text', ['recommended fixes', 'fixes', 'recommendations'], (input.preview.recommendedFixes || []).join('\n'));
 	setTextLikeProperty('rich_text', ['report', 'report filename', 'pdf'], input.reportFilename);
