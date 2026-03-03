@@ -20,7 +20,10 @@ document.addEventListener('astro:page-load', () => {
 	let submitted = false;
 	let turnstileScriptPromise = null;
 	let turnstileWarmupStarted = false;
-	let hasCompletedScan = false;
+
+	function hasUrlValue() {
+		return Boolean(String(urlInput.value || '').trim());
+	}
 
 	function setSubmitButtonLabel(label) {
 		if (!(submitButton instanceof HTMLButtonElement)) return;
@@ -33,7 +36,7 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	function syncSubmitButtonLabel() {
-		setSubmitButtonLabel(hasCompletedScan ? 'RUN NEW SCAN' : 'RUN FREE SCAN');
+		setSubmitButtonLabel(hasUrlValue() ? 'RUN FREE SCAN' : 'SUBMIT');
 	}
 
 	function setSubmittingState(isSubmitting) {
@@ -216,12 +219,16 @@ document.addEventListener('astro:page-load', () => {
 
 	function applyUrlAutocorrect() {
 		const raw = String(urlInput.value || '').trim();
-		if (!raw) return;
+		if (!raw) {
+			syncSubmitButtonLabel();
+			return;
+		}
 
 		const corrected = normalizeUrlForInputDisplay(raw);
 		if (corrected && corrected !== raw) {
 			urlInput.value = corrected;
 		}
+		syncSubmitButtonLabel();
 	}
 
 	function updateUrlValidity() {
@@ -345,13 +352,12 @@ document.addEventListener('astro:page-load', () => {
 		urlInput.setCustomValidity('');
 		emailInput.setCustomValidity('');
 		submitted = false;
+		syncSubmitButtonLabel();
 		resetTurnstileIfAvailable();
 	}
 
 	function resetForHistoryNavigationRestore() {
 		resetFormUiState();
-		hasCompletedScan = false;
-		syncSubmitButtonLabel();
 		setScanCompleteView(false);
 		result.style.display = 'none';
 		result.textContent = '';
@@ -460,8 +466,6 @@ document.addEventListener('astro:page-load', () => {
 			`;
 		}
 
-		hasCompletedScan = true;
-		syncSubmitButtonLabel();
 		setScanCompleteView(true);
 		setCellphoneHidden(true);
 	}
@@ -507,7 +511,7 @@ document.addEventListener('astro:page-load', () => {
 		const hasSubmittedUrl = Boolean(String(payload.url || '').trim());
 
 		result.style.display = 'block';
-		result.textContent = hasSubmittedUrl ? 'Scanning... please wait about 15 seconds.' : 'Submitting...';
+		result.textContent = hasSubmittedUrl ? 'Scanning... please wait about 20 seconds.' : 'Submitting...';
 		setScanCompleteView(false);
 		setCellphoneHidden(false);
 		if (resultsRoot) resultsRoot.innerHTML = '';
@@ -601,6 +605,7 @@ document.addEventListener('astro:page-load', () => {
 	form.addEventListener('input', (e) => {
 		const field = e.target;
 		if (!isFormField(field)) return;
+		if (field.id === 'url') syncSubmitButtonLabel();
 		updateFieldState(field, submitted);
 	});
 
@@ -609,6 +614,7 @@ document.addEventListener('astro:page-load', () => {
 		submitted = true;
 		applyUrlAutocorrect();
 		applyEmailAutocorrect();
+		syncSubmitButtonLabel();
 		void loadTurnstileScriptOnce();
 
 		if (!validateAllFields()) {

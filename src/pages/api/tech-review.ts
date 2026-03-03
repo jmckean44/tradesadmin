@@ -1024,7 +1024,6 @@ export const POST: APIRoute = async ({ request }) => {
 			error: '',
 		};
 		siteChecks.error = 'Skipped in simplified mode.';
-		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
 		let notionError = '';
@@ -1114,18 +1113,20 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';
+		const previewPayload = {
+			available: preview.available,
+			scores: preview.scores,
+			reviewError: preview.reviewError,
+		};
 
 		return new Response(
 			JSON.stringify({
 				ok: true,
 				message: userMessage,
-				preview,
+				preview: previewPayload,
 				scan: {
 					available: preview.available === true,
 					source: scanSource,
-					selectedModules: [],
-					modules: {},
-					pageSpeedApiKeyConfigured,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
 				email: {
@@ -1157,20 +1158,11 @@ export const POST: APIRoute = async ({ request }) => {
 						accessibility: null,
 						bestPractices: null,
 					},
-					vitals: {
-						lcp: 'N/A',
-						interactive: 'N/A',
-						tbt: 'N/A',
-						cls: 'N/A',
-					},
-					recommendedFixes: ['Live scan data is currently unavailable. Please try again shortly.'],
 					reviewError: 'Live scan data is currently unavailable.',
 				},
 				scan: {
 					available: false,
 					source: 'fallback',
-					selectedModules: [],
-					modules: {},
 					error: isDev ? message : 'Live scan data is currently unavailable.',
 				},
 				error: {
