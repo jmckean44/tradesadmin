@@ -560,10 +560,18 @@ document.addEventListener('astro:page-load', () => {
 			}
 
 			result.textContent = data?.message || 'Thanks. Your request was submitted.';
-			setResultsUrl(payload.url);
-
-			renderReviewPreview(data?.preview);
-			reviewPreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			const hasSubmittedUrl = Boolean(String(payload.url || '').trim());
+			if (!hasSubmittedUrl) {
+				setScanCompleteView(false);
+				setCellphoneHidden(false);
+				if (resultsRoot) resultsRoot.innerHTML = '';
+				result.style.display = 'block';
+				result.textContent = 'Your submission was successful. You will be contacted shortly.';
+			} else {
+				setResultsUrl(payload.url);
+				renderReviewPreview(data?.preview);
+				reviewPreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
 
 			resetFormUiState();
 		} catch (err) {
@@ -639,8 +647,12 @@ document.addEventListener('astro:page-load', () => {
 
 	if (backToFormButton instanceof HTMLButtonElement) {
 		backToFormButton.addEventListener('click', () => {
+			resetFormUiState();
 			setScanCompleteView(false);
 			setCellphoneHidden(false);
+			result.style.display = 'none';
+			result.textContent = '';
+			if (resultsRoot) resultsRoot.innerHTML = '';
 			if (formContainer instanceof HTMLElement) {
 				formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
