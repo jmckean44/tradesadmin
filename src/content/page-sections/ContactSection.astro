@@ -61,19 +61,22 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 			<div id="scan-results">
 				<div class="results-intro">
 					<p class="txt-lrg">
-						Here’s a live snapshot of how <span class="semibold"
+						This is a live snapshot of how <span class="semibold"
 							><span id="results-url"><a href="" class="underline" target="_blank" rel="noopener noreferrer" role="link" aria-label="link to [url]">[url]</a></span></span
-						> is currently performing.
+						> is currently performing. Results that are not <strong class="highlight">green</strong> indicate issues that create friction for potential customers.
 					</p>
-					<p>
-						You’ll receive a follow-up email with next-step recommendations. If you’d prefer to talk now, call <span class="semibold"
+					<p class="txt-lrg margin-btm-lrg">
+						For help understanding the results or deciding what is a priority to fix, call <span class="semibold"
 							><a href="tel:4169861059" class="underline" role="link" aria-label="link to 416-986-1059">416 986 1059</a></span
 						> or email <span class="semibold"
 							><a class="underline" href="mailto:hello@tradesadmin.ca?subject=Question about my website" role="link" aria-label="Email Trades Admin">hello@tradesadmin.ca</a></span
-						> and we’ll help you prioritize improvements.
+						>.
 					</p>
 				</div>
 				<div id="results-root"></div>
+				<div class="center margin-top-med">
+					<button type="button" class="btn" id="back-to-form-btn">BACK TO FORM</button>
+				</div>
 			</div>
 		</div>
 	</div>

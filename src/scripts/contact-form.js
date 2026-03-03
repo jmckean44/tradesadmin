@@ -10,6 +10,7 @@ document.addEventListener('astro:page-load', () => {
 	const emailInput = document.getElementById('email_address');
 	const turnstileContainer = document.getElementById('turnstile-container');
 	const submitButton = document.getElementById('submit-btn');
+	const backToFormButton = document.getElementById('back-to-form-btn');
 	const submitLoader = submitButton?.querySelector('.loader');
 
 	if (!form || !result || !urlInput || !reviewPreview || !emailInput) return;
@@ -19,6 +20,21 @@ document.addEventListener('astro:page-load', () => {
 	let submitted = false;
 	let turnstileScriptPromise = null;
 	let turnstileWarmupStarted = false;
+	let hasCompletedScan = false;
+
+	function setSubmitButtonLabel(label) {
+		if (!(submitButton instanceof HTMLButtonElement)) return;
+		const textNode = Array.from(submitButton.childNodes).find((node) => node.nodeType === Node.TEXT_NODE);
+		if (textNode) {
+			textNode.textContent = `${label} `;
+			return;
+		}
+		submitButton.insertBefore(document.createTextNode(`${label} `), submitButton.firstChild);
+	}
+
+	function syncSubmitButtonLabel() {
+		setSubmitButtonLabel(hasCompletedScan ? 'RUN NEW SCAN' : 'RUN FREE SCAN');
+	}
 
 	function setSubmittingState(isSubmitting) {
 		if (submitButton instanceof HTMLButtonElement) {
@@ -334,6 +350,8 @@ document.addEventListener('astro:page-load', () => {
 
 	function resetForHistoryNavigationRestore() {
 		resetFormUiState();
+		hasCompletedScan = false;
+		syncSubmitButtonLabel();
 		setScanCompleteView(false);
 		result.style.display = 'none';
 		result.textContent = '';
@@ -341,6 +359,7 @@ document.addEventListener('astro:page-load', () => {
 		if (resultsRoot) resultsRoot.innerHTML = '';
 	}
 
+	syncSubmitButtonLabel();
 	setScanCompleteView(false);
 
 	if (isHistoryNavigationRestore()) {
@@ -441,6 +460,8 @@ document.addEventListener('astro:page-load', () => {
 			`;
 		}
 
+		hasCompletedScan = true;
+		syncSubmitButtonLabel();
 		setScanCompleteView(true);
 		setCellphoneHidden(true);
 	}
@@ -615,4 +636,18 @@ document.addEventListener('astro:page-load', () => {
 		},
 		{ passive: true },
 	);
+
+	if (backToFormButton instanceof HTMLButtonElement) {
+		backToFormButton.addEventListener('click', () => {
+			setScanCompleteView(false);
+			setCellphoneHidden(false);
+			if (formContainer instanceof HTMLElement) {
+				formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+			const companyInput = document.getElementById('company');
+			if (companyInput instanceof HTMLInputElement) {
+				companyInput.focus();
+			}
+		});
+	}
 });
