@@ -1241,7 +1241,7 @@ function wait(ms: number): Promise<void> {
 }
 
 function getPageSpeedApiKeyIfUsable(): string {
-	const key = getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY');
+	const key = getEnv('PAGESPEED_API_KEY');
 	if (!key) return '';
 	if (Date.now() < pageSpeedKeyCooldownUntil) return '';
 	return key;
@@ -1623,7 +1623,7 @@ export const POST: APIRoute = async ({ request }) => {
 			console.warn('Submission site checks skipped due to timeout/error:', siteCheckErr);
 			siteChecks.error = 'Submission site checks timed out.';
 		}
-		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY') || getEnv('GOOGLE_PAGESPEED_API_KEY'));
+		const pageSpeedApiKeyConfigured = Boolean(getEnv('PAGESPEED_API_KEY'));
 		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
 		let notionSynced = false;
 		let notionError = '';
