@@ -58,7 +58,7 @@
 .masonry-item p.issue {
 	font-size: 1.2rem;
 	line-height: 1.1;
-	font-family: var.$font-sans-serif-semibold;
+	font-family: var.$font-sans-serif-bold;
 	margin-bottom: 1rem;
 	color: rgba(255, 255, 255, 0.8);
 	color: var.$highlight;
@@ -120,14 +120,14 @@
 	 SERVICES intro
 ========================== */
 #services-intro .container {
-	padding: 140px 1.25rem 0;
+	padding: 100px 1.25rem 0;
 }
 
 /* =======================
 	 SERVICES
 ========================== */
 #services .container.top.btm {
-	padding: 125px 1.25rem 80px;
+	padding: 125px 1.25rem 50px;
 }
 
 #services {
@@ -384,7 +384,7 @@
 	 PRICING
 ========================== */
 #pricing {
-	margin-top: 150px;
+	margin-top: 100px;
 	padding: 0 var.$container-padding;
 	//background: var.$bg-clr;
 	//background: var.$theme-clr-blue;
@@ -446,6 +446,10 @@
 	font-family: var.$font-sans-serif-med;
 	color: var.$theme-clr-dark;
 	margin-bottom: 1.5rem;
+}
+
+.pricing-card.single-issue .price-desc {
+	font-family: var.$font-sans-serif-med;
 }
 
 .pricing-amount:last-child {
