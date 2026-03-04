@@ -915,8 +915,59 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// Notion submission (will be called after these are set properly)
+		// Notion submission (must be after all required variables are assigned)
 		let notionError: string | null = null;
+		// ...existing code...
+		// Assign all required variables first (liveScanError, reportFilename, preview, review, reviewError, siteChecks)
+		// ...existing code...
+
+		// Now perform Notion submission (after all variables are assigned)
+		try {
+			await withTimeout(
+				logSubmissionToNotion({
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					liveScanError,
+					reportFilename,
+					preview,
+					review,
+					reviewError,
+					siteChecks,
+				}),
+				12000,
+				'Notion sync',
+			);
+		} catch (err) {
+			notionError = err instanceof Error ? err.message : String(err);
+			const errorDetails = {
+				type: 'notion',
+				time: new Date().toISOString(),
+				error: notionError,
+				stack: err instanceof Error ? err.stack : undefined,
+				payload: {
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					liveScanError,
+					reportFilename,
+					preview,
+					review,
+					reviewError,
+					siteChecks,
+				},
+			};
+			console.error('Notion sync failed:', errorDetails);
+			try {
+				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
+			} catch (logErr) {
+				console.error('Failed to write Notion error log:', logErr);
+			}
+		}
 
 		let review: Review | null = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
@@ -1059,16 +1110,16 @@ export const POST: APIRoute = async ({ request }) => {
 					apiKey: getEnv('GS_API_KEY'),
 					company,
 					email,
-					url: displayUrl,
+					url: displayUrl.replace(/^https?:\/\//, ''),
 					phone,
 					message,
 					performance: review?.performance ?? null,
 					seo: review?.seo ?? null,
 					accessibility: review?.accessibility ?? null,
 					bestPractices: review?.bestPractices ?? null,
-					scanSource,
 					psiApiErrors,
 					apiResponse: JSON.stringify(apiResponse),
+					timestamp: new Date().toISOString(),
 				}),
 			});
 			sheetsResponseText = await sheetsResponse.text();
@@ -1109,7 +1160,26 @@ export const POST: APIRoute = async ({ request }) => {
 		} catch (err) {
 			const primaryErr = err as { message?: string };
 			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
-			console.error('SMTP send failed:', err);
+			const errorDetails = {
+				type: 'email',
+				time: new Date().toISOString(),
+				error: primaryMessage,
+				stack: err instanceof Error ? err.stack : undefined,
+				payload: {
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					html,
+				},
+			};
+			console.error('SMTP send failed:', errorDetails);
+			try {
+				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
+			} catch (logErr) {
+				console.error('Failed to write email error log:', logErr);
+			}
 			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
 			const fallbackRecipient = getEnv('SMTP_USER');
 			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
@@ -1141,7 +1211,26 @@ export const POST: APIRoute = async ({ request }) => {
 				} catch (retryErr) {
 					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
 					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
-					console.error('SMTP send retry failed:', retryErr);
+					const retryErrorDetails = {
+						type: 'email-retry',
+						time: new Date().toISOString(),
+						error: retryMessage,
+						stack: retryErr instanceof Error ? retryErr.stack : undefined,
+						payload: {
+							company,
+							email,
+							url: displayUrl,
+							phone,
+							message,
+							html,
+						},
+					};
+					console.error('SMTP send retry failed:', retryErrorDetails);
+					try {
+						require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(retryErrorDetails) + '\n');
+					} catch (logErr) {
+						console.error('Failed to write email retry error log:', logErr);
+					}
 				}
 			} else {
 				emailError = primaryMessage;

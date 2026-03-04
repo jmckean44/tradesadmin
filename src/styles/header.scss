@@ -86,6 +86,10 @@ header > div {
 	cursor: pointer;
 }
 
+#logo a {
+	display: block;
+}
+
 #logo img {
 	vertical-align: baseline;
 }
@@ -97,13 +101,13 @@ header > div {
 
 #header.unpinned #logo,
 #header.pinned #logo {
-	max-width: 170px;
+	max-width: 150px;
 	transition: all 0.3s ease;
 }
 
 @media (max-width: var.$mobile) {
 	#logo {
-		max-width: 170px;
+		max-width: 150px;
 	}
 	#logo img {
 		margin-top: 2px;
