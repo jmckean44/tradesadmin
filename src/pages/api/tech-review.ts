@@ -922,6 +922,7 @@ export const POST: APIRoute = async ({ request }) => {
 		let reviewError = '';
 		let liveScanError = '';
 		let forceUnavailablePreview = false;
+		let psiApiErrors: string[] = [];
 		if (!url) {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
@@ -938,10 +939,16 @@ export const POST: APIRoute = async ({ request }) => {
 				} else {
 					const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
 					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
-					const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
-					review = runResult.review;
-					scanSource = runResult.source;
-					setCachedReview(url, review);
+					try {
+						const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
+						review = runResult.review;
+						scanSource = runResult.source;
+						setCachedReview(url, review);
+					} catch (psiErr) {
+						const psiMsg = psiErr instanceof Error ? psiErr.message : String(psiErr);
+						psiApiErrors.push(psiMsg);
+						throw psiErr;
+					}
 				}
 			} catch (err) {
 				console.error('Review failed:', err);
@@ -1024,32 +1031,22 @@ export const POST: APIRoute = async ({ request }) => {
 		siteChecks.error = 'Skipped in simplified mode.';
 		// Notion and SMTP submission removed for testing reliability
 
-		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';
-		const previewPayload = {
-			available: preview.available,
-			scores: preview.scores,
-			reviewError: preview.reviewError,
-		};
-
+		// Always return a minimal, clear JSON response, including all PSI API errors
 		return new Response(
 			JSON.stringify({
 				ok: true,
-				message: userMessage,
-				preview: previewPayload,
+				message: 'Submitted successfully.',
+				preview: {
+					available: preview.available,
+					scores: preview.scores,
+					reviewError: preview.reviewError,
+				},
 				scan: {
 					available: preview.available === true,
 					source: scanSource,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
-				email: {
-					sent: emailSent,
-					error: emailError ? (isDev ? emailError : 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.') : undefined,
-				},
-				notion: {
-					configured: notionConfigured,
-					synced: notionConfigured ? notionSynced : false,
-					error: notionError ? (isDev ? notionError : normalizeNotionErrorForUser(notionError)) : undefined,
-				},
+				psiApiErrors,
 			}),
 			{ status: 200 },
 		);
