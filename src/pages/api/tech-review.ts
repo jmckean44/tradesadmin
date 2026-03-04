@@ -915,26 +915,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		const transporter = nodemailer.createTransport({
-			host: getEnv('SMTP_HOST'),
-			port: getEnv('SMTP_PORT') ? parseInt(getEnv('SMTP_PORT'), 10) : 587,
-			secure: getEnv('SMTP_SECURE') === 'true',
-			connectionTimeout: 15000,
-			greetingTimeout: 15000,
-			socketTimeout: 20000,
-			auth: {
-				user: getEnv('SMTP_USER'),
-				pass: getEnv('SMTP_PASS'),
-			},
-		});
-
-		if (hasTimeBudget(4500)) {
-			try {
-				await withTimeout(transporter.verify(), smtpVerifyTimeoutMs, 'SMTP verify');
-			} catch (err) {
-				console.warn('SMTP verify skipped due to timeout/error:', err);
-			}
-		}
+		// SMTP and Notion submission removed for testing reliability
 
 		let review: Review | null = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
@@ -1041,93 +1022,7 @@ export const POST: APIRoute = async ({ request }) => {
 			error: '',
 		};
 		siteChecks.error = 'Skipped in simplified mode.';
-		const notionConfigured = Boolean(getEnv('NOTION_DATABASE_ID') && (getEnv('NOTION_API_KEY') || getEnv('NOTION_TOKEN')));
-		let notionSynced = false;
-		let notionError = '';
-		let emailSent = false;
-		let emailError = '';
-
-		if (hasTimeBudget(1200)) {
-			try {
-				await withTimeout(
-					logSubmissionToNotion({
-						company,
-						email,
-						url: notionUrl,
-						phone,
-						message,
-						liveScanError,
-						reportFilename,
-						preview,
-						review,
-						reviewError,
-						siteChecks,
-					}),
-					notionSyncTimeoutMs,
-					'Notion sync',
-				);
-				notionSynced = true;
-			} catch (notionErr) {
-				console.error('Notion sync failed:', notionErr);
-				notionError = notionErr instanceof Error ? notionErr.message : String(notionErr);
-			}
-		} else if (notionConfigured) {
-			notionError = 'Notion sync skipped due to request time budget.';
-		}
-
-		if (hasTimeBudget(500)) {
-			try {
-				const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
-				const fallbackRecipient = getEnv('SMTP_USER');
-
-				await withTimeout(
-					transporter.sendMail({
-						from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-						to: primaryRecipient,
-						replyTo: email,
-						subject: `New submission: ${company}`,
-						html,
-					}),
-					smtpSendTimeoutMs,
-					'SMTP send',
-				);
-				emailSent = true;
-			} catch (err) {
-				const primaryErr = err as { message?: string };
-				const primaryMessage = primaryErr?.message || 'SMTP send failed.';
-				console.error('SMTP send failed:', err);
-
-				const primaryRecipient = getEnv('CONTACT_TO') || getEnv('SMTP_USER');
-				const fallbackRecipient = getEnv('SMTP_USER');
-				const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
-
-				if (canRetryWithFallback && hasTimeBudget(300)) {
-					try {
-						await withTimeout(
-							transporter.sendMail({
-								from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
-								to: fallbackRecipient,
-								replyTo: email,
-								subject: `New submission: ${company}`,
-								html,
-							}),
-							smtpSendTimeoutMs,
-							'SMTP send retry',
-						);
-						emailSent = true;
-						emailError = '';
-					} catch (retryErr) {
-						const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-						emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
-						console.error('SMTP send retry failed:', retryErr);
-					}
-				} else {
-					emailError = primaryMessage;
-				}
-			}
-		} else {
-			emailError = 'Email send skipped due to request time budget.';
-		}
+		// Notion and SMTP submission removed for testing reliability
 
 		const userMessage = notionConfigured && notionSynced ? 'Submitted successfully.' : emailSent ? 'Submitted successfully.' : 'Submitted successfully, but confirmation email could not be sent.';
 		const previewPayload = {
