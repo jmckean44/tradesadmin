@@ -1077,6 +1077,77 @@ export const POST: APIRoute = async ({ request }) => {
 			console.error('Google Sheets submission failed:', sheetErr);
 		}
 
+		// Send email notification to hello@tradesadmin.ca (SMTP)
+		let emailSent = false;
+		let emailError = '';
+		try {
+			// Compose the email HTML (already defined above as html)
+			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
+			const fallbackRecipient = getEnv('SMTP_USER');
+			// Setup nodemailer transporter (should be configured at top-level, but safe to re-use)
+			const transporter = nodemailer.createTransport({
+				host: getEnv('SMTP_HOST'),
+				port: Number(getEnv('SMTP_PORT')) || 465,
+				secure: true,
+				auth: {
+					user: getEnv('SMTP_USER'),
+					pass: getEnv('SMTP_PASS'),
+				},
+			});
+			await withTimeout(
+				transporter.sendMail({
+					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+					to: primaryRecipient,
+					replyTo: email,
+					subject: `New submission: ${company}`,
+					html,
+				}),
+				25000,
+				'SMTP send',
+			);
+			emailSent = true;
+		} catch (err) {
+			const primaryErr = err as { message?: string };
+			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
+			console.error('SMTP send failed:', err);
+			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
+			const fallbackRecipient = getEnv('SMTP_USER');
+			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
+			if (canRetryWithFallback) {
+				try {
+					// Setup nodemailer transporter again (safe to re-use)
+					const transporter = nodemailer.createTransport({
+						host: getEnv('SMTP_HOST'),
+						port: Number(getEnv('SMTP_PORT')) || 465,
+						secure: true,
+						auth: {
+							user: getEnv('SMTP_USER'),
+							pass: getEnv('SMTP_PASS'),
+						},
+					});
+					await withTimeout(
+						transporter.sendMail({
+							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
+							to: fallbackRecipient,
+							replyTo: email,
+							subject: `New submission: ${company}`,
+							html,
+						}),
+						25000,
+						'SMTP send retry',
+					);
+					emailSent = true;
+					emailError = '';
+				} catch (retryErr) {
+					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
+					console.error('SMTP send retry failed:', retryErr);
+				}
+			} else {
+				emailError = primaryMessage;
+			}
+		}
+
 		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets/Notion response
 		return new Response(
 			JSON.stringify({
@@ -1096,6 +1167,10 @@ export const POST: APIRoute = async ({ request }) => {
 				notionError: notionError,
 				sheetsResponse: sheetsResponseText,
 				sheetsResponseError,
+				email: {
+					sent: emailSent,
+					error: emailError ? (isDev ? emailError : 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.') : undefined,
+				},
 			}),
 			{ status: 200 },
 		);
