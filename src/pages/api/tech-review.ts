@@ -1032,6 +1032,8 @@ export const POST: APIRoute = async ({ request }) => {
 		// Notion and SMTP submission removed for testing reliability
 
 		// Send submission to Google Sheets Web App
+		let sheetsResponseText = null;
+		let sheetsResponseError = null;
 		try {
 			// Build the API response object to send to Sheets
 			const apiResponse = {
@@ -1068,20 +1070,13 @@ export const POST: APIRoute = async ({ request }) => {
 					apiResponse: JSON.stringify(apiResponse),
 				}),
 			});
-			// Store the Sheets response in localStorage (if running in browser)
-			if (typeof window !== 'undefined' && sheetsResponse) {
-				try {
-					const sheetsResponseText = await sheetsResponse.text();
-					window.localStorage.setItem('gsSubmissionResponse', sheetsResponseText);
-				} catch (e) {
-					// Ignore localStorage errors
-				}
-			}
+			sheetsResponseText = await sheetsResponse.text();
 		} catch (sheetErr) {
+			sheetsResponseError = sheetErr instanceof Error ? sheetErr.message : String(sheetErr);
 			console.error('Google Sheets submission failed:', sheetErr);
 		}
 
-		// Always return a minimal, clear JSON response, including all PSI API errors
+		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets response
 		return new Response(
 			JSON.stringify({
 				ok: true,
@@ -1097,6 +1092,8 @@ export const POST: APIRoute = async ({ request }) => {
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
 				psiApiErrors,
+				sheetsResponse: sheetsResponseText,
+				sheetsResponseError,
 			}),
 			{ status: 200 },
 		);

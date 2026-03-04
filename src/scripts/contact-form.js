@@ -579,6 +579,17 @@ document.addEventListener('astro:page-load', () => {
 				result.textContent = 'Your submission was successful. You will be contacted shortly.';
 				// Store successful response in localStorage
 				localStorage.setItem('techReviewSubmission', JSON.stringify({ success: true, data, timestamp: Date.now() }));
+				// Store Google Sheets response if present
+				if (data && typeof data.sheetsResponse !== 'undefined') {
+					localStorage.setItem(
+						'gsSubmissionResponse',
+						JSON.stringify({
+							response: data.sheetsResponse,
+							error: data.sheetsResponseError || null,
+							timestamp: Date.now(),
+						}),
+					);
+				}
 			} else {
 				setResultsUrl(payload.url);
 				renderReviewPreview(data?.preview);
@@ -586,6 +597,17 @@ document.addEventListener('astro:page-load', () => {
 				const contactSection = document.getElementById('contact');
 				if (contactSection) {
 					contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+				// Store Google Sheets response if present
+				if (data && typeof data.sheetsResponse !== 'undefined') {
+					localStorage.setItem(
+						'gsSubmissionResponse',
+						JSON.stringify({
+							response: data.sheetsResponse,
+							error: data.sheetsResponseError || null,
+							timestamp: Date.now(),
+						}),
+					);
 				}
 			}
 
