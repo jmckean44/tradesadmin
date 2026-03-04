@@ -915,7 +915,26 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// SMTP and Notion submission removed for testing reliability
+		// Notion submission
+		let notionError = null;
+		try {
+			await logSubmissionToNotion({
+				company,
+				email,
+				url,
+				phone,
+				message,
+				liveScanError,
+				reportFilename,
+				preview,
+				review,
+				reviewError,
+				siteChecks,
+			});
+		} catch (err) {
+			notionError = err instanceof Error ? err.message : String(err);
+			console.error('Notion submission failed:', err);
+		}
 
 		let review: Review | null = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
@@ -1051,7 +1070,7 @@ export const POST: APIRoute = async ({ request }) => {
 				},
 				psiApiErrors,
 			};
-			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycby2hDFPsBn_p0aeQEyLprvi4t1rGc1p0LsnzMmqeMx7XgBuTHlhgfksvfAX4x6qXrWQ/exec', {
+			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbyys70cFFF9cBcXEnD47j3rSC8AEZ7JRaKOmeh2Ehg1rQOLQtYu7pAsk8smrHS3hV0n/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -1076,7 +1095,7 @@ export const POST: APIRoute = async ({ request }) => {
 			console.error('Google Sheets submission failed:', sheetErr);
 		}
 
-		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets response
+		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets/Notion response
 		return new Response(
 			JSON.stringify({
 				ok: true,
@@ -1092,6 +1111,7 @@ export const POST: APIRoute = async ({ request }) => {
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
 				psiApiErrors,
+				notionError,
 				sheetsResponse: sheetsResponseText,
 				sheetsResponseError,
 			}),
