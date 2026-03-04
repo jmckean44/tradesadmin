@@ -1031,6 +1031,30 @@ export const POST: APIRoute = async ({ request }) => {
 		siteChecks.error = 'Skipped in simplified mode.';
 		// Notion and SMTP submission removed for testing reliability
 
+		// Send submission to Google Sheets Web App
+		try {
+			await fetch('https://script.google.com/macros/s/AKfycby2hDFPsBn_p0aeQEyLprvi4t1rGc1p0LsnzMmqeMx7XgBuTHlhgfksvfAX4x6qXrWQ/exec', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					apiKey: getEnv('GS_API_KEY'),
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					performance: review?.performance ?? null,
+					seo: review?.seo ?? null,
+					accessibility: review?.accessibility ?? null,
+					bestPractices: review?.bestPractices ?? null,
+					scanSource,
+					psiApiErrors,
+				}),
+			});
+		} catch (sheetErr) {
+			console.error('Google Sheets submission failed:', sheetErr);
+		}
+
 		// Always return a minimal, clear JSON response, including all PSI API errors
 		return new Response(
 			JSON.stringify({
