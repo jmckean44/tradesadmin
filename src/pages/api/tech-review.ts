@@ -915,26 +915,8 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// Notion submission
-		let notionError = null;
-		try {
-			await logSubmissionToNotion({
-				company,
-				email,
-				url,
-				phone,
-				message,
-				liveScanError,
-				reportFilename,
-				preview,
-				review,
-				reviewError,
-				siteChecks,
-			});
-		} catch (err) {
-			notionError = err instanceof Error ? err.message : String(err);
-			console.error('Notion submission failed:', err);
-		}
+		// Notion submission (will be called after these are set properly)
+		let notionError: string | null = null;
 
 		let review: Review | null = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
@@ -1111,7 +1093,7 @@ export const POST: APIRoute = async ({ request }) => {
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
 				psiApiErrors,
-				notionError,
+				notionError: notionError,
 				sheetsResponse: sheetsResponseText,
 				sheetsResponseError,
 			}),
