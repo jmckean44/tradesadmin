@@ -545,6 +545,8 @@ document.addEventListener('astro:page-load', () => {
 					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetFormUiState({ preserveAllExceptUrl: true });
 					urlInput.focus();
+					// Store error response in localStorage
+					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: data.error, timestamp: Date.now() }));
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
 					result.textContent = 'Verification expired. Please complete the verification checkbox again and resubmit.';
@@ -552,6 +554,8 @@ document.addEventListener('astro:page-load', () => {
 					setCellphoneHidden(false);
 					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetTurnstileIfAvailable();
+					// Store error response in localStorage
+					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: 'Verification expired', timestamp: Date.now() }));
 				} else {
 					setScanCompleteView(false);
 					setCellphoneHidden(false);
@@ -560,6 +564,8 @@ document.addEventListener('astro:page-load', () => {
 					}
 					result.textContent = '';
 					resetTurnstileIfAvailable();
+					// Store generic error response in localStorage
+					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: data?.error || 'Request failed', timestamp: Date.now() }));
 				}
 				return;
 			}
@@ -571,6 +577,8 @@ document.addEventListener('astro:page-load', () => {
 				if (resultsRoot) resultsRoot.innerHTML = '';
 				result.style.display = 'block';
 				result.textContent = 'Your submission was successful. You will be contacted shortly.';
+				// Store successful response in localStorage
+				localStorage.setItem('techReviewSubmission', JSON.stringify({ success: true, data, timestamp: Date.now() }));
 			} else {
 				setResultsUrl(payload.url);
 				renderReviewPreview(data?.preview);
@@ -588,6 +596,8 @@ document.addEventListener('astro:page-load', () => {
 			if (resultsRoot) resultsRoot.innerHTML = '';
 			result.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 			resetTurnstileIfAvailable();
+			// Store fetch error in localStorage
+			localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: err instanceof Error ? err.message : 'Unknown error', timestamp: Date.now() }));
 		} finally {
 			setSubmittingState(false);
 		}

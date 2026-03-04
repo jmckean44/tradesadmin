@@ -1033,7 +1033,23 @@ export const POST: APIRoute = async ({ request }) => {
 
 		// Send submission to Google Sheets Web App
 		try {
-			await fetch('https://script.google.com/macros/s/AKfycby2hDFPsBn_p0aeQEyLprvi4t1rGc1p0LsnzMmqeMx7XgBuTHlhgfksvfAX4x6qXrWQ/exec', {
+			// Build the API response object to send to Sheets
+			const apiResponse = {
+				ok: true,
+				message: 'Submitted successfully.',
+				preview: {
+					available: preview.available,
+					scores: preview.scores,
+					reviewError: preview.reviewError,
+				},
+				scan: {
+					available: preview.available === true,
+					source: scanSource,
+					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
+				},
+				psiApiErrors,
+			};
+			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycby2hDFPsBn_p0aeQEyLprvi4t1rGc1p0LsnzMmqeMx7XgBuTHlhgfksvfAX4x6qXrWQ/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -1049,8 +1065,18 @@ export const POST: APIRoute = async ({ request }) => {
 					bestPractices: review?.bestPractices ?? null,
 					scanSource,
 					psiApiErrors,
+					apiResponse: JSON.stringify(apiResponse),
 				}),
 			});
+			// Store the Sheets response in localStorage (if running in browser)
+			if (typeof window !== 'undefined' && sheetsResponse) {
+				try {
+					const sheetsResponseText = await sheetsResponse.text();
+					window.localStorage.setItem('gsSubmissionResponse', sheetsResponseText);
+				} catch (e) {
+					// Ignore localStorage errors
+				}
+			}
 		} catch (sheetErr) {
 			console.error('Google Sheets submission failed:', sheetErr);
 		}
