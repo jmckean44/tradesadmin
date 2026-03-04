@@ -920,54 +920,8 @@ export const POST: APIRoute = async ({ request }) => {
 		// ...existing code...
 		// Assign all required variables first (liveScanError, reportFilename, preview, review, reviewError, siteChecks)
 		// ...existing code...
-
 		// Now perform Notion submission (after all variables are assigned)
-		try {
-			await withTimeout(
-				logSubmissionToNotion({
-					company,
-					email,
-					url: displayUrl,
-					phone,
-					message,
-					liveScanError,
-					reportFilename,
-					preview,
-					review,
-					reviewError,
-					siteChecks,
-				}),
-				12000,
-				'Notion sync',
-			);
-		} catch (err) {
-			notionError = err instanceof Error ? err.message : String(err);
-			const errorDetails = {
-				type: 'notion',
-				time: new Date().toISOString(),
-				error: notionError,
-				stack: err instanceof Error ? err.stack : undefined,
-				payload: {
-					company,
-					email,
-					url: displayUrl,
-					phone,
-					message,
-					liveScanError,
-					reportFilename,
-					preview,
-					review,
-					reviewError,
-					siteChecks,
-				},
-			};
-			console.error('Notion sync failed:', errorDetails);
-			try {
-				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
-			} catch (logErr) {
-				console.error('Failed to write Notion error log:', logErr);
-			}
-		}
+		// (Move this block after all those variables are assigned, i.e., after the review, reviewError, liveScanError, preview, reportFilename, siteChecks assignments)
 
 		let review: Review | null = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
