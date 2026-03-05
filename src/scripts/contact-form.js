@@ -257,7 +257,7 @@ document.addEventListener('astro:page-load', () => {
 	function updateEmailValidity() {
 		const raw = emailInput.value.trim();
 		if (!raw) {
-			emailInput.setCustomValidity('');
+			emailInput.setCustomValidity('Please enter your email address');
 			return;
 		}
 		emailInput.setCustomValidity(isValidEmail(raw) ? '' : 'Please provide a valid email address');
@@ -442,10 +442,13 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	function renderReviewPreview(preview) {
-		if (!preview || typeof preview !== 'object') {
+		if (!preview || typeof preview !== 'object' || preview.available === false) {
 			setScanCompleteView(false);
 			setCellphoneHidden(false);
-			if (resultsRoot) resultsRoot.innerHTML = '';
+			if (resultsRoot) {
+				const message = preview && typeof preview === 'object' && preview.reviewError ? escapeHtml(preview.reviewError) : 'No Core Web Vitals data is available for this site at this time.';
+				resultsRoot.innerHTML = `<div class="review-preview-card">${message}</div>`;
+			}
 			return;
 		}
 
@@ -460,10 +463,10 @@ document.addEventListener('astro:page-load', () => {
 
 		if (resultsRoot) {
 			resultsRoot.innerHTML = `
-				<div class="review-preview-card">
-					<div class="review-score-grid">${scoreHtml}</div>
-				</div>
-			`;
+				   <div class="review-preview-card">
+					   <div class="review-score-grid">${scoreHtml}</div>
+				   </div>
+			   `;
 		}
 
 		setScanCompleteView(true);
@@ -511,7 +514,7 @@ document.addEventListener('astro:page-load', () => {
 		const hasSubmittedUrl = Boolean(String(payload.url || '').trim());
 
 		result.style.display = 'block';
-		result.textContent = hasSubmittedUrl ? 'Scanning... please wait about 20 seconds.' : 'Submitting...';
+		result.textContent = hasSubmittedUrl ? 'Scanning... results take about 20 seconds.' : 'Submitting...';
 		setScanCompleteView(false);
 		setCellphoneHidden(false);
 		if (resultsRoot) resultsRoot.innerHTML = '';
