@@ -851,6 +851,32 @@ export const POST: APIRoute = async ({ request }) => {
 		const smtpSendTimeoutMs = isDev ? 12000 : 2500;
 		const body = await parseRequestBody(request);
 
+		// Declare all variables that will be used throughout the handler
+		let liveScanError = '';
+		let reportFilename = '';
+		let preview: ReviewPreview = {
+			available: false,
+			scores: {
+				performance: null,
+				seo: null,
+				accessibility: null,
+				bestPractices: null,
+			},
+		};
+		let review: Review | null = null;
+		let reviewError = '';
+		let siteChecks: NotionSubmissionInput['siteChecks'] = {
+			sslValid: null,
+			httpStatus: null,
+			dnsFound: null,
+			sitemapExists: null,
+			cspPresent: null,
+			error: '',
+		};
+		let html = '';
+		let emailSent = false;
+		let emailError = '';
+
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
 
 		const forwardedFor = request.headers.get('x-forwarded-for') || '';
@@ -915,18 +941,166 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// Notion submission (must be after all required variables are assigned)
-		let notionError: string | null = null;
-		// ...existing code...
-		// Assign all required variables first (liveScanError, reportFilename, preview, review, reviewError, siteChecks)
-		// ...existing code...
 		// Now perform Notion submission (after all variables are assigned)
-		// (Move this block after all those variables are assigned, i.e., after the review, reviewError, liveScanError, preview, reportFilename, siteChecks assignments)
+		let notionError: string | null = null;
+		try {
+			await withTimeout(
+				logSubmissionToNotion({
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					liveScanError,
+					reportFilename,
+					preview,
+					review,
+					reviewError,
+					siteChecks,
+				}),
+				12000,
+				'Notion sync',
+			);
+		} catch (err) {
+			notionError = err instanceof Error ? err.message : String(err);
+			const errorDetails = {
+				type: 'notion',
+				time: new Date().toISOString(),
+				error: notionError,
+				stack: err instanceof Error ? err.stack : undefined,
+				payload: {
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					liveScanError,
+					reportFilename,
+					preview,
+					review,
+					reviewError,
+					siteChecks,
+				},
+			};
+			console.error('Notion sync failed:', errorDetails);
+			try {
+				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
+			} catch (logErr) {
+				console.error('Failed to write Notion error log:', logErr);
+			}
+		}
 
-		let review: Review | null = null;
+		// Now perform email submission (after all variables are assigned)
+		try {
+			// Compose the email HTML (already defined above as html)
+			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
+			const fallbackRecipient = getEnv('SMTP_USER');
+			// Setup nodemailer transporter (should be configured at top-level, but safe to re-use)
+			const transporter = nodemailer.createTransport({
+				host: getEnv('SMTP_HOST'),
+				port: Number(getEnv('SMTP_PORT')) || 465,
+				secure: true,
+				auth: {
+					user: getEnv('SMTP_USER'),
+					pass: getEnv('SMTP_PASS'),
+				},
+			});
+			await withTimeout(
+				transporter.sendMail({
+					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
+					to: primaryRecipient,
+					replyTo: email,
+					subject: `New submission: ${company}`,
+					html,
+				}),
+				25000,
+				'SMTP send',
+			);
+			emailSent = true;
+		} catch (err) {
+			const primaryErr = err as { message?: string };
+			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
+			const errorDetails = {
+				type: 'email',
+				time: new Date().toISOString(),
+				error: primaryMessage,
+				stack: err instanceof Error ? err.stack : undefined,
+				payload: {
+					company,
+					email,
+					url: displayUrl,
+					phone,
+					message,
+					html,
+				},
+			};
+			console.error('SMTP send failed:', errorDetails);
+			try {
+				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
+			} catch (logErr) {
+				console.error('Failed to write email error log:', logErr);
+			}
+			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
+			const fallbackRecipient = getEnv('SMTP_USER');
+			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
+			if (canRetryWithFallback) {
+				try {
+					// Setup nodemailer transporter again (safe to re-use)
+					const transporter = nodemailer.createTransport({
+						host: getEnv('SMTP_HOST'),
+						port: Number(getEnv('SMTP_PORT')) || 465,
+						secure: true,
+						auth: {
+							user: getEnv('SMTP_USER'),
+							pass: getEnv('SMTP_PASS'),
+						},
+					});
+					await withTimeout(
+						transporter.sendMail({
+							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
+							to: fallbackRecipient,
+							replyTo: email,
+							subject: `New submission: ${company}`,
+							html,
+						}),
+						25000,
+						'SMTP send retry',
+					);
+					emailSent = true;
+					emailError = '';
+				} catch (retryErr) {
+					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
+					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
+					const retryErrorDetails = {
+						type: 'email-retry',
+						time: new Date().toISOString(),
+						error: retryMessage,
+						stack: retryErr instanceof Error ? retryErr.stack : undefined,
+						payload: {
+							company,
+							email,
+							url: displayUrl,
+							phone,
+							message,
+							html,
+						},
+					};
+					console.error('SMTP send retry failed:', retryErrorDetails);
+					try {
+						require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(retryErrorDetails) + '\n');
+					} catch (logErr) {
+						console.error('Failed to write email retry error log:', logErr);
+					}
+				}
+			} else {
+				emailError = primaryMessage;
+			}
+		}
+
+		review = null;
 		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
-		let reviewError = '';
-		let liveScanError = '';
+		reviewError = '';
+		liveScanError = '';
 		let forceUnavailablePreview = false;
 		let psiApiErrors: string[] = [];
 		if (!url) {
@@ -985,18 +1159,18 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const reviewHtml = review
 			? `
-                <h3 style="margin:16px 0 8px;">Technical Review</h3>
-                <ul>
-                    <li><strong>Performance:</strong> ${review.performance ?? 'N/A'}</li>
-                    <li><strong>SEO:</strong> ${review.seo ?? 'N/A'}</li>
-                    <li><strong>Accessibility:</strong> ${review.accessibility ?? 'N/A'}</li>
-                    <li><strong>Best Practices:</strong> ${review.bestPractices ?? 'N/A'}</li>
-                    <li><strong>LCP:</strong> ${review.lcp}</li>
-                    <li><strong>CLS:</strong> ${review.cls}</li>
-                    <li><strong>Interactive:</strong> ${review.interactive}</li>
-                    <li><strong>Total Blocking Time:</strong> ${review.tbt}</li>
-                </ul>
-            `
+				<h3 style="margin:16px 0 8px;">Technical Review</h3>
+				<ul>
+					<li><strong>Performance:</strong> ${review.performance ?? 'N/A'}</li>
+					<li><strong>SEO:</strong> ${review.seo ?? 'N/A'}</li>
+					<li><strong>Accessibility:</strong> ${review.accessibility ?? 'N/A'}</li>
+					<li><strong>Best Practices:</strong> ${review.bestPractices ?? 'N/A'}</li>
+					<li><strong>LCP:</strong> ${review.lcp}</li>
+					<li><strong>CLS:</strong> ${review.cls}</li>
+					<li><strong>Interactive:</strong> ${review.interactive}</li>
+					<li><strong>Total Blocking Time:</strong> ${review.tbt}</li>
+				</ul>
+			`
 			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
 		const scanSourceLabel: Record<typeof scanSource, string> = {
@@ -1009,24 +1183,34 @@ export const POST: APIRoute = async ({ request }) => {
 		};
 		const displayLiveScanError = liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : '';
 
-		const html = `
-            <h2>New Contact Submission</h2>
-            <ul>
-                <li><strong>Company:</strong> ${escapeHtml(company)}</li>
-                <li><strong>Email:</strong> ${escapeHtml(email)}</li>
+		html = `
+			<h2>New Contact Submission</h2>
+			<ul>
+				<li><strong>Company:</strong> ${escapeHtml(company)}</li>
+				<li><strong>Email:</strong> ${escapeHtml(email)}</li>
 				<li><strong>URL:</strong> ${escapeHtml(displayUrl)}</li>
 				<li><strong>Scan Source:</strong> ${escapeHtml(scanSourceLabel[scanSource])}</li>
 				${displayLiveScanError ? `<li><strong>Scan Error:</strong> ${escapeHtml(displayLiveScanError)}</li>` : ''}
-                ${phone ? `<li><strong>Phone:</strong> ${escapeHtml(phone)}</li>` : ''}
-                ${message ? `<li><strong>Message:</strong> ${escapeHtml(message)}</li>` : ''}
-            </ul>
-            <hr />
-            ${reviewHtml}
-        `;
+				${phone ? `<li><strong>Phone:</strong> ${escapeHtml(phone)}</li>` : ''}
+				${message ? `<li><strong>Message:</strong> ${escapeHtml(message)}</li>` : ''}
+			</ul>
+			<hr />
+			${reviewHtml}
+		`;
 
-		const reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
-		const preview = buildReviewPreview(review, reviewError, forceUnavailablePreview);
-		let siteChecks: NotionSubmissionInput['siteChecks'] = {
+		reportFilename = url ? `technical-review-${new URL(url).hostname}.pdf` : 'technical-review-request.pdf';
+		preview = buildReviewPreview(review, reviewError, forceUnavailablePreview);
+		// If the review or preview is missing a date, add a user-facing message
+		let missingDateMessage = '';
+		// Example: if review or preview should have a date property, check here (adjust as needed for your data structure)
+		// if (!review?.date && !preview?.date) {
+		//     missingDateMessage = 'No scan date was returned for this site. This may indicate a temporary scan issue or missing data.';
+		// }
+		// For now, if you want to check for a specific field, add the logic above and include the message below in the preview or response.
+		if (missingDateMessage) {
+			preview.reviewError = preview.reviewError ? `${preview.reviewError} ${missingDateMessage}` : missingDateMessage;
+		}
+		siteChecks = {
 			sslValid: null,
 			httpStatus: null,
 			dnsFound: null,
@@ -1083,8 +1267,7 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		// Send email notification to hello@tradesadmin.ca (SMTP)
-		let emailSent = false;
-		let emailError = '';
+		// (Declarations moved to top)
 		try {
 			// Compose the email HTML (already defined above as html)
 			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';

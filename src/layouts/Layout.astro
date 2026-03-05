@@ -2,6 +2,7 @@
 export interface Props {
 	pageTitle: string;
 	pageSiteTitles: string;
+	pageDescription?: string;
 }
 import '../styles/global.scss';
 import '../styles/trig.scss';
@@ -10,13 +11,13 @@ import Header from '../components/Header.astro';
 
 const TITLE = 'TradesAdmin • Technical Website Support for Contractors.';
 const DESCRIPTION =
-	'TradesAdmin provides technical website support for contractor businesses, specializing in indexing fixes, local data accuracy, performance optimization, security enhancements, technical SEO, website audits, troubleshooting, and ongoing maintenance for businesses in Toronto and the GTA.';
+	'Technical website support for contractor businesses: performance optimization, technical SEO, troubleshooting, and website maintenance for small businesses in Toronto and the GTA.';
 const KEYWORDS =
-	'TradesAdmin, contractor website support, website administration, remote web admin, B2B website services, responsive web design, affordable web support, technical SEO, website support Toronto, website maintenance GTA, technical SEO Toronto, fix broken contact form Toronto, website fixes Toronto, WordPress help Toronto, website troubleshooting GTA, web performance optimization';
+	'technical website support, website troubleshooting, website technical help, website diagnostic service, technical SEO, website maintenance, website performance optimization, fix website problems, website technical support Toronto, contractor website support, responsive web design, affordable web support, technical SEO, website support Toronto, website maintenance GTA, technical SEO Toronto, fix broken contact form Toronto, website fixes Toronto, WordPress help Toronto, website troubleshooting GTA, web performance optimization';
 const URL = 'https://tradesadmin.ca';
 const LOGO = 'https://tradesadmin.ca/logo.svg';
 
-const { pageTitle } = Astro.props as Props;
+const { pageTitle, pageDescription } = Astro.props as Props;
 const path = Astro.url.pathname;
 const pageSiteTitle = path === '/' ? `${TITLE}` : `${pageTitle} | ${TITLE}`;
 
@@ -37,7 +38,7 @@ import { ClientRouter } from 'astro:transitions';
 		<meta name="msapplication-TileColor" content="#ff4000" />
 		<meta name="msapplication-config" content="img/browserconfig.xml" />
 		<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-		<meta name="description" content={DESCRIPTION || ''} />
+		<meta name="description" content={pageDescription || DESCRIPTION || ''} />
 		<meta name="keywords" content={KEYWORDS} />
 		<link rel="canonical" href="https://tradesadmin.ca" />
 		<title>{pageSiteTitle}</title>
@@ -45,14 +46,14 @@ import { ClientRouter } from 'astro:transitions';
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={pageSiteTitle} />
-		<meta property="og:description" content={DESCRIPTION} />
+		<meta property="og:description" content={pageDescription || DESCRIPTION} />
 		<meta property="og:url" content={URL} />
 		<meta property="og:image" content={LOGO} />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={pageSiteTitle} />
-		<meta name="twitter:description" content={DESCRIPTION} />
+		<meta name="twitter:description" content={pageDescription || DESCRIPTION} />
 		<meta name="twitter:image" content={LOGO} />
 
 		<!-- FAVICONS -->

@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export const prerender = true;
+
+const blogPosts = await getCollection('blog');
+---
+
+<Layout pageTitle="Insights" pageSiteTitles="Insights">
+	<section id="insights-index">
+		<div class="container">
+			<div class="flex padding-x">
+				<div class="cell small-18">
+					<!-- <h1>Insights</h1> -->
+
+					<ul class="insights-list">
+						{
+							blogPosts.map((post) => (
+								<li class="insights-list-item">
+									<a href={`/insights/${post.slug}/`}>
+										<h2>{post.data.title}</h2>
+										{post.data.excerpt && <p>{post.data.excerpt}</p>}
+										{/* <small>{post.data.date?.toLocaleDateString()}</small> */}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<style lang="scss">
+	@import '../../styles/_variables.scss';
+	.container {
+		padding: clamp(8rem, 12.5vw, 200px) $container-padding 100px;
+	}
+	ul {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+	}
+
+	ul li {
+		border: 1px #ddd solid;
+		border-radius: 10px;
+		padding: 1.5rem;
+		box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+		transition: box-shadow 0.3s ease;
+		margin-bottom: 0;
+	}
+	ul li p {
+		margin-bottom: 0;
+	}
+	h2 {
+		font-size: 1.25rem;
+		font-family: $font-sans-serif-semibold;
+		margin-bottom: 0.75rem;
+	}
+	.insights-list-item:hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+</style>
