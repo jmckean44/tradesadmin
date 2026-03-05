@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-hosting-issues'
+slug: 'hosting-issues'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -39,7 +39,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <li><a href="/insights/schema-markup/" role="link" aria-label="Read the related article about schema markup">Schema Markup</a></li>
 <li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>
 <li><a href="/insights/domain-email-problems/" role="link" aria-label="Read the related article about domain email problems">Domain Email Problems</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">GBP Website Links</a></li>
 </ul>
 
 ## Technical Help

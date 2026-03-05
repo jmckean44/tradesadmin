@@ -84,7 +84,7 @@ Recommended practices include:
 <ul>
 <li><a href="/insights/location-pages/" role="link" aria-label="Read the related article about location pages">Location Pages</a></li>
 <li><a href="/insights/domain-configuration/" role="link" aria-label="Read the related article about domain configuration">Domain Configuration</a></li>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about GBP optimization">GBP Optimization</a></li>
 <li><a href="/insights/missing-contact-info/" role="link" aria-label="Read the related article about missing contact info">Missing Contact Info</a></li>
 <li><a href="/insights/google-maps-not-showing/" role="link" aria-label="Read the related article about google maps not showing">Google Maps Not Showing</a></li>
 <li><a href="/insights/hosting-problems/" role="link" aria-label="Read the related article about hosting problems">Hosting Problems</a></li>

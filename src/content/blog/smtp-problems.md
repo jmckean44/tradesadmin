@@ -87,7 +87,7 @@ Recommended practices include:
 <li><a href="/insights/maps-listing-errors/" role="link" aria-label="Read the related article about maps listing errors">Maps Listing Errors</a></li>
 <li><a href="/insights/website-errors/" role="link" aria-label="Read the related article about website errors">Website Errors</a></li>
 <li><a href="/insights/website-security/" role="link" aria-label="Read the related article about website security">Website Security</a></li>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about GBP optimization">GBP Optimization</a></li>
 </ul>
 
 ## Technical Help

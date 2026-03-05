@@ -86,8 +86,8 @@ Recommended practices include:
 <li><a href="/insights/google-business-profile/" role="link" aria-label="Read the related article about google business profile">Google Business Profile</a></li>
 <li><a href="/insights/plugin-conflicts/" role="link" aria-label="Read the related article about plugin conflicts">Plugin Conflicts</a></li>
 <li><a href="/insights/image-optimization/" role="link" aria-label="Read the related article about image optimization">Image Optimization</a></li>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
-<li><a href="/insights/contractor-website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about GBP optimization">GBP Optimization</a></li>
+<li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
 </ul>
 
 ## Technical Help

@@ -84,7 +84,7 @@ Recommended practices include:
 <ul>
 <li><a href="/insights/sitemap/" role="link" aria-label="Read the related article about sitemap">Sitemap</a></li>
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>
-<li><a href="/insights/local-seo/" role="link" aria-label="Read the related article about local seo">Local Seo</a></li>
+<li><a href="/insights/local-seo/" role="link" aria-label="Read the related article about local seo">Local SEO</a></li>
 <li><a href="/insights/sitemap-errors/" role="link" aria-label="Read the related article about sitemap errors">Sitemap Errors</a></li>
 <li><a href="/insights/server-response-time/" role="link" aria-label="Read the related article about server response time">Server Response Time</a></li>
 <li><a href="/insights/domain-email-problems/" role="link" aria-label="Read the related article about domain email problems">Domain Email Problems</a></li>

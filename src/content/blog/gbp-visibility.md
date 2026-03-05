@@ -82,8 +82,8 @@ Recommended practices include:
 ## Related Articles
 
 <ul>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">GBP Optimization</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">GBP Website Links</a></li>
 <li><a href="/insights/website-slow/" role="link" aria-label="Read the related article about website slow">Website Slow</a></li>
 <li><a href="/insights/search-visibility/" role="link" aria-label="Read the related article about search visibility">Search Visibility</a></li>
 <li><a href="/insights/domain-configuration/" role="link" aria-label="Read the related article about domain configuration">Domain Configuration</a></li>

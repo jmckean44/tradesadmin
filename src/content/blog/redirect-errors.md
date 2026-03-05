@@ -87,7 +87,7 @@ Recommended practices include:
 <li><a href="/insights/google-maps-not-showing/" role="link" aria-label="Read the related article about google maps not showing">Google Maps Not Showing</a></li>
 <li><a href="/insights/google-business-suspended/" role="link" aria-label="Read the related article about google business suspended">Google Business Suspended</a></li>
 <li><a href="/insights/sitemap-errors/" role="link" aria-label="Read the related article about sitemap errors">Sitemap Errors</a></li>
-<li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>
+<li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile SEO</a></li>
 </ul>
 
 ## Technical Help

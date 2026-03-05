@@ -83,7 +83,7 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/website-migration/" role="link" aria-label="Read the related article about website migration">Website Migration</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">GBP Website Links</a></li>
 <li><a href="/insights/server-response-time/" role="link" aria-label="Read the related article about server response time">Server Response Time</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
 <li><a href="/insights/indexing-problems/" role="link" aria-label="Read the related article about indexing problems">Indexing Problems</a></li>

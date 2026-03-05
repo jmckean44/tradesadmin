@@ -83,7 +83,7 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/website-slow/" role="link" aria-label="Read the related article about website slow">Website Slow</a></li>
-<li><a href="/insights/contractor-website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
+<li><a href="/insights/website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
 <li><a href="/insights/service-pages/" role="link" aria-label="Read the related article about service pages">Service Pages</a></li>
 <li><a href="/insights/hosting-problems/" role="link" aria-label="Read the related article about hosting problems">Hosting Problems</a></li>
 <li><a href="/insights/google-business-suspended/" role="link" aria-label="Read the related article about google business suspended">Google Business Suspended</a></li>

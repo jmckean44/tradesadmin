@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-call-tracking'
+slug: 'call-tracking'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---

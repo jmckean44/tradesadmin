@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-site-structure'
+slug: 'site-structure'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -39,7 +39,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <li><a href="/insights/sitemap-errors/" role="link" aria-label="Read the related article about sitemap errors">Sitemap Errors</a></li>
 <li><a href="/insights/plugin-updates/" role="link" aria-label="Read the related article about plugin updates">Plugin Updates</a></li>
 <li><a href="/insights/seo-mistakes/" role="link" aria-label="Read the related article about seo mistakes">Seo Mistakes</a></li>
-<li><a href="/insights/contractor-website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
+<li><a href="/insights/website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
 </ul>
 
 ## Technical Help

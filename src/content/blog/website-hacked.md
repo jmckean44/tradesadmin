@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-website-hacked'
+slug: 'website-hacked'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -38,8 +38,8 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <li><a href="/insights/website-indexing/" role="link" aria-label="Read the related article about website indexing">Website Indexing</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
 <li><a href="/insights/website-migration/" role="link" aria-label="Read the related article about website migration">Website Migration</a></li>
-<li><a href="/insights/contractor-website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
-<li><a href="/insights/contractor-website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
+<li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
+<li><a href="/insights/website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
 </ul>
 
 ## Technical Help

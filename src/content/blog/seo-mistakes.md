@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-seo-mistakes'
+slug: 'seo-mistakes'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -35,11 +35,11 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 
 <ul>
 <li><a href="/insights/location-pages/" role="link" aria-label="Read the related article about location pages">Location Pages</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
-<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about gbp visibility">Gbp Visibility</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about GBP website links">GBP Website Links</a></li>
+<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about GBP visibility">GBP Visibility</a></li>
 <li><a href="/insights/slow-websites/" role="link" aria-label="Read the related article about slow websites">Slow Websites</a></li>
 <li><a href="/insights/hosting-issues/" role="link" aria-label="Read the related article about hosting issues">Hosting Issues</a></li>
-<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
+<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">DNS Errors</a></li>
 </ul>
 
 ## Technical Help

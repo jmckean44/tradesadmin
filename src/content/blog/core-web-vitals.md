@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-core-web-vitals'
+slug: 'core-web-vitals'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -37,7 +37,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <li><a href="/insights/image-optimization/" role="link" aria-label="Read the related article about image optimization">Image Optimization</a></li>
 <li><a href="/insights/search-visibility/" role="link" aria-label="Read the related article about search visibility">Search Visibility</a></li>
 <li><a href="/insights/robots-txt-errors/" role="link" aria-label="Read the related article about robots txt errors">Robots Txt Errors</a></li>
-<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
+<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">DNS Errors</a></li>
 <li><a href="/insights/search-console-errors/" role="link" aria-label="Read the related article about search console errors">Search Console Errors</a></li>
 <li><a href="/insights/call-tracking/" role="link" aria-label="Read the related article about call tracking">Call Tracking</a></li>
 </ul>

@@ -345,6 +345,7 @@
 }
 
 .step-content h3 {
+	font-family: var.$font-sans-serif-med;
 	font-size: clamp(1.5rem, 2.5vw, 1.75rem);
 	font-weight: 600;
 	margin-bottom: 1rem;
@@ -429,11 +430,13 @@
 
 .pricing-card.single-issue h3 {
 	color: var.$theme-clr;
+	font-size: min(max(2.5rem, 3vw), 36px) !important;
 	margin-bottom: 0;
 }
 
 .pricing-card h3 {
-	font-size: clamp(1.25rem, 1.5vw, 1.4rem);
+	font-family: var.$font-sans-serif-semibold;
+	font-size: clamp(1.5rem, 1.75vw, 1.75rem);
 	font-weight: 500;
 	margin-bottom: 0.5rem;
 	line-height: 1.2;

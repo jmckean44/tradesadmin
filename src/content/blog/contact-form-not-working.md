@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-contact-form-not-working'
+slug: 'contact-form-not-working'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -36,7 +36,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <ul>
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>
 <li><a href="/insights/call-tracking/" role="link" aria-label="Read the related article about call tracking">Call Tracking</a></li>
-<li><a href="/insights/contractor-website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
+<li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
 <li><a href="/insights/robots-txt-errors/" role="link" aria-label="Read the related article about robots txt errors">Robots Txt Errors</a></li>
 <li><a href="/insights/broken-links/" role="link" aria-label="Read the related article about broken links">Broken Links</a></li>
 <li><a href="/insights/hosting-problems/" role="link" aria-label="Read the related article about hosting problems">Hosting Problems</a></li>

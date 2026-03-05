@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-broken-links'
+slug: 'broken-links'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -60,12 +60,7 @@ For contractor businesses that depend on phone calls and form submissions, even 
 
 A basic technical audit usually identifies the cause quickly. Important diagnostic checks include:
 
-- testing website speed on mobile and desktop devices
-- confirming the website is indexed in Google search
-- submitting test contact form entries
-- reviewing DNS configuration and hosting setup
-- checking Google Business Profile visibility
-- verifying SSL and security configuration
+verifying SSL and security configuration
 
 These checks help determine whether the issue is related to performance, indexing, configuration errors, or broken functionality.
 

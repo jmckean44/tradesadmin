@@ -82,9 +82,9 @@ Recommended practices include:
 ## Related Articles
 
 <ul>
-<li><a href="/insights/contractor-website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
+<li><a href="/insights/website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about GBP website links">GBP Website Links</a></li>
 <li><a href="/insights/indexing-problems/" role="link" aria-label="Read the related article about indexing problems">Indexing Problems</a></li>
 <li><a href="/insights/schema-markup/" role="link" aria-label="Read the related article about schema markup">Schema Markup</a></li>
 <li><a href="/insights/contact-form-not-working/" role="link" aria-label="Read the related article about contact form not working">Contact Form Not Working</a></li>

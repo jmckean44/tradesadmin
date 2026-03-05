@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-gbp-optimization'
+slug: 'gbp-optimization'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -34,8 +34,8 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 ## Related Articles
 
 <ul>
-<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about gbp visibility">Gbp Visibility</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about gbp visibility">GBP Visibility</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">GBP Website Links</a></li>
 <li><a href="/insights/local-seo/" role="link" aria-label="Read the related article about local seo">Local Seo</a></li>
 <li><a href="/insights/form-spam-filtering/" role="link" aria-label="Read the related article about form spam filtering">Form Spam Filtering</a></li>
 <li><a href="/insights/call-tracking/" role="link" aria-label="Read the related article about call tracking">Call Tracking</a></li>
@@ -60,12 +60,7 @@ For contractor businesses that depend on phone calls and form submissions, even 
 
 A basic technical audit usually identifies the cause quickly. Important diagnostic checks include:
 
-- testing website speed on mobile and desktop devices
-- confirming the website is indexed in Google search
-- submitting test contact form entries
-- reviewing DNS configuration and hosting setup
-- checking Google Business Profile visibility
-- verifying SSL and security configuration
+ verifying SSL and security configuration
 
 These checks help determine whether the issue is related to performance, indexing, configuration errors, or broken functionality.
 

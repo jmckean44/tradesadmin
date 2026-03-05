@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-indexing-problems'
+slug: 'indexing-problems'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -34,7 +34,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 ## Related Articles
 
 <ul>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about GBP website links">GBP Website Links</a></li>
 <li><a href="/insights/page-speed/" role="link" aria-label="Read the related article about page speed">Page Speed</a></li>
 <li><a href="/insights/missing-contact-info/" role="link" aria-label="Read the related article about missing contact info">Missing Contact Info</a></li>
 <li><a href="/insights/smtp-problems/" role="link" aria-label="Read the related article about smtp problems">Smtp Problems</a></li>

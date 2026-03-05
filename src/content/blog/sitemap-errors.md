@@ -87,7 +87,7 @@ Recommended practices include:
 <li><a href="/insights/google-business-profile/" role="link" aria-label="Read the related article about google business profile">Google Business Profile</a></li>
 <li><a href="/insights/call-tracking/" role="link" aria-label="Read the related article about call tracking">Call Tracking</a></li>
 <li><a href="/insights/image-optimization/" role="link" aria-label="Read the related article about image optimization">Image Optimization</a></li>
-<li><a href="/insights/ssl-errors/" role="link" aria-label="Read the related article about ssl errors">Ssl Errors</a></li>
+<li><a href="/insights/ssl-errors/" role="link" aria-label="Read the related article about ssl errors">SSL Errors</a></li>
 </ul>
 
 ## Technical Help

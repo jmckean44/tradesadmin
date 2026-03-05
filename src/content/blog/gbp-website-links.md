@@ -82,8 +82,8 @@ Recommended practices include:
 ## Related Articles
 
 <ul>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
-<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about gbp visibility">Gbp Visibility</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">GBP Optimization</a></li>
+<li><a href="/insights/gbp-visibility/" role="link" aria-label="Read the related article about gbp visibility">GBP Visibility</a></li>
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
 <li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>

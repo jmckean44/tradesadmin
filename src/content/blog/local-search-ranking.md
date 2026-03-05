@@ -82,8 +82,8 @@ Recommended practices include:
 ## Related Articles
 
 <ul>
-<li><a href="/insights/local-seo/" role="link" aria-label="Read the related article about local seo">Local Seo</a></li>
-<li><a href="/insights/contractor-website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
+<li><a href="/insights/local-seo/" role="link" aria-label="Read the related article about local seo">Local SEO</a></li>
+<li><a href="/insights/website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
 <li><a href="/insights/form-spam-filtering/" role="link" aria-label="Read the related article about form spam filtering">Form Spam Filtering</a></li>
 <li><a href="/insights/broken-links/" role="link" aria-label="Read the related article about broken links">Broken Links</a></li>
 <li><a href="/insights/hosting-problems/" role="link" aria-label="Read the related article about hosting problems">Hosting Problems</a></li>

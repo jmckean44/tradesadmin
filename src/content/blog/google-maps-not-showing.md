@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-google-maps-not-showing'
+slug: 'google-maps-not-showing'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -37,7 +37,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <li><a href="/insights/google-business-profile/" role="link" aria-label="Read the related article about google business profile">Google Business Profile</a></li>
 <li><a href="/insights/google-business-suspended/" role="link" aria-label="Read the related article about google business suspended">Google Business Suspended</a></li>
 <li><a href="/insights/google-reviews/" role="link" aria-label="Read the related article about google reviews">Google Reviews</a></li>
-<li><a href="/insights/contractor-website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
+<li><a href="/insights/website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
 <li><a href="/insights/security-updates/" role="link" aria-label="Read the related article about security updates">Security Updates</a></li>
 <li><a href="/insights/website-indexing/" role="link" aria-label="Read the related article about website indexing">Website Indexing</a></li>
 </ul>

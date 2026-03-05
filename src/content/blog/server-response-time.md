@@ -83,10 +83,10 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/core-web-vitals/" role="link" aria-label="Read the related article about core web vitals">Core Web Vitals</a></li>
-<li><a href="/insights/contractor-website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
+<li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
 <li><a href="/insights/contact-form-not-working/" role="link" aria-label="Read the related article about contact form not working">Contact Form Not Working</a></li>
-<li><a href="/insights/contractor-website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
+<li><a href="/insights/website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
 <li><a href="/insights/website-errors/" role="link" aria-label="Read the related article about website errors">Website Errors</a></li>
 </ul>
 

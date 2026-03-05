@@ -84,7 +84,7 @@ Recommended practices include:
 <ul>
 <li><a href="/insights/website-errors/" role="link" aria-label="Read the related article about website errors">Website Errors</a></li>
 <li><a href="/insights/google-maps-not-showing/" role="link" aria-label="Read the related article about google maps not showing">Google Maps Not Showing</a></li>
-<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about gbp optimization">Gbp Optimization</a></li>
+<li><a href="/insights/gbp-optimization/" role="link" aria-label="Read the related article about GBP optimization">GBP Optimization</a></li>
 <li><a href="/insights/service-pages/" role="link" aria-label="Read the related article about service pages">Service Pages</a></li>
 <li><a href="/insights/search-console-errors/" role="link" aria-label="Read the related article about search console errors">Search Console Errors</a></li>
 <li><a href="/insights/local-search-ranking/" role="link" aria-label="Read the related article about local search ranking">Local Search Ranking</a></li>

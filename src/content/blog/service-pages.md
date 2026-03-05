@@ -4,7 +4,7 @@ excerpt: 'Technical explanation of a common contractor website issue and how to 
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
-slug: 'contractor-service-pages'
+slug: 'service-pages'
 tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
@@ -36,9 +36,9 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 <ul>
 <li><a href="/insights/page-speed/" role="link" aria-label="Read the related article about page speed">Page Speed</a></li>
 <li><a href="/insights/sitemap/" role="link" aria-label="Read the related article about sitemap">Sitemap</a></li>
-<li><a href="/insights/contractor-website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
-<li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>
-<li><a href="/insights/contractor-website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
+<li><a href="/insights/website-redesign-mistakes/" role="link" aria-label="Read the related article about website redesign mistakes">Website Redesign Mistakes</a></li>
+<li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile SEO</a></li>
+<li><a href="/insights/website-hacked/" role="link" aria-label="Read the related article about website hacked">Website Hacked</a></li>
 <li><a href="/insights/security-updates/" role="link" aria-label="Read the related article about security updates">Security Updates</a></li>
 </ul>
 
@@ -60,12 +60,7 @@ For contractor businesses that depend on phone calls and form submissions, even 
 
 A basic technical audit usually identifies the cause quickly. Important diagnostic checks include:
 
-- testing website speed on mobile and desktop devices
-- confirming the website is indexed in Google search
-- submitting test contact form entries
-- reviewing DNS configuration and hosting setup
-- checking Google Business Profile visibility
-- verifying SSL and security configuration
+verifying SSL and security configuration
 
 These checks help determine whether the issue is related to performance, indexing, configuration errors, or broken functionality.
 

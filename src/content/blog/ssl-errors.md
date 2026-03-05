@@ -1,6 +1,6 @@
 ---
 title: 'SSL Certificate Errors'
-excerpt: 'Technical explanation of ssl certificate errors and how to diagnose common website problems.'
+excerpt: 'Technical explanation of SSL Certificate errors and how to diagnose common website problems.'
 date: 2025-10-21
 heroImage: './images/seo.webp'
 isDraft: false
@@ -15,7 +15,7 @@ author: ''
 
 Many websites experience technical issues that reduce visibility, usability, or the ability for visitors to contact the business.
 
-Problems related to **ssl certificate errors** can occur due to configuration errors, performance limitations, or infrastructure problems.
+Problems related to **SSL Certificate errors** can occur due to configuration errors, performance limitations, or infrastructure problems.
 
 Understanding the cause of the issue makes it easier to diagnose and correct.
 
@@ -84,7 +84,7 @@ Recommended practices include:
 <ul>
 <li><a href="/insights/security-updates/" role="link" aria-label="Read the related article about security updates">Security Updates</a></li>
 <li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
-<li><a href="/insights/contractor-website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
+<li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
 <li><a href="/insights/server-response-time/" role="link" aria-label="Read the related article about server response time">Server Response Time</a></li>
 <li><a href="/insights/slow-websites/" role="link" aria-label="Read the related article about slow websites">Slow Websites</a></li>
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>

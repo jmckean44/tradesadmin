@@ -83,11 +83,11 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
-<li><a href="/insights/smtp-problems/" role="link" aria-label="Read the related article about smtp problems">Smtp Problems</a></li>
+<li><a href="/insights/smtp-problems/" role="link" aria-label="Read the related article about smtp problems">SMTP Problems</a></li>
 <li><a href="/insights/duplicate-content/" role="link" aria-label="Read the related article about duplicate content">Duplicate Content</a></li>
 <li><a href="/insights/plugin-updates/" role="link" aria-label="Read the related article about plugin updates">Plugin Updates</a></li>
 <li><a href="/insights/contact-form-not-working/" role="link" aria-label="Read the related article about contact form not working">Contact Form Not Working</a></li>
-<li><a href="/insights/ssl-errors/" role="link" aria-label="Read the related article about ssl errors">Ssl Errors</a></li>
+<li><a href="/insights/ssl-errors/" role="link" aria-label="Read the related article about ssl errors">SSL Errors</a></li>
 </ul>
 
 ## Technical Help

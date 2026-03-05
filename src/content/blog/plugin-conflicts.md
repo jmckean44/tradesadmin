@@ -86,7 +86,7 @@ Recommended practices include:
 <li><a href="/insights/sitemap-errors/" role="link" aria-label="Read the related article about sitemap errors">Sitemap Errors</a></li>
 <li><a href="/insights/domain-email-problems/" role="link" aria-label="Read the related article about domain email problems">Domain Email Problems</a></li>
 <li><a href="/insights/sitemap/" role="link" aria-label="Read the related article about sitemap">Sitemap</a></li>
-<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about gbp website links">Gbp Website Links</a></li>
+<li><a href="/insights/gbp-website-links/" role="link" aria-label="Read the related article about GBP website links">GBP Website Links</a></li>
 <li><a href="/insights/image-optimization/" role="link" aria-label="Read the related article about image optimization">Image Optimization</a></li>
 </ul>
 
