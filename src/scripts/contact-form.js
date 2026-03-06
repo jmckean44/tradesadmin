@@ -258,9 +258,16 @@ document.addEventListener('astro:page-load', () => {
 		const raw = emailInput.value.trim();
 		if (!raw) {
 			emailInput.setCustomValidity('Please enter your email address');
+			emailInput.classList.add('is-invalid');
 			return;
 		}
-		emailInput.setCustomValidity(isValidEmail(raw) ? '' : 'Please provide a valid email address');
+		if (!isValidEmail(raw)) {
+			emailInput.setCustomValidity('Please provide a valid email address');
+			emailInput.classList.add('is-invalid');
+			return;
+		}
+		emailInput.setCustomValidity('');
+		emailInput.classList.remove('is-invalid');
 	}
 
 	function getTurnstileToken() {

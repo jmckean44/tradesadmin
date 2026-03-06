@@ -713,7 +713,8 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 				let lastError: Error | null = null;
 				for (let attempt = 1; attempt <= 3; attempt += 1) {
 					try {
-						const response = await withTimeout(fetch(endpoint.toString()), 30000, 'PageSpeed API request');
+						// Increased timeout to 60s for more reliable Lighthouse runs
+						const response = await withTimeout(fetch(endpoint.toString()), 60000, 'PageSpeed API request');
 						if (!response.ok) {
 							const body = await response.text().catch(() => '');
 							const detectedProjectNumber = extractPageSpeedProjectNumber(body);
@@ -729,7 +730,9 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 							}
 							const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
 							if (attempt < 3 && transientFailure) {
-								await wait(300 * attempt);
+								// Exponential backoff: 1st retry after 1s, 2nd after 3s
+								const backoff = attempt === 1 ? 1000 : 3000;
+								await wait(backoff);
 								continue;
 							}
 							throw new Error(message);
@@ -751,7 +754,9 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 						if (performanceScore == null) {
 							const labDataError = new Error(`PageSpeed performance data unavailable (${strategy}). Lighthouse could not complete lab metrics in time for this run.`);
 							if (attempt < 3) {
-								await wait(300 * attempt);
+								// Exponential backoff for lab data error as well
+								const backoff = attempt === 1 ? 1000 : 3000;
+								await wait(backoff);
 								continue;
 							}
 							throw labDataError;
