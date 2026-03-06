@@ -94,7 +94,7 @@ Recommended practices include:
 
 When a website stops generating traffic or inquiries, technical troubleshooting usually identifies the cause quickly.
 
-<a href="/" role="link" aria-label="link to home page">Technical Website Support</a>
+<a href="/#contact" role="link" aria-label="link to home page">Technical Website Support</a>
 
 ## Why This Problem Happens
 
@@ -130,4 +130,4 @@ Contractor websites commonly experience related problems including slow loading 
 
 If your website has stopped generating leads or visibility has dropped, technical troubleshooting usually identifies the issue quickly.
 
-<a href="/" role="link" aria-label="link to home page">Technical Website Support</a>
+<a href="/#contact" role="link" aria-label="link to home page">Technical Website Support</a>

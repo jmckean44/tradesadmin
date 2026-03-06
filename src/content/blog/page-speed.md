@@ -46,7 +46,7 @@ Contractor websites frequently lose visibility or leads due to technical SEO pro
 
 If your contractor website stops generating leads, technical troubleshooting usually identifies the issue quickly.
 
-<a href="/" role="link" aria-label="link to home page">Technical Website Support</a>
+<a href="/#contact" role="link" aria-label="link to home page">Technical Website Support</a>
 
 ## Why This Problem Happens
 
@@ -60,7 +60,7 @@ For contractor businesses that depend on phone calls and form submissions, even 
 
 A basic technical audit usually identifies the cause quickly. Important diagnostic checks include:
 
- verifying SSL and security configuration
+verifying SSL and security configuration
 
 These checks help determine whether the issue is related to performance, indexing, configuration errors, or broken functionality.
 
@@ -97,4 +97,4 @@ Contractor websites frequently experience related issues such as slow page loadi
 
 If your website has stopped generating leads or your search visibility has dropped, a technical review usually identifies the cause quickly.
 
-<a href="/" role="link" aria-label="link to home page">Technical Website Support</a>
+<a href="/#contact" role="link" aria-label="link to home page">Technical Website Support</a>
