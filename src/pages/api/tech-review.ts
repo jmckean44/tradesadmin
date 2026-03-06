@@ -501,6 +501,8 @@ async function logSubmissionToNotion(input: NotionSubmissionInput): Promise<void
 	setNumberProperty(['accessibility', 'accessibility score'], input.preview.scores.accessibility);
 	setNumberProperty(['best practices', 'best practices score'], input.preview.scores.bestPractices);
 
+	// Only map SEO, performance, best practices, and accessibility scores to Notion
+
 	let existingPageId: string | null = null;
 	if (normalizedWebsiteUrl) {
 		const websiteUrlKey = findPropertyKeyByType(propertiesSchema, 'url', ['url', 'website', 'site', 'domain']);
@@ -1261,6 +1263,7 @@ export const POST: APIRoute = async ({ request }) => {
 				},
 				psiApiErrors,
 			};
+			const nowIso = new Date().toISOString();
 			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbyys70cFFF9cBcXEnD47j3rSC8AEZ7JRaKOmeh2Ehg1rQOLQtYu7pAsk8smrHS3hV0n/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -1277,7 +1280,8 @@ export const POST: APIRoute = async ({ request }) => {
 					bestPractices: review?.bestPractices ?? null,
 					psiApiErrors,
 					apiResponse: JSON.stringify(apiResponse),
-					timestamp: new Date().toISOString(),
+					timestamp: nowIso,
+					date: nowIso, // Explicitly add a date field for Google Sheets
 				}),
 			});
 			sheetsResponseText = await sheetsResponse.text();

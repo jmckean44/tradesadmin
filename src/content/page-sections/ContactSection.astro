@@ -17,7 +17,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 				<form method="POST" id="form" data-api-path={apiPath} class="needs-validation" novalidate>
 					<div>
 						<label for="company" class="visually-hidden">Company Name</label>
-						<input type="text" name="company" id="company" placeholder="Company Name *" required />
+						<input type="text" name="company" id="company" placeholder="Company Name *" required autocomplete="organization" />
 						<span class="helperText">Company Name</span>
 						<div class="empty-feedback invalid-feedback">Please provide your company name</div>
 					</div>
@@ -31,11 +31,12 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 						<label for="email_address" class="visually-hidden">Email</label>
 						<input type="email" name="email" id="email_address" placeholder="Email *" autocomplete="email" spellcheck="false" required />
 						<span class="helperText">Email</span>
+						<div class="empty-feedback invalid-feedback">Please enter your email address</div>
 						<div class="invalid-feedback">Please provide a valid email address</div>
 					</div>
 					<div>
 						<label for="phone" class="visually-hidden">Phone</label>
-						<input type="tel" name="phone" id="phone" placeholder="Phone" />
+						<input type="tel" name="phone" id="phone" placeholder="Phone" autocomplete="tel" />
 						<span class="helperText">Phone</span>
 					</div>
 					<div>

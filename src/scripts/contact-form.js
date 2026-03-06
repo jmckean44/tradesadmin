@@ -256,18 +256,28 @@ document.addEventListener('astro:page-load', () => {
 
 	function updateEmailValidity() {
 		const raw = emailInput.value.trim();
+		const emptyFeedback = emailInput.parentElement.querySelector('.empty-feedback');
+		const invalidFeedback = emailInput.parentElement.querySelectorAll('.invalid-feedback');
+		// Hide all feedback by default
+		invalidFeedback.forEach((el) => (el.style.display = 'none'));
 		if (!raw) {
 			emailInput.setCustomValidity('Please enter your email address');
 			emailInput.classList.add('is-invalid');
+			if (emptyFeedback) emptyFeedback.style.display = '';
+			if (invalidFeedback[1]) invalidFeedback[1].style.display = 'none';
 			return;
 		}
 		if (!isValidEmail(raw)) {
 			emailInput.setCustomValidity('Please provide a valid email address');
 			emailInput.classList.add('is-invalid');
+			if (emptyFeedback) emptyFeedback.style.display = 'none';
+			if (invalidFeedback[1]) invalidFeedback[1].style.display = '';
 			return;
 		}
 		emailInput.setCustomValidity('');
 		emailInput.classList.remove('is-invalid');
+		if (emptyFeedback) emptyFeedback.style.display = 'none';
+		if (invalidFeedback[1]) invalidFeedback[1].style.display = 'none';
 	}
 
 	function getTurnstileToken() {
@@ -644,6 +654,12 @@ document.addEventListener('astro:page-load', () => {
 		applyEmailAutocorrect();
 		syncSubmitButtonLabel();
 		void loadTurnstileScriptOnce();
+
+		// Mark all fields as touched so validation feedback appears
+		const fields = form.querySelectorAll('input, textarea, select');
+		fields.forEach((f) => {
+			if (f && typeof f === 'object') f.dataset.touched = 'true';
+		});
 
 		if (!validateAllFields()) {
 			form.querySelector(':invalid')?.focus();
