@@ -83,7 +83,7 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>
-<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
+<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about DNS Errors">Dns Errors</a></li>
 <li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>
 <li><a href="/insights/service-pages/" role="link" aria-label="Read the related article about service pages">Service Pages</a></li>
 <li><a href="/insights/plugin-conflicts/" role="link" aria-label="Read the related article about plugin conflicts">Plugin Conflicts</a></li>

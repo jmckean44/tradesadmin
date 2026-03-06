@@ -12,7 +12,7 @@
 
 .markdown-content ul {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	list-style-type: disc;
 	list-style-position: outside;
 	margin: 0 0 2rem 2rem;
@@ -57,9 +57,11 @@
 	background: var.$theme-clr;
 	color: #fff;
 	display: inline-block;
-	padding: 0.25rem 0.75rem;
+	padding: 0.25rem 0.5rem;
 	border-radius: 3px;
-	font-size: 0.9rem;
+	font-size: 0.8rem;
+	line-height: 1;
+	vertical-align: middle;
 	font-family: var.$font-sans-serif-semibold;
 	text-transform: uppercase;
 }

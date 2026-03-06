@@ -83,7 +83,7 @@ Recommended practices include:
 
 <ul>
 <li><a href="/insights/security-updates/" role="link" aria-label="Read the related article about security updates">Security Updates</a></li>
-<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
+<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about DNS errors">DNS Errors</a></li>
 <li><a href="/insights/website-not-ranking/" role="link" aria-label="Read the related article about website not ranking">Website Not Ranking</a></li>
 <li><a href="/insights/server-response-time/" role="link" aria-label="Read the related article about server response time">Server Response Time</a></li>
 <li><a href="/insights/slow-websites/" role="link" aria-label="Read the related article about slow websites">Slow Websites</a></li>

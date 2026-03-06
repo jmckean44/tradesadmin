@@ -87,7 +87,7 @@ Recommended practices include:
 <li><a href="/insights/contact-form-issues/" role="link" aria-label="Read the related article about contact form issues">Contact Form Issues</a></li>
 <li><a href="/insights/website-maintenance/" role="link" aria-label="Read the related article about website maintenance">Website Maintenance</a></li>
 <li><a href="/insights/mobile-seo/" role="link" aria-label="Read the related article about mobile seo">Mobile Seo</a></li>
-<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about dns errors">Dns Errors</a></li>
+<li><a href="/insights/dns-errors/" role="link" aria-label="Read the related article about DNS Errors">DNS Errors</a></li>
 </ul>
 
 ## Technical Help

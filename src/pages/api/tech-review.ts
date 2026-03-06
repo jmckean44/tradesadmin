@@ -1132,6 +1132,21 @@ export const POST: APIRoute = async ({ request }) => {
 					} catch (psiErr) {
 						const psiMsg = psiErr instanceof Error ? psiErr.message : String(psiErr);
 						psiApiErrors.push(psiMsg);
+						// Extra logging for diagnostics
+						console.error('[CWV SCAN FAILURE]', {
+							url,
+							psiMsg,
+							env: {
+								PAGESPEED_API_KEY: getEnv('PAGESPEED_API_KEY') ? 'set' : 'unset',
+								PAGESPEED_PROJECT_NUMBER: getEnv('PAGESPEED_PROJECT_NUMBER') || 'unset',
+								NODE_ENV: getEnv('NODE_ENV') || 'unset',
+								BASE_URL: getEnv('BASE_URL') || 'unset',
+							},
+							boundedReviewTimeoutMs,
+							requestBudgetMs,
+							startedAt: new Date(requestStartedAt).toISOString(),
+							now: new Date().toISOString(),
+						});
 						throw psiErr;
 					}
 				}

@@ -9,9 +9,56 @@
 	margin-bottom: 6rem;
 }
 
+#intro .container {
+	padding: clamp(8rem, 20vw, 220px) var.$container-padding 0;
+}
+
 .lottie {
 	max-width: 600px;
 	margin: 60px auto 0;
+}
+
+/* =======================
+	 BOOKMARKS
+========================== */
+#seo,
+#maintenance,
+#structure,
+#performance,
+#services,
+#process,
+#pricing,
+#testimonials,
+#contact {
+	scroll-margin-top: calc(var.$header-height-desktop + 24px);
+}
+
+@media (max-width: var.$tablet) {
+	#seo,
+	#maintenance,
+	#structure,
+	#performance,
+	#services,
+	#process,
+	#pricing,
+	#testimonials,
+	#contact {
+		scroll-margin-top: calc(var.$header-height-tablet + 20px);
+	}
+}
+
+@media (max-width: var.$mobile) {
+	#seo,
+	#maintenance,
+	#structure,
+	#performance,
+	#services,
+	#process,
+	#pricing,
+	#testimonials,
+	#contact {
+		scroll-margin-top: calc(var.$header-height-mobile + 16px);
+	}
 }
 
 /* =======================
@@ -73,28 +120,6 @@
 	max-width: 90px;
 }
 
-// .masonry-item:first-child {
-// 	background: #1570b5;
-// }
-// .masonry-item:nth-child(2) {
-// 	background: #7411a3;
-// }
-// .masonry-item:nth-child(3) {
-// 	background: #9b0a45;
-// }
-// .masonry-item:nth(4) {
-// 	background: #9b0a45;
-// }
-// .masonry-item:nth-child(5) {
-// 	background: #6d6000;
-// }
-// .masonry-item:nth-child(6) {
-// 	background: #a31195;
-// }
-// .masonry-item:last-child {
-// 	background: #0c8708;
-// }
-
 @media (max-width: 1400px) {
 	.masonry-grid {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -128,22 +153,6 @@
 ========================== */
 #services .container.top.btm {
 	padding: 125px 1.25rem 50px;
-}
-
-#services {
-	scroll-margin-top: calc(var.$header-height-desktop + 24px);
-}
-
-@media (max-width: var.$tablet) {
-	#services {
-		scroll-margin-top: calc(var.$header-height-tablet + 20px);
-	}
-}
-
-@media (max-width: var.$mobile) {
-	#services {
-		scroll-margin-top: calc(var.$header-height-mobile + 16px);
-	}
 }
 
 #services .services-grid {
@@ -394,32 +403,36 @@
 #pricing .container {
 	background: #fff;
 	margin: 0 auto;
-	max-width: 1300px !important;
-	padding: 70px clamp(1.25rem, 4vw, 3rem) 70px;
+	//max-width: 1300px !important;
+	padding: 50px clamp(1.25rem, 4vw, 3rem) 0;
 	border: 1px #ddd solid;
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-#pricing .line-btm {
-	border-bottom: 1px #ccc dashed;
-	margin-bottom: 1.25rem;
-	padding-bottom: 0.25rem;
+#pricing .fix {
+	float: right;
+	max-width: 120px;
+	padding: 0 0 1rem 1rem;
 }
 
 .pricing-card {
-	padding: 2rem 1rem 0 clamp(1.5rem, 3vw, 3rem);
+	//padding: 2rem 1rem 0 clamp(1.5rem, 3vw, 3rem);
 	width: 100%;
-	margin-top: 35px;
-	border-left: 2px #ccc solid;
+	//margin-top: 35px;
 	z-index: 2;
 }
 
-#performance,
-#seo,
-#structure,
-#maintenance {
-	scroll-margin-top: 100px;
+.pricing-card .item {
+	padding: 1.5rem;
+	background: var.$theme-clr-dark;
+	//color: #fff;
+	//border: 1px #ddd solid;
+	border-radius: 10px;
+}
+
+.single-issue-container {
+	padding-right: clamp(0rem, 3vw, 3rem);
 }
 
 .pricing-card.single-issue {
@@ -431,7 +444,15 @@
 .pricing-card.single-issue h3 {
 	color: var.$theme-clr;
 	font-size: min(max(2.5rem, 3vw), 36px) !important;
-	margin-bottom: 0;
+	margin-bottom: 1rem;
+}
+
+.pricing-card.single-issue p {
+	color: var.$theme-clr-dark;
+}
+
+.pricing-card.single-issue .pricing-amount {
+	color: var.$theme-clr-dark;
 }
 
 .pricing-card h3 {
@@ -442,12 +463,21 @@
 	line-height: 1.2;
 }
 
+.pricing-card h3,
+.pricing-card h3 a {
+	color: var.$highlight;
+}
+
+.pricing-card p {
+	color: #fff;
+}
+
 .pricing-amount {
 	font-size: 1.8rem;
-	text-align: right;
+	//text-align: right;
 	line-height: 1.2;
 	font-family: var.$font-sans-serif-med;
-	color: var.$theme-clr-dark;
+	color: #fff;
 	margin-bottom: 1.5rem;
 }
 
@@ -469,6 +499,7 @@
 
 .price em {
 	font-family: var.$font-sans-serif-reg;
+	color: var.$note;
 	font-size: 60%;
 	text-align: left;
 	font-style: normal;
@@ -481,19 +512,10 @@
 	.pricing-card {
 		padding: 0;
 		border-left: 0;
-	}
-	.pricing-card.single-issue {
-		border-bottom: 2px #ccc solid;
-		margin-bottom: 0;
+		margin: 0;
 	}
 	.pricing-card.single-issue .pricing-amount {
 		text-align: left;
-	}
-	.pricing-card.single-issue .price-desc {
-		margin-bottom: 0;
-	}
-	.pricing-card {
-		margin-top: 2rem;
 	}
 }
 

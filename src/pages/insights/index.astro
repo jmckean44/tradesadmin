@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
 
 export const prerender = true;
 
@@ -42,7 +41,8 @@ const blogPosts = await getCollection('blog');
 	ul {
 		display: grid;
 		gap: 1.5rem;
-		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		margin: 0;
 	}
 
 	ul li {

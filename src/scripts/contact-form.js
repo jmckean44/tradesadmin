@@ -664,8 +664,11 @@ document.addEventListener('astro:page-load', () => {
 	form.addEventListener(
 		'focusin',
 		(e) => {
-			if (!isFormField(e.target)) return;
+			const field = e.target;
+			if (!isFormField(field)) return;
 			warmupTurnstileOnDemand();
+			// Show feedback immediately on focus
+			updateFieldState(field, submitted);
 		},
 		{ passive: true },
 	);
