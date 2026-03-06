@@ -948,7 +948,24 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// Now perform Notion submission (after all variables are assigned)
+		// Always build preview from latest review before integrations
+		preview = buildReviewPreview(review, reviewError, forceUnavailablePreview);
+
+		// Log Notion payload for debugging
+		console.log('[Notion Payload]', {
+			company,
+			email,
+			url: displayUrl,
+			phone,
+			message,
+			liveScanError,
+			reportFilename,
+			preview,
+			review,
+			reviewError,
+			siteChecks,
+		});
+
 		let notionError: string | null = null;
 		try {
 			await withTimeout(
@@ -1264,6 +1281,23 @@ export const POST: APIRoute = async ({ request }) => {
 				psiApiErrors,
 			};
 			const nowIso = new Date().toISOString();
+			// Log Sheets payload for debugging
+			console.log('[Sheets Payload]', {
+				apiKey: getEnv('GS_API_KEY'),
+				company,
+				email,
+				url: displayUrl.replace(/^https?:\/\//, ''),
+				phone,
+				message,
+				performance: review?.performance ?? null,
+				seo: review?.seo ?? null,
+				accessibility: review?.accessibility ?? null,
+				bestPractices: review?.bestPractices ?? null,
+				psiApiErrors,
+				apiResponse: JSON.stringify(apiResponse),
+				timestamp: nowIso,
+				date: nowIso,
+			});
 			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbyys70cFFF9cBcXEnD47j3rSC8AEZ7JRaKOmeh2Ehg1rQOLQtYu7pAsk8smrHS3hV0n/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
