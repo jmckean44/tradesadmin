@@ -581,44 +581,26 @@ document.addEventListener('astro:page-load', () => {
 			}
 
 			result.textContent = data?.message || 'Thanks. Your request was submitted.';
-			if (!hasSubmittedUrl) {
-				setScanCompleteView(false);
-				setCellphoneHidden(false);
-				if (resultsRoot) resultsRoot.innerHTML = '';
-				result.style.display = 'block';
-				result.textContent = 'Your submission was successful. You will be contacted shortly.';
-				// Store successful response in localStorage
-				localStorage.setItem('techReviewSubmission', JSON.stringify({ success: true, data, timestamp: Date.now() }));
-				// Store Google Sheets response if present
-				if (data && typeof data.sheetsResponse !== 'undefined') {
-					localStorage.setItem(
-						'gsSubmissionResponse',
-						JSON.stringify({
-							response: data.sheetsResponse,
-							error: data.sheetsResponseError || null,
-							timestamp: Date.now(),
-						}),
-					);
-				}
-			} else {
-				setResultsUrl(payload.url);
-				renderReviewPreview(data?.preview);
-				// Scroll to #contact section on scan complete
-				const contactSection = document.getElementById('contact');
-				if (contactSection) {
-					contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-				}
-				// Store Google Sheets response if present
-				if (data && typeof data.sheetsResponse !== 'undefined') {
-					localStorage.setItem(
-						'gsSubmissionResponse',
-						JSON.stringify({
-							response: data.sheetsResponse,
-							error: data.sheetsResponseError || null,
-							timestamp: Date.now(),
-						}),
-					);
-				}
+			// Always show the review-preview section after submit, even if no CWV results
+			setResultsUrl(payload.url);
+			renderReviewPreview(data?.preview);
+			// Scroll to #contact section on scan complete
+			const contactSection = document.getElementById('contact');
+			if (contactSection) {
+				contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+			// Store successful response in localStorage
+			localStorage.setItem('techReviewSubmission', JSON.stringify({ success: true, data, timestamp: Date.now() }));
+			// Store Google Sheets response if present
+			if (data && typeof data.sheetsResponse !== 'undefined') {
+				localStorage.setItem(
+					'gsSubmissionResponse',
+					JSON.stringify({
+						response: data.sheetsResponse,
+						error: data.sheetsResponseError || null,
+						timestamp: Date.now(),
+					}),
+				);
 			}
 
 			resetFormUiState();
