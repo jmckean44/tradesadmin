@@ -883,6 +883,8 @@ export const POST: APIRoute = async ({ request }) => {
 		let html = '';
 		let emailSent = false;
 		let emailError = '';
+		let forceUnavailablePreview = false;
+		let psiApiErrors: string[] = [];
 
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
 
@@ -946,6 +948,81 @@ export const POST: APIRoute = async ({ request }) => {
 					headers: { 'Content-Type': 'application/json' },
 				});
 			}
+		}
+
+		// --- SCAN LOGIC (moved up to ensure all variables are set before integrations) ---
+		review = null;
+		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
+		reviewError = '';
+		liveScanError = '';
+		forceUnavailablePreview = false;
+		psiApiErrors = [];
+		if (!url) {
+			reviewError = 'No URL provided.';
+			liveScanError = reviewError;
+		} else {
+			const staleCachedReview = getAnyCachedReview(url);
+			try {
+				const cachedReview = getCachedReview(url);
+				if (cachedReview) {
+					review = cachedReview;
+					scanSource = 'cache-fresh';
+				} else if (!hasTimeBudget(4500)) {
+					reviewError = 'Live scan skipped due to server time budget. Submission still saved.';
+					liveScanError = reviewError;
+				} else {
+					const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
+					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
+					try {
+						const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
+						review = runResult.review;
+						scanSource = runResult.source;
+						setCachedReview(url, review);
+					} catch (psiErr) {
+						const psiMsg = psiErr instanceof Error ? psiErr.message : String(psiErr);
+						psiApiErrors.push(psiMsg);
+						// Extra logging for diagnostics
+						console.error('[CWV SCAN FAILURE]', {
+							url,
+							psiMsg,
+							env: {
+								PAGESPEED_API_KEY: getEnv('PAGESPEED_API_KEY') ? 'set' : 'unset',
+								PAGESPEED_PROJECT_NUMBER: getEnv('PAGESPEED_PROJECT_NUMBER') || 'unset',
+								NODE_ENV: getEnv('NODE_ENV') || 'unset',
+								BASE_URL: getEnv('BASE_URL') || 'unset',
+							},
+							boundedReviewTimeoutMs,
+							requestBudgetMs,
+							startedAt: new Date(requestStartedAt).toISOString(),
+							now: new Date().toISOString(),
+						});
+						throw psiErr;
+					}
+				}
+			} catch (err) {
+				console.error('Review failed:', err);
+				const message = err instanceof Error ? err.message : String(err);
+				liveScanError = message;
+				reviewError = normalizeReviewErrorForUser(message);
+				if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
+					review = staleCachedReview;
+					scanSource = 'cache-stale';
+					reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
+				}
+				// Simplified mode: skip extra fallback checks.
+			}
+
+			if (review && !hasAnyLiveScore(review)) {
+				forceUnavailablePreview = true;
+				scanSource = 'fallback';
+				reviewError = reviewError || 'Live scan data is currently unavailable.';
+				liveScanError = liveScanError || reviewError;
+			}
+
+			if (!review) {
+				scanSource = 'fallback';
+			}
+			// Simplified mode: skip extended scan modules.
 		}
 
 		// Always build preview from latest review before integrations
