@@ -135,6 +135,7 @@ type NotionSubmissionInput = {
 
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const REQUEST_TIME_BUDGET_MS_DEFAULT = 9000;
+const REVIEW_TIMEOUT_MS_DEFAULT = 60000;
 const reviewCache = new Map<string, CachedReview>();
 const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
 let pageSpeedKeyCooldownUntil = 0;
@@ -852,7 +853,7 @@ export const POST: APIRoute = async ({ request }) => {
 		const requestBudgetMs = isDev ? Math.max(30000, getRequestTimeBudgetMs()) : getRequestTimeBudgetMs();
 		const hasTimeBudget = (reserveMs = 0): boolean => Date.now() - requestStartedAt < requestBudgetMs - reserveMs;
 		const configuredReviewTimeout = Number(getEnv('TECH_REVIEW_REVIEW_TIMEOUT_MS'));
-		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : isDev ? 30000 : 6500;
+		const reviewTimeoutMs = Number.isFinite(configuredReviewTimeout) && configuredReviewTimeout > 0 ? Math.round(configuredReviewTimeout) : REVIEW_TIMEOUT_MS_DEFAULT;
 		const smtpVerifyTimeoutMs = isDev ? 10000 : 3000;
 		const notionSyncTimeoutMs = isDev ? 12000 : 2500;
 		const smtpSendTimeoutMs = isDev ? 12000 : 2500;
