@@ -699,24 +699,38 @@ export const POST: APIRoute = async ({ request }) => {
 		const verification = await verifyTurnstileToken(turnstileToken, remoteIp);
 		if (!verification.success) {
 			return new Response(
-				JSON.stringify(
-					isDev
+				JSON.stringify({
+					ok: false,
+					message: 'Invalid verification.',
+					preview: {
+						available: false,
+						scores: {
+							performance: null,
+							seo: null,
+							accessibility: null,
+							bestPractices: null,
+						},
+						reviewError: 'Verification failed.',
+					},
+					scan: {
+						available: false,
+						source: 'fallback',
+						error: 'Verification failed.',
+					},
+					diagnostics: isDev
 						? {
-								error: 'Invalid verification.',
-								turnstile: {
-									errorCodes: verification.errorCodes,
-									hostname: verification.hostname,
-									tokenPresent: Boolean(turnstileToken),
-									secretPresent: Boolean(getEnv('TURNSTILE_SECRET_KEY')),
-									contentType: request.headers.get('content-type') || '',
-									bodyKeys: Object.keys(body),
-									turnstileTokenType: typeof body.turnstileToken,
-									turnstileTokenLength: typeof body.turnstileToken === 'string' ? body.turnstileToken.length : 0,
-								},
+								errorCodes: verification.errorCodes,
+								hostname: verification.hostname,
+								tokenPresent: Boolean(turnstileToken),
+								secretPresent: Boolean(getEnv('TURNSTILE_SECRET_KEY')),
+								contentType: request.headers.get('content-type') || '',
+								bodyKeys: Object.keys(body),
+								turnstileTokenType: typeof body.turnstileToken,
+								turnstileTokenLength: typeof body.turnstileToken === 'string' ? body.turnstileToken.length : 0,
 						  }
-						: { error: 'Invalid verification.' },
-				),
-				{ status: 400 },
+						: undefined,
+				}),
+				{ status: 200 },
 			);
 		}
 
@@ -726,15 +740,78 @@ export const POST: APIRoute = async ({ request }) => {
 		const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
 		const message = typeof body.message === 'string' ? body.message.trim() : '';
 		if (!company) {
-			return new Response(JSON.stringify({ error: 'Company is required.' }), { status: 400 });
+			return new Response(
+				JSON.stringify({
+					ok: false,
+					message: 'Company is required.',
+					preview: {
+						available: false,
+						scores: {
+							performance: null,
+							seo: null,
+							accessibility: null,
+							bestPractices: null,
+						},
+						reviewError: 'Company is required.',
+					},
+					scan: {
+						available: false,
+						source: 'fallback',
+						error: 'Company is required.',
+					},
+				}),
+				{ status: 200 },
+			);
 		}
 
 		if (!email) {
-			return new Response(JSON.stringify({ error: 'Email is required.' }), { status: 400 });
+			return new Response(
+				JSON.stringify({
+					ok: false,
+					message: 'Email is required.',
+					preview: {
+						available: false,
+						scores: {
+							performance: null,
+							seo: null,
+							accessibility: null,
+							bestPractices: null,
+						},
+						reviewError: 'Email is required.',
+					},
+					scan: {
+						available: false,
+						source: 'fallback',
+						error: 'Email is required.',
+					},
+				}),
+				{ status: 200 },
+			);
 		}
 
 		if (!isValidEmail(email)) {
-			return new Response(JSON.stringify({ error: 'Invalid email address.' }), { status: 400 });
+			return new Response(
+				JSON.stringify({
+					ok: false,
+					message: 'Invalid email address.',
+					preview: {
+						available: false,
+						scores: {
+							performance: null,
+							seo: null,
+							accessibility: null,
+							bestPractices: null,
+						},
+						reviewError: 'Invalid email address.',
+					},
+					scan: {
+						available: false,
+						source: 'fallback',
+						error: 'Invalid email address.',
+					},
+				}),
+				{ status: 200 },
+			);
 		}
 
 		const url = rawUrl ? normalizeUrl(rawUrl) : '';
@@ -744,14 +821,53 @@ export const POST: APIRoute = async ({ request }) => {
 			try {
 				new URL(url);
 			} catch {
-				return new Response(JSON.stringify({ error: 'Invalid URL.' }), { status: 400 });
+				return new Response(
+					JSON.stringify({
+						ok: false,
+						message: 'Invalid URL.',
+						preview: {
+							available: false,
+							scores: {
+								performance: null,
+								seo: null,
+								accessibility: null,
+								bestPractices: null,
+							},
+							reviewError: 'Invalid URL.',
+						},
+						scan: {
+							available: false,
+							source: 'fallback',
+							error: 'Invalid URL.',
+						},
+					}),
+					{ status: 200 },
+				);
 			}
 			// DNS resolution check
 			if (!(await isDomainResolvable(url))) {
-				return new Response(JSON.stringify({ error: DOMAIN_NOT_FOUND_ERROR }), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				});
+				return new Response(
+					JSON.stringify({
+						ok: false,
+						message: DOMAIN_NOT_FOUND_ERROR,
+						preview: {
+							available: false,
+							scores: {
+								performance: null,
+								seo: null,
+								accessibility: null,
+								bestPractices: null,
+							},
+							reviewError: DOMAIN_NOT_FOUND_ERROR,
+						},
+						scan: {
+							available: false,
+							source: 'fallback',
+							error: DOMAIN_NOT_FOUND_ERROR,
+						},
+					}),
+					{ status: 200 },
+				);
 			}
 		}
 
@@ -1288,37 +1404,26 @@ export const POST: APIRoute = async ({ request }) => {
 			envVars,
 			timestamp: new Date().toISOString(),
 		});
-		// Only show Lighthouse errors in scanResultPayload, gsSubmissionResponse, techReviewSubmission
-		const scanResultPayload = {
-			available: false,
-			source: 'fallback',
-			error: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
-		};
-		const gsSubmissionResponse = {
-			ok: false,
-			error: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
-		};
-		const techReviewSubmission = {
-			ok: true,
-			message: 'Submitted with fallback scan data.',
-			preview: {
-				available: false,
-				scores: {
-					performance: null,
-					seo: null,
-					accessibility: null,
-					bestPractices: null,
-				},
-				reviewError: 'Live scan data is currently unavailable.' + (isDev ? `\nLighthouse error: ${message}` : ''),
-			},
-			scan: scanResultPayload,
-		};
-		// In dev, return full diagnostics for debugging
+		// Always return a consistent error response for the frontend
 		return new Response(
 			JSON.stringify({
-				techReviewSubmission,
-				scanResultPayload,
-				gsSubmissionResponse,
+				ok: false,
+				message: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
+				preview: {
+					available: false,
+					scores: {
+						performance: null,
+						seo: null,
+						accessibility: null,
+						bestPractices: null,
+					},
+					reviewError: 'Live scan data is currently unavailable.' + (isDev ? `\nLighthouse error: ${message}` : ''),
+				},
+				scan: {
+					available: false,
+					source: 'fallback',
+					error: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
+				},
 				diagnostics: isDev
 					? {
 							error: message,

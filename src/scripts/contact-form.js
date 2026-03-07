@@ -553,6 +553,40 @@ document.addEventListener('astro:page-load', () => {
 				}
 			}
 
+			// Always store the full API response (success or error) in localStorage
+			localStorage.setItem(
+				'techReviewSubmission',
+				JSON.stringify({
+					response: data,
+					timestamp: Date.now(),
+					success: data && typeof data.ok === 'boolean' ? data.ok : response.ok,
+				}),
+			);
+
+			// Store Google Sheets response if present, and always store the full API response in gsSubmissionResponse
+			if (data && typeof data.sheetsResponse !== 'undefined') {
+				localStorage.setItem(
+					'gsSubmissionResponse',
+					JSON.stringify({
+						response: data.sheetsResponse,
+						error: data.sheetsResponseError || null,
+						apiResponse: data, // Store the full API response
+						timestamp: Date.now(),
+					}),
+				);
+			} else {
+				// Always store the full API response in gsSubmissionResponse for error cases too
+				localStorage.setItem(
+					'gsSubmissionResponse',
+					JSON.stringify({
+						response: null,
+						error: data?.error || null,
+						apiResponse: data,
+						timestamp: Date.now(),
+					}),
+				);
+			}
+
 			if (!response.ok) {
 				// If the error is the domain not found/typo error, show in #result, else show in #review-preview
 				const domainNotFoundError = 'The website address you entered could not be found. Please check for typos and try again.';
@@ -565,8 +599,6 @@ document.addEventListener('astro:page-load', () => {
 					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetFormUiState({ preserveAllExceptUrl: true });
 					urlInput.focus();
-					// Store error response in localStorage
-					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: data.error, timestamp: Date.now() }));
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
 					result.textContent = 'Verification expired. Please complete the verification checkbox again and resubmit.';
@@ -574,8 +606,6 @@ document.addEventListener('astro:page-load', () => {
 					setCellphoneHidden(false);
 					if (resultsRoot) resultsRoot.innerHTML = '';
 					resetTurnstileIfAvailable();
-					// Store error response in localStorage
-					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: 'Verification expired', timestamp: Date.now() }));
 				} else {
 					setScanCompleteView(false);
 					setCellphoneHidden(false);
@@ -584,8 +614,6 @@ document.addEventListener('astro:page-load', () => {
 					}
 					result.textContent = '';
 					resetTurnstileIfAvailable();
-					// Store generic error response in localStorage
-					localStorage.setItem('techReviewSubmission', JSON.stringify({ success: false, error: data?.error || 'Request failed', timestamp: Date.now() }));
 				}
 				return;
 			}
@@ -599,20 +627,6 @@ document.addEventListener('astro:page-load', () => {
 			if (contactSection) {
 				contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
-			// Store successful response in localStorage
-			localStorage.setItem('techReviewSubmission', JSON.stringify({ success: true, data, timestamp: Date.now() }));
-			// Store Google Sheets response if present
-			if (data && typeof data.sheetsResponse !== 'undefined') {
-				localStorage.setItem(
-					'gsSubmissionResponse',
-					JSON.stringify({
-						response: data.sheetsResponse,
-						error: data.sheetsResponseError || null,
-						timestamp: Date.now(),
-					}),
-				);
-			}
-
 			resetFormUiState();
 		} catch (err) {
 			setScanCompleteView(false);
