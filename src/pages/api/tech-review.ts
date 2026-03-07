@@ -808,7 +808,7 @@ export const POST: APIRoute = async ({ request }) => {
 				console.error('Review failed:', err);
 				const message = err instanceof Error ? err.message : String(err);
 				liveScanError = message;
-				reviewError = normalizeReviewErrorForUser(message);
+				reviewError = normalizeLiveScanErrorForUser(message);
 				if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
 					review = staleCachedReview;
 					scanSource = 'cache-stale';
