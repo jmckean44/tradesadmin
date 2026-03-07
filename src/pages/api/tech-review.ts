@@ -49,6 +49,8 @@ async function isDomainResolvable(url: string): Promise<boolean> {
 }
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
+import lighthouse from 'lighthouse';
+import * as chromeLauncher from 'chrome-launcher';
 
 type TurnstileVerifyResponse = {
 	success: boolean;
@@ -137,11 +139,6 @@ const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
 const REQUEST_TIME_BUDGET_MS_DEFAULT = 9000;
 const REVIEW_TIMEOUT_MS_DEFAULT = 60000;
 const reviewCache = new Map<string, CachedReview>();
-const PAGESPEED_KEY_COOLDOWN_MS = 15 * 60 * 1000;
-let pageSpeedKeyCooldownUntil = 0;
-
-// PageSpeed Insights API key is loaded from Netlify environment as PAGESPEED_API_KEY
-// To use, set PAGESPEED_API_KEY in netlify.toml or Netlify dashboard
 
 function getEnv(name: string): string {
 	const value = (import.meta.env[name] ?? process.env[name] ?? '') as string;
@@ -158,11 +155,6 @@ function isValidEmail(input: string): boolean {
 	const value = String(input || '').trim();
 	if (!value) return false;
 	return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
-}
-
-function isLighthouseAssetErrorMessage(message: string): boolean {
-	const text = String(message || '');
-	return text.includes('standalone-flow-template.html') || text.includes('flow-report/assets') || text.includes('ENOENT');
 }
 
 function getReviewCacheTtlMs(): number {
@@ -251,42 +243,6 @@ function hasPerformanceScore(review: Review): boolean {
 	return typeof review.performance === 'number' && Number.isFinite(review.performance);
 }
 
-function getPerformanceLabDataUnavailableGuidance(): string {
-	return 'Live scan performance data is currently unavailable. Review and reduce render-blocking JavaScript/CSS, then retry the scan.';
-}
-
-function normalizeReviewErrorForUser(message: string): string {
-	const text = String(message || '');
-	if (!text) return 'Live scan data is currently unavailable.';
-	if (isLighthouseAssetErrorMessage(text)) return 'Live scan data is currently unavailable.';
-	if (/429|rate limit|quota/i.test(text)) return 'Live scan data is temporarily unavailable due to scan capacity limits.';
-	if (/performance data unavailable|performance lab data|partial category data|could not complete lab metrics/i.test(text)) {
-		return getPerformanceLabDataUnavailableGuidance();
-	}
-	return text;
-}
-
-function normalizeLiveScanErrorForUser(message: string): string {
-	const text = String(message || '');
-	if (!text) return 'Live scan data is currently unavailable.';
-	if (/performance data unavailable|performance lab data|partial category data|could not complete lab metrics/i.test(text)) {
-		return getPerformanceLabDataUnavailableGuidance();
-	}
-	if (/api key|forbidden|accessnotconfigured|permission denied|403|401/i.test(text)) {
-		return 'Live scan data is unavailable because the PageSpeed API key is missing, invalid, or restricted.';
-	}
-	if (/429|rate limit|quota/i.test(text)) {
-		return 'Live scan data is temporarily unavailable due to PageSpeed API quota limits.';
-	}
-	if (/timed out|timeout/i.test(text)) {
-		return 'Live scan data request timed out. Please try again.';
-	}
-	if (isLighthouseAssetErrorMessage(text)) {
-		return 'Live scan data is currently unavailable in this server environment.';
-	}
-	return normalizeReviewErrorForUser(text);
-}
-
 function normalizeNotionErrorForUser(message: string): string {
 	const text = String(message || '');
 	if (!text) return 'Notion sync failed. Check integration access and database settings.';
@@ -295,6 +251,17 @@ function normalizeNotionErrorForUser(message: string): string {
 	if (/validation_error|400/i.test(text)) return 'Notion sync failed: database property schema does not match expected field types.';
 	if (/timed out|timeout/i.test(text)) return 'Notion sync failed: Notion request timed out.';
 	return 'Notion sync failed. Check integration access, database ID, and property schema.';
+}
+
+// Normalize scan errors for user-facing messages
+function normalizeLiveScanErrorForUser(message: string): string {
+	const text = String(message || '');
+	if (!text) return 'A technical scan error occurred. Please try again later.';
+	if (/timeout|timed out/i.test(text)) return 'The website scan timed out. Please try again later.';
+	if (/ENOTFOUND|EAI_AGAIN|DNS/i.test(text)) return 'The website address could not be found. Please check for typos and try again.';
+	if (/net::ERR_CERT/i.test(text)) return 'The website has an invalid SSL certificate.';
+	if (/lighthouse did not return a result/i.test(text)) return 'The scan could not be completed for this website.';
+	return 'A technical scan error occurred. Please try again later.';
 }
 
 function getNotionHeaders(token: string): Record<string, string> {
@@ -662,184 +629,21 @@ function wait(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getPageSpeedApiKeyIfUsable(): string {
-	const key = getEnv('PAGESPEED_API_KEY');
-	if (!key) return '';
-	if (Date.now() < pageSpeedKeyCooldownUntil) return '';
-	return key;
-}
-
-function includeKeyQuotaOrAuthFailure(message: string): boolean {
-	return /403|401|429|forbidden|accessnotconfigured|api key|permission denied|keyinvalid|iprefererblocked|rate limit|quota/i.test(message);
-}
-
-function extractPageSpeedProjectNumber(text: string): string {
-	const source = String(text || '');
-	const direct = source.match(/project_number:(\d{6,})/i)?.[1];
-	if (direct) return direct;
-	const consumer = source.match(/consumer["']?\s*[:=]\s*["']?projects\/(\d{6,})/i)?.[1];
-	if (consumer) return consumer;
-	return '';
-}
-
-function getExpectedPageSpeedProjectNumber(): string {
-	return getEnv('PAGESPEED_PROJECT_NUMBER').replace(/\D/g, '');
-}
-
-function getPageSpeedPerformanceScore(categories: Record<string, { score?: number | null }> | undefined): number | null {
-	const raw = categories?.performance?.score;
-	return typeof raw === 'number' && Number.isFinite(raw) ? raw : null;
-}
-
-function shouldLogPageSpeedDebug(): boolean {
-	return getEnv('TECH_REVIEW_DEBUG_PAGESPEED').toLowerCase() === 'true';
-}
-
 async function runReview(url: string): Promise<ReviewRunResult> {
-	async function runReviewWithPageSpeedInsights(targetUrl: string): Promise<ReviewRunResult> {
-		async function requestPageSpeed(strategy: 'mobile' | 'desktop'): Promise<ReviewRunResult> {
-			const pageSpeedApiKey = getPageSpeedApiKeyIfUsable();
-			const expectedProjectNumber = getExpectedPageSpeedProjectNumber();
-
-			const executePageSpeedRequest = async (includeApiKey: boolean, mode: 'full' | 'minimal' = 'full'): Promise<ReviewRunResult> => {
-				const endpoint = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
-				endpoint.searchParams.set('url', targetUrl);
-				endpoint.searchParams.set('category', 'performance');
-				if (mode === 'full') {
-					endpoint.searchParams.append('category', 'seo');
-					endpoint.searchParams.append('category', 'accessibility');
-					endpoint.searchParams.append('category', 'best-practices');
-				}
-				endpoint.searchParams.set('strategy', strategy);
-				if (includeApiKey && pageSpeedApiKey) endpoint.searchParams.set('key', pageSpeedApiKey);
-
-				let lastError: Error | null = null;
-				for (let attempt = 1; attempt <= 3; attempt += 1) {
-					try {
-						// Increased timeout to 60s for more reliable Lighthouse runs
-						const response = await withTimeout(fetch(endpoint.toString()), 60000, 'PageSpeed API request');
-						if (!response.ok) {
-							const body = await response.text().catch(() => '');
-							const detectedProjectNumber = extractPageSpeedProjectNumber(body);
-							if (expectedProjectNumber && detectedProjectNumber && expectedProjectNumber !== detectedProjectNumber) {
-								throw new Error(
-									`PageSpeed API key project mismatch: expected project ${expectedProjectNumber} but request used project ${detectedProjectNumber}. Update PAGESPEED_API_KEY in this deploy context.`,
-								);
-							}
-							const message = `PageSpeed API failed (${response.status}) ${body}`.trim();
-							// Detect per-minute quota (HTTP 429)
-							if (response.status === 429) {
-								console.warn('[PageSpeed API] Per-minute quota exceeded (HTTP 429). This likely means you are hitting the rate limit of ~400 requests per 100 seconds.');
-							}
-							const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
-							if (attempt < 3 && transientFailure) {
-								// Exponential backoff: 1st retry after 1s, 2nd after 3s
-								const backoff = attempt === 1 ? 1000 : 3000;
-								await wait(backoff);
-								continue;
-							}
-							throw new Error(message);
-						}
-
-						const payload = (await response.json()) as {
-							lighthouseResult?: {
-								categories?: Record<string, { score?: number | null }>;
-								audits?: Record<string, { displayValue?: string }>;
-							};
-						};
-
-						if (shouldLogPageSpeedDebug()) {
-							console.log(`[PageSpeed API][${strategy}] categories:`, payload?.lighthouseResult?.categories ?? null);
-						}
-
-						if (!payload.lighthouseResult) throw new Error('PageSpeed response missing lighthouseResult');
-						const performanceScore = getPageSpeedPerformanceScore(payload.lighthouseResult.categories);
-						if (performanceScore == null) {
-							const labDataError = new Error(`PageSpeed performance data unavailable (${strategy}). Lighthouse could not complete lab metrics in time for this run.`);
-							if (attempt < 3) {
-								// Exponential backoff for lab data error as well
-								const backoff = attempt === 1 ? 1000 : 3000;
-								await wait(backoff);
-								continue;
-							}
-							throw labDataError;
-						}
-						return {
-							review: reviewFromLhrLike(payload.lighthouseResult),
-							source: includeApiKey ? 'pagespeed-key' : 'pagespeed-no-key',
-						};
-					} catch (err) {
-						const message = err instanceof Error ? err.message : String(err);
-						const transientFailure = /5\d\d|timed out|timeout|internal|network|fetch failed|ecconnreset|eai_again/i.test(message);
-						lastError = err instanceof Error ? err : new Error(message);
-						if (attempt < 3 && transientFailure) {
-							await wait(300 * attempt);
-							continue;
-						}
-						throw lastError;
-					}
-				}
-
-				throw lastError ?? new Error('PageSpeed API request failed');
-			};
-
-			// Try with API key first (if available)
-			let result: ReviewRunResult | null = null;
-			let triedWithKey = false;
-			if (pageSpeedApiKey) {
-				try {
-					result = await executePageSpeedRequest(true, 'full');
-					// If metrics are missing, retry without key
-					const hasMetrics = result && result.review && hasPerformanceScore(result.review);
-					if (!hasMetrics) {
-						// Retry without API key
-						const retryResult = await executePageSpeedRequest(false, 'full');
-						// If retry yields more metrics, use it
-						const retryHasMetrics = retryResult && retryResult.review && hasPerformanceScore(retryResult.review);
-						if (retryHasMetrics) {
-							return retryResult;
-						}
-					}
-					return result;
-				} catch (err) {
-					// If error, fallback to no-key
-					try {
-						return await executePageSpeedRequest(false, 'full');
-					} catch (retryErr) {
-						const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-						const quotaLikeFailure = /429|rate limit|quota/i.test(retryMessage);
-						if (!quotaLikeFailure) throw retryErr;
-						return executePageSpeedRequest(false, 'minimal');
-					}
-				}
-			} else {
-				// No API key, just try without
-				try {
-					return await executePageSpeedRequest(false, 'full');
-				} catch (err) {
-					const message = err instanceof Error ? err.message : String(err);
-					const quotaLikeFailure = /429|rate limit|quota/i.test(message);
-					if (!quotaLikeFailure) throw err;
-					return executePageSpeedRequest(false, 'minimal');
-				}
-			}
-		}
-
-		const mobileResult = await requestPageSpeed('mobile');
-		if (hasPerformanceScore(mobileResult.review)) return mobileResult;
-
-		const desktopResult = await requestPageSpeed('desktop');
-		if (hasPerformanceScore(desktopResult.review)) return desktopResult;
-
-		if (hasAnyLiveScore(mobileResult.review) || hasAnyLiveScore(desktopResult.review)) {
-			throw new Error('PageSpeed returned partial category data, but performance lab data was unavailable.');
-		}
-
-		return hasAnyLiveScore(mobileResult.review) ? mobileResult : desktopResult;
+	// Run Lighthouse using chrome-launcher and the lighthouse npm package
+	const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'] });
+	try {
+		const options = { port: chrome.port, logLevel: 'error' as const };
+		const config = undefined; // Use default Lighthouse config
+		const runnerResult = await lighthouse(url, options, config);
+		if (!runnerResult || !runnerResult.lhr) throw new Error('Lighthouse did not return a result');
+		return {
+			review: reviewFromLhrLike(runnerResult.lhr),
+			source: 'lighthouse',
+		};
+	} finally {
+		await chrome.kill();
 	}
-
-	// Always use PageSpeed API for scans (never attempt to run Lighthouse/Chrome in serverless)
-	return await runReviewWithPageSpeedInsights(url);
 }
 
 export const GET: APIRoute = async () => {
@@ -885,7 +689,7 @@ export const POST: APIRoute = async ({ request }) => {
 		let emailSent = false;
 		let emailError = '';
 		let forceUnavailablePreview = false;
-		let psiApiErrors: string[] = [];
+		// psiApiErrors removed
 
 		const turnstileToken = (typeof body.turnstileToken === 'string' && body.turnstileToken.trim()) || (typeof body['cf-turnstile-response'] === 'string' && body['cf-turnstile-response'].trim()) || '';
 
@@ -957,7 +761,7 @@ export const POST: APIRoute = async ({ request }) => {
 		reviewError = '';
 		liveScanError = '';
 		forceUnavailablePreview = false;
-		psiApiErrors = [];
+		// psiApiErrors removed
 		if (!url) {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
@@ -981,7 +785,7 @@ export const POST: APIRoute = async ({ request }) => {
 						setCachedReview(url, review);
 					} catch (psiErr) {
 						const psiMsg = psiErr instanceof Error ? psiErr.message : String(psiErr);
-						psiApiErrors.push(psiMsg);
+						// psiApiErrors removed
 						// Extra logging for diagnostics
 						console.error('[CWV SCAN FAILURE]', {
 							url,
@@ -1281,7 +1085,6 @@ export const POST: APIRoute = async ({ request }) => {
 					source: scanSource,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
-				psiApiErrors,
 			};
 			const nowIso = new Date().toISOString();
 			// Log Sheets payload for debugging
@@ -1296,7 +1099,6 @@ export const POST: APIRoute = async ({ request }) => {
 				seo: review?.seo ?? null,
 				accessibility: review?.accessibility ?? null,
 				bestPractices: review?.bestPractices ?? null,
-				psiApiErrors,
 				apiResponse: JSON.stringify(apiResponse),
 				timestamp: nowIso,
 				date: nowIso,
@@ -1315,7 +1117,6 @@ export const POST: APIRoute = async ({ request }) => {
 					seo: review?.seo ?? null,
 					accessibility: review?.accessibility ?? null,
 					bestPractices: review?.bestPractices ?? null,
-					psiApiErrors,
 					apiResponse: JSON.stringify(apiResponse),
 					timestamp: nowIso,
 					date: nowIso, // Explicitly add a date field for Google Sheets
@@ -1450,7 +1251,6 @@ export const POST: APIRoute = async ({ request }) => {
 					source: scanSource,
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
-				psiApiErrors,
 				notionError: notionError,
 				sheetsResponse: sheetsResponseText,
 				sheetsResponseError,
@@ -1466,30 +1266,36 @@ export const POST: APIRoute = async ({ request }) => {
 		const isDev = import.meta.env.DEV;
 		const message = err instanceof Error ? err.message : String(err);
 		const errorObj = err instanceof Error ? err : new Error(String(err));
+		// Only show Lighthouse errors in scanResultPayload, gsSubmissionResponse, techReviewSubmission
+		const scanResultPayload = {
+			available: false,
+			source: 'fallback',
+			error: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
+		};
+		const gsSubmissionResponse = {
+			ok: false,
+			error: isDev ? `Lighthouse error: ${message}` : 'Live scan data is currently unavailable.',
+		};
+		const techReviewSubmission = {
+			ok: true,
+			message: 'Submitted with fallback scan data.',
+			preview: {
+				available: false,
+				scores: {
+					performance: null,
+					seo: null,
+					accessibility: null,
+					bestPractices: null,
+				},
+				reviewError: 'Live scan data is currently unavailable.' + (isDev ? `\nLighthouse error: ${message}` : ''),
+			},
+			scan: scanResultPayload,
+		};
 		return new Response(
 			JSON.stringify({
-				ok: true,
-				message: 'Submitted with fallback scan data.',
-				preview: {
-					available: false,
-					scores: {
-						performance: null,
-						seo: null,
-						accessibility: null,
-						bestPractices: null,
-					},
-					reviewError: 'Live scan data is currently unavailable.',
-				},
-				scan: {
-					available: false,
-					source: 'fallback',
-					error: isDev ? message : 'Live scan data is currently unavailable.',
-				},
-				error: {
-					errorType: errorObj.name || 'Error',
-					errorMessage: message,
-					stack: isDev ? errorObj.stack : undefined,
-				},
+				techReviewSubmission,
+				scanResultPayload,
+				gsSubmissionResponse,
 			}),
 			{ status: 200 },
 		);
