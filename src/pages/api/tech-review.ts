@@ -49,8 +49,8 @@ async function isDomainResolvable(url: string): Promise<boolean> {
 }
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
-import lighthouse from 'lighthouse';
-import * as chromeLauncher from 'chrome-launcher';
+// import lighthouse from 'lighthouse';
+// import * as chromeLauncher from 'chrome-launcher';
 
 type TurnstileVerifyResponse = {
 	success: boolean;
@@ -91,11 +91,6 @@ type ReviewPreview = {
 type CachedReview = {
 	review: Review;
 	expiresAt: number;
-};
-
-type ReviewRunResult = {
-	review: Review;
-	source: 'lighthouse';
 };
 
 type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date' | 'select' | 'status';
@@ -636,26 +631,26 @@ function wait(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function runReview(url: string): Promise<ReviewRunResult> {
-	// Run Lighthouse using chrome-launcher and the lighthouse npm package
-	const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'] });
-	try {
-		const options = { port: chrome.port, logLevel: 'error' as const };
-		const config = undefined; // Use default Lighthouse config
-		const runnerResult = await lighthouse(url, options, config);
-		if (!runnerResult || !runnerResult.lhr) throw new Error('Lighthouse did not return a result');
-		// If all scores are missing, treat as a PSI/network error
-		const review = reviewFromLhrLike(runnerResult.lhr);
-		if (![review.performance, review.seo, review.accessibility, review.bestPractices].some((v) => typeof v === 'number' && Number.isFinite(v))) {
-			throw new Error('PSI network error: No scores returned');
-		}
-		return {
-			review,
-			source: 'lighthouse',
-		};
-	} finally {
-		await chrome.kill();
+// Fetch review from Google PageSpeed Insights API
+async function runReview(url: string): Promise<{ review: Review; source: 'psi' }> {
+	const apiKey = getEnv('PSI_API_KEY') || '';
+	const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=PERFORMANCE&category=SEO&category=ACCESSIBILITY&category=BEST_PRACTICES${
+		apiKey ? `&key=${apiKey}` : ''
+	}`;
+	const response = await withTimeout(fetch(endpoint), 30000, 'PageSpeed Insights API');
+	if (!response.ok) {
+		const body = await response.text().catch(() => '');
+		throw new Error(`PSI API error (${response.status}): ${body}`.trim());
 	}
+	const data = await response.json();
+	if (!data.lighthouseResult) {
+		throw new Error('PSI API did not return a lighthouseResult');
+	}
+	const review = reviewFromLhrLike(data.lighthouseResult);
+	if (![review.performance, review.seo, review.accessibility, review.bestPractices].some((v) => typeof v === 'number' && Number.isFinite(v))) {
+		throw new Error('PSI API: No scores returned');
+	}
+	return { review, source: 'psi' };
 }
 
 export const GET: APIRoute = async () => {
@@ -883,9 +878,9 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// --- SCAN LOGIC (moved up to ensure all variables are set before integrations) ---
+		// --- SCAN LOGIC: Use PSI API ---
 		review = null;
-		let scanSource: 'lighthouse' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
+		let scanSource: 'psi' | 'fallback' = 'fallback';
 		reviewError = '';
 		liveScanError = '';
 		forceUnavailablePreview = false;
@@ -894,69 +889,24 @@ export const POST: APIRoute = async ({ request }) => {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
 		} else {
-			const staleCachedReview = getAnyCachedReview(url);
-			let lastScanError = '';
 			for (; scanAttempts <= 2; scanAttempts++) {
 				try {
-					const cachedReview = getCachedReview(url);
-					if (cachedReview) {
-						review = cachedReview;
-						scanSource = 'cache-fresh';
-						break;
-					} else if (!hasTimeBudget(4500)) {
-						reviewError = 'Live scan skipped due to server time budget. Submission still saved.';
-						liveScanError = reviewError;
-						break;
-					} else {
-						const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
-						const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
-						try {
-							const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
-							review = runResult.review;
-							scanSource = runResult.source;
-							setCachedReview(url, review);
-							break;
-						} catch (lhErr) {
-							const lhMsg = lhErr instanceof Error ? lhErr.message : String(lhErr);
-							lastScanError = lhMsg;
-							// Extra logging for diagnostics
-							console.error('[Lighthouse SCAN FAILURE]', {
-								url,
-								lhMsg,
-								env: {
-									NODE_ENV: getEnv('NODE_ENV') || 'unset',
-									BASE_URL: getEnv('BASE_URL') || 'unset',
-								},
-								boundedReviewTimeoutMs,
-								requestBudgetMs,
-								startedAt: new Date(requestStartedAt).toISOString(),
-								now: new Date().toISOString(),
-							});
-							// If first attempt, try again
-							if (scanAttempts === 1) {
-								await wait(1200); // short delay before retry
-								continue;
-							} else {
-								throw lhErr;
-							}
-						}
-					}
+					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, requestBudgetMs - (Date.now() - requestStartedAt) - 3000));
+					const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'PSI review');
+					review = runResult.review;
+					scanSource = runResult.source;
+					break;
 				} catch (err) {
-					console.error('Review failed:', err);
+					console.error('PSI review failed:', err);
 					const message = err instanceof Error ? err.message : String(err);
 					liveScanError = message;
 					reviewError = normalizeLiveScanErrorForUser(message, scanAttempts);
-					if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
-						review = staleCachedReview;
-						scanSource = 'cache-stale';
-						reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
+					if (scanAttempts === 1) {
+						await wait(1200); // short delay before retry
+						continue;
 					}
 					break;
 				}
-			}
-			if (!review && lastScanError) {
-				liveScanError = lastScanError;
-				reviewError = normalizeLiveScanErrorForUser(lastScanError, scanAttempts);
 			}
 			if (review && !hasAnyLiveScore(review)) {
 				forceUnavailablePreview = true;
@@ -967,7 +917,6 @@ export const POST: APIRoute = async ({ request }) => {
 			if (!review) {
 				scanSource = 'fallback';
 			}
-			// Simplified mode: skip extended scan modules.
 		}
 
 		// Always build preview from latest review before integrations
@@ -1133,9 +1082,7 @@ export const POST: APIRoute = async ({ request }) => {
 			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
 
 		const scanSourceLabel: Record<typeof scanSource, string> = {
-			lighthouse: 'Lighthouse (server)',
-			'cache-fresh': 'Cached live result (fresh)',
-			'cache-stale': 'Cached live result (stale fallback)',
+			psi: 'PageSpeed Insights (API)',
 			fallback: 'Fallback site checks only',
 		};
 		const displayLiveScanError = liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : '';
