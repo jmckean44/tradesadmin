@@ -1262,10 +1262,32 @@ export const POST: APIRoute = async ({ request }) => {
 			{ status: 200 },
 		);
 	} catch (err) {
-		console.error('tech-review route error:', err);
 		const isDev = import.meta.env.DEV;
 		const message = err instanceof Error ? err.message : String(err);
 		const errorObj = err instanceof Error ? err : new Error(String(err));
+		// Gather request context for diagnostics
+		let requestBody = null;
+		try {
+			requestBody = await request.clone().text();
+		} catch {}
+		const envVars = {
+			NODE_ENV: process.env.NODE_ENV,
+			BASE_URL: process.env.BASE_URL,
+			NOTION_API_KEY: process.env.NOTION_API_KEY ? 'set' : 'unset',
+			NOTION_DATABASE_ID: process.env.NOTION_DATABASE_ID ? 'set' : 'unset',
+			GS_API_KEY: process.env.GS_API_KEY ? 'set' : 'unset',
+			SMTP_USER: process.env.SMTP_USER ? 'set' : 'unset',
+			SMTP_HOST: process.env.SMTP_HOST ? 'set' : 'unset',
+		};
+		// Log everything for diagnostics
+		console.error('[tech-review error]', {
+			error: message,
+			stack: errorObj.stack,
+			requestHeaders: Object.fromEntries(request.headers.entries()),
+			requestBody,
+			envVars,
+			timestamp: new Date().toISOString(),
+		});
 		// Only show Lighthouse errors in scanResultPayload, gsSubmissionResponse, techReviewSubmission
 		const scanResultPayload = {
 			available: false,
@@ -1291,11 +1313,22 @@ export const POST: APIRoute = async ({ request }) => {
 			},
 			scan: scanResultPayload,
 		};
+		// In dev, return full diagnostics for debugging
 		return new Response(
 			JSON.stringify({
 				techReviewSubmission,
 				scanResultPayload,
 				gsSubmissionResponse,
+				diagnostics: isDev
+					? {
+							error: message,
+							stack: errorObj.stack,
+							requestHeaders: Object.fromEntries(request.headers.entries()),
+							requestBody,
+							envVars,
+							timestamp: new Date().toISOString(),
+					  }
+					: undefined,
 			}),
 			{ status: 200 },
 		);
