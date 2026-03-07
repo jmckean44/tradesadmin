@@ -1,7 +1,7 @@
 ---
-title: 'Improving Contractor Website Page Speed'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Page Speed Issues'
+excerpt: 'Technical explanation of slow page load performance caused by inefficient asset delivery.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'page-speed'
@@ -9,61 +9,44 @@ tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
 
-## What This Issue Means
+# Page Speed Issues
 
-Page Speed refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Page speed issues occur when the total time required to load and render a webpage exceeds acceptable performance thresholds. Page speed depends on network latency, asset sizes, browser rendering behavior, and server performance.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- large image files not optimized for web delivery
+- excessive JavaScript and CSS assets
+- render-blocking scripts delaying page rendering
+- absence of browser caching for static assets
+- inefficient content delivery across geographic regions
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- long page load times for visitors
+- poor performance scores in page speed analysis tools
+- delayed rendering of page content
+- high bounce rates caused by slow loading
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- running performance audits using Lighthouse
+- inspecting network waterfall diagrams in browser developer tools
+- measuring page load metrics such as Largest Contentful Paint
+- analyzing asset sizes and request counts
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- compress and resize images for web delivery
+- minify and bundle JavaScript and CSS files
+- implement browser caching headers
+- use a content delivery network for static assets
+- remove unnecessary third-party scripts
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/server-response-time/
+- /insights/javascript-performance/
+- /insights/hosting-problems/

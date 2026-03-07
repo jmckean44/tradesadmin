@@ -254,13 +254,20 @@ function normalizeNotionErrorForUser(message: string): string {
 }
 
 // Normalize scan errors for user-facing messages
-function normalizeLiveScanErrorForUser(message: string): string {
+function normalizeLiveScanErrorForUser(message: string, scanAttempts = 1): string {
 	const text = String(message || '');
 	if (!text) return 'A technical scan error occurred. Please try again later.';
 	if (/timeout|timed out/i.test(text)) return 'The website scan timed out. Please try again later.';
 	if (/ENOTFOUND|EAI_AGAIN|DNS/i.test(text)) return 'The website address could not be found. Please check for typos and try again.';
 	if (/net::ERR_CERT/i.test(text)) return 'The website has an invalid SSL certificate.';
 	if (/lighthouse did not return a result/i.test(text)) return 'The scan could not be completed for this website.';
+	if (/network|fetch|ECONNREFUSED|ECONNRESET|ENETUNREACH|EHOSTUNREACH|502|503|504|PSI|pagespeed/i.test(text)) {
+		if (scanAttempts <= 1) {
+			return 'A network error occurred while connecting to the PageSpeed Insights (PSI) service. Please try again.';
+		} else {
+			return 'A network error occurred while connecting to the PageSpeed Insights (PSI) service. Please wait a few minutes and try again.';
+		}
+	}
 	return 'A technical scan error occurred. Please try again later.';
 }
 
@@ -637,8 +644,13 @@ async function runReview(url: string): Promise<ReviewRunResult> {
 		const config = undefined; // Use default Lighthouse config
 		const runnerResult = await lighthouse(url, options, config);
 		if (!runnerResult || !runnerResult.lhr) throw new Error('Lighthouse did not return a result');
+		// If all scores are missing, treat as a PSI/network error
+		const review = reviewFromLhrLike(runnerResult.lhr);
+		if (![review.performance, review.seo, review.accessibility, review.bestPractices].some((v) => typeof v === 'number' && Number.isFinite(v))) {
+			throw new Error('PSI network error: No scores returned');
+		}
 		return {
-			review: reviewFromLhrLike(runnerResult.lhr),
+			review,
 			source: 'lighthouse',
 		};
 	} finally {
@@ -877,65 +889,81 @@ export const POST: APIRoute = async ({ request }) => {
 		reviewError = '';
 		liveScanError = '';
 		forceUnavailablePreview = false;
+		let scanAttempts = 1;
 		if (!url) {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
 		} else {
 			const staleCachedReview = getAnyCachedReview(url);
-			try {
-				const cachedReview = getCachedReview(url);
-				if (cachedReview) {
-					review = cachedReview;
-					scanSource = 'cache-fresh';
-				} else if (!hasTimeBudget(4500)) {
-					reviewError = 'Live scan skipped due to server time budget. Submission still saved.';
-					liveScanError = reviewError;
-				} else {
-					const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
-					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
-					try {
-						const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
-						review = runResult.review;
-						scanSource = runResult.source;
-						setCachedReview(url, review);
-					} catch (lhErr) {
-						const lhMsg = lhErr instanceof Error ? lhErr.message : String(lhErr);
-						// Extra logging for diagnostics
-						console.error('[Lighthouse SCAN FAILURE]', {
-							url,
-							lhMsg,
-							env: {
-								NODE_ENV: getEnv('NODE_ENV') || 'unset',
-								BASE_URL: getEnv('BASE_URL') || 'unset',
-							},
-							boundedReviewTimeoutMs,
-							requestBudgetMs,
-							startedAt: new Date(requestStartedAt).toISOString(),
-							now: new Date().toISOString(),
-						});
-						throw lhErr;
+			let lastScanError = '';
+			for (; scanAttempts <= 2; scanAttempts++) {
+				try {
+					const cachedReview = getCachedReview(url);
+					if (cachedReview) {
+						review = cachedReview;
+						scanSource = 'cache-fresh';
+						break;
+					} else if (!hasTimeBudget(4500)) {
+						reviewError = 'Live scan skipped due to server time budget. Submission still saved.';
+						liveScanError = reviewError;
+						break;
+					} else {
+						const remainingMs = requestBudgetMs - (Date.now() - requestStartedAt);
+						const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, remainingMs - 3000));
+						try {
+							const runResult = await withTimeout(runReview(url), boundedReviewTimeoutMs, 'Lighthouse review');
+							review = runResult.review;
+							scanSource = runResult.source;
+							setCachedReview(url, review);
+							break;
+						} catch (lhErr) {
+							const lhMsg = lhErr instanceof Error ? lhErr.message : String(lhErr);
+							lastScanError = lhMsg;
+							// Extra logging for diagnostics
+							console.error('[Lighthouse SCAN FAILURE]', {
+								url,
+								lhMsg,
+								env: {
+									NODE_ENV: getEnv('NODE_ENV') || 'unset',
+									BASE_URL: getEnv('BASE_URL') || 'unset',
+								},
+								boundedReviewTimeoutMs,
+								requestBudgetMs,
+								startedAt: new Date(requestStartedAt).toISOString(),
+								now: new Date().toISOString(),
+							});
+							// If first attempt, try again
+							if (scanAttempts === 1) {
+								await wait(1200); // short delay before retry
+								continue;
+							} else {
+								throw lhErr;
+							}
+						}
 					}
+				} catch (err) {
+					console.error('Review failed:', err);
+					const message = err instanceof Error ? err.message : String(err);
+					liveScanError = message;
+					reviewError = normalizeLiveScanErrorForUser(message, scanAttempts);
+					if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
+						review = staleCachedReview;
+						scanSource = 'cache-stale';
+						reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
+					}
+					break;
 				}
-			} catch (err) {
-				console.error('Review failed:', err);
-				const message = err instanceof Error ? err.message : String(err);
-				liveScanError = message;
-				reviewError = normalizeLiveScanErrorForUser(message);
-				if (staleCachedReview && hasAnyLiveScore(staleCachedReview)) {
-					review = staleCachedReview;
-					scanSource = 'cache-stale';
-					reviewError = 'Live scan data is temporarily unavailable. Showing recent cached results.';
-				}
-				// Simplified mode: skip extra fallback checks.
 			}
-
+			if (!review && lastScanError) {
+				liveScanError = lastScanError;
+				reviewError = normalizeLiveScanErrorForUser(lastScanError, scanAttempts);
+			}
 			if (review && !hasAnyLiveScore(review)) {
 				forceUnavailablePreview = true;
 				scanSource = 'fallback';
 				reviewError = reviewError || 'Live scan data is currently unavailable.';
 				liveScanError = liveScanError || reviewError;
 			}
-
 			if (!review) {
 				scanSource = 'fallback';
 			}

@@ -1,69 +1,52 @@
 ---
 title: 'JavaScript Performance Issues'
-excerpt: 'Technical explanation of javascript performance issues and how to diagnose common website problems.'
-date: 2025-10-21
+excerpt: 'Technical explanation of JavaScript execution delays affecting page rendering.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'javascript-performance'
-tags: ['Web', 'Technical', 'Troubleshooting', 'Performance']
+tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
 author: ''
 ---
 
-## What This Issue Means
+# JavaScript Performance Issues
 
-Javascript Performance refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+JavaScript performance issues occur when scripts executed in the browser delay page rendering or block user interaction. Because JavaScript runs on the main browser thread, inefficient scripts can prevent other rendering tasks from completing.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- large JavaScript bundles loaded on every page
+- scripts executed before the document finishes loading
+- multiple third-party tracking scripts competing for execution time
+- inefficient DOM manipulation in client-side scripts
+- blocking scripts placed in the page head without defer attributes
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- delayed rendering of page content
+- interactive elements becoming responsive only after scripts finish loading
+- browser performance audits reporting long main-thread tasks
+- layout shifting during script execution
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- analyzing JavaScript execution time in browser performance tools
+- reviewing network requests to identify large script bundles
+- examining Lighthouse performance audits for blocking scripts
+- profiling script execution using browser developer tools
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- defer non-critical JavaScript execution
+- split large JavaScript bundles into smaller modules
+- remove unnecessary third-party scripts
+- optimize DOM manipulation and event handlers
+- load scripts asynchronously where possible
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/page-speed/
+- /insights/server-response-time/
+- /insights/hosting-problems/

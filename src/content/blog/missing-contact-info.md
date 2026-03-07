@@ -1,69 +1,50 @@
 ---
-title: 'Missing Contact Information'
-excerpt: 'Technical explanation of missing contact information and how to diagnose common website problems.'
-date: 2025-10-21
+title: 'Missing Contact Info'
+excerpt: 'Technical explanation of missing business contact information on websites.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'missing-contact-info'
-tags: ['Web', 'Technical', 'Troubleshooting', 'Performance']
+tags: ['Troubleshooting', 'Website Maintenance', 'Site Stability']
 author: ''
 ---
 
-## What This Issue Means
+# Missing Contact Info
 
-Missing Contact Info refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Missing contact information occurs when a website does not clearly expose essential business details such as phone numbers, addresses, or email addresses. Search engines rely on visible contact information to confirm the identity and location of a business.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- contact details stored in CMS settings but not rendered in the site template
+- contact pages not linked from navigation or footer areas
+- contact information embedded inside images rather than text
+- location pages missing structured NAP information
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- visitors unable to locate phone numbers or addresses
+- crawlers identifying pages without business contact information
+- inconsistent contact details across different pages
+- map listings unable to confirm the website’s business details
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- reviewing page templates for visible NAP information
+- inspecting HTML source to confirm presence of phone and address fields
+- crawling the site to confirm internal links to the contact page
+- comparing website contact information with map listing details
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- add contact information to the site footer and contact page
+- ensure contact pages are accessible from main navigation
+- display phone numbers and addresses as text rather than images
+- align NAP information with Google Business Profile data
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/location-pages/
+- /insights/google-business-profile/
+- /insights/contact-form-issues/

@@ -1,69 +1,61 @@
 ---
-title: 'Common SEO Mistakes Contractor Websites Make'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'SEO Mistakes'
+excerpt: 'Technical explanation of common SEO implementation mistakes that prevent websites from ranking in search results.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'seo-mistakes'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Technical SEO', 'SEO Strategy']
 author: ''
 ---
 
-## What This Issue Means
+# SEO Mistakes
 
-Seo Mistakes refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+SEO mistakes occur when a website contains structural or configuration errors that prevent search engines from properly crawling, indexing, or interpreting its content. Search engines evaluate many technical signals including page structure, metadata, internal linking, and crawl accessibility. If these signals are misconfigured, pages may be indexed incorrectly or fail to appear in search results entirely.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- missing or duplicated title tags across multiple pages
+- heading structure not reflecting the hierarchy of page content
+- pages lacking descriptive meta descriptions
+- internal links pointing to incorrect or non-existent URLs
+- canonical tags incorrectly pointing to unrelated pages
+- important pages buried deep in the site architecture
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- pages indexed but not ranking for relevant queries
+- multiple pages competing for the same keyword
+- search engines indexing unintended pages such as tag archives
+- crawl reports identifying duplicate titles or metadata
+- search results displaying incorrect page titles or descriptions
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- crawling the website to identify metadata duplication or missing tags
+- reviewing title tags and headings in page source code
+- analyzing internal linking patterns between pages
+- comparing indexed pages with intended site structure
+- reviewing search performance data in Google Search Console
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- create unique title tags and meta descriptions for each page
+- organize headings using a clear H1–H2–H3 hierarchy
+- correct internal links pointing to invalid URLs
+- ensure canonical tags reference the correct page version
+- restructure site navigation so important pages are easily discoverable
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+- [Search Visibility](/insights/search-visibility/)
+- [Website Not Ranking](/insights/website-not-ranking/)
+- [Site Structure](/insights/site-structure/)
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If SEO implementation mistakes are preventing your website from performing in search results, technical troubleshooting may be required to identify and correct configuration problems.
 
 [Technical Website Support](/)

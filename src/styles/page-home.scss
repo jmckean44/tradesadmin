@@ -393,6 +393,7 @@
 /* =======================
 	 PRICING
 ========================== */
+
 #pricing {
 	margin-top: 100px;
 	padding: 0 var.$container-padding;
@@ -410,16 +411,12 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-#pricing .fix {
-	float: right;
-	max-width: 120px;
-	padding: 0 0 1rem 1rem;
-}
-
 .pricing-card {
-	//padding: 2rem 1rem 0 clamp(1.5rem, 3vw, 3rem);
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	gap: 2rem;
+	margin-top: 3rem;
 	width: 100%;
-	//margin-top: 35px;
 	z-index: 2;
 }
 
@@ -435,10 +432,17 @@
 	padding-right: clamp(0rem, 3vw, 3rem);
 }
 
-.pricing-card.single-issue {
-	padding: 0;
+.single-issue {
+	padding: 0 0 0 2rem;
 	border-left: 0;
 	box-shadow: none;
+	border-left: 2px #ddd solid;
+}
+
+.single-issue .fix {
+	float: right;
+	max-width: 120px;
+	padding: 0 0 1rem 1rem;
 }
 
 .pricing-card.single-issue h3 {
@@ -505,7 +509,7 @@
 	font-style: normal;
 }
 
-@media (max-width: var.$tablet) {
+@media (max-width: var.$mobile) {
 	#pricing .container {
 		padding: 50px clamp(1.5rem, 3vw, 3rem) 0;
 	}

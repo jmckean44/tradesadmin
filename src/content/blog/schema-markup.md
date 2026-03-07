@@ -1,69 +1,59 @@
 ---
-title: 'Schema Markup for Contractors'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Schema Markup Errors'
+excerpt: 'Technical explanation of structured data errors affecting how search engines interpret website content.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'schema-markup'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Technical SEO', 'Structured Data']
 author: ''
 ---
 
-## What This Issue Means
+# Schema Markup Errors
 
-Schema Markup refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Schema markup errors occur when structured data embedded in a webpage cannot be parsed correctly by search engines. Structured data uses standardized vocabularies such as Schema.org to describe page content in a machine-readable format. When markup is invalid or incomplete, search engines may ignore the structured data or misinterpret the page content.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- invalid JSON-LD syntax within structured data blocks
+- missing required properties for the schema type being used
+- conflicting schema types describing the same entity
+- outdated schema properties no longer recognized by search engines
+- structured data injected dynamically through JavaScript that crawlers cannot render
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- structured data errors reported in Google Search Console
+- rich results such as review stars or business information not appearing in search results
+- testing tools reporting missing required fields
+- schema markup visible in page source but ignored by search engines
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- validating structured data using Google's Rich Results Test
+- inspecting JSON-LD scripts in the page source
+- reviewing Search Console enhancement reports for schema errors
+- testing structured data with Schema.org validation tools
+- comparing schema implementation against the official schema specification
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- correct JSON-LD syntax errors in the structured data script
+- add required properties defined for the schema type
+- remove duplicate or conflicting schema definitions
+- update deprecated schema properties to current standards
+- ensure structured data is rendered server-side rather than injected only through JavaScript
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+- [Website Indexing Issues](/insights/website-indexing/)
+- [Search Console Errors](/insights/search-console-errors/)
+- [SEO Mistakes](/insights/seo-mistakes/)
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If schema markup errors are preventing search engines from properly understanding your website, technical troubleshooting may be required.
 
 [Technical Website Support](/)

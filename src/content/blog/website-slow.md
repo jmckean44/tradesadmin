@@ -1,69 +1,50 @@
 ---
-title: 'Why Contractor Websites Load Slowly'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Website Slow'
+excerpt: 'Technical troubleshooting guide for website-slow.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'website-slow'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Web','Contractor SEO','Technical','Troubleshooting']
 author: ''
 ---
 
-## What This Issue Means
+# Website Slow
 
-Website Slow refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+Website Slow describes failures occurring at the web server or hosting infrastructure layer. These issues affect how HTTP requests are processed and returned to visitors.
 
 ## Common Causes
-
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- server CPU or memory saturation during traffic spikes
+- PHP worker pools exhausted by concurrent requests
+- database queries exceeding execution time limits
+- misconfigured web server directives in Apache or NGINX
 
 ## How the Problem Appears
-
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- 503 or 504 gateway errors
+- very high time‑to‑first‑byte values
+- pages failing to load under moderate traffic
+- monitoring services reporting downtime events
 
 ## How It Is Diagnosed
-
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- review Apache or NGINX error logs
+- inspect PHP‑FPM pool metrics
+- monitor system resources using top or htop
+- run load tests to reproduce request saturation
 
 ## Typical Fix
+- increase available PHP worker limits
+- optimize slow database queries
+- implement caching layers to reduce dynamic processing
+- upgrade hosting infrastructure or move to dedicated resources
 
-Resolving the problem usually involves:
-
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
-
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+## Related Technical Issues
+- /insights/redirect-errors/
+- /insights/robots-txt-errors/
+- /insights/ssl-errors/
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If this issue is affecting your website, technical troubleshooting may be required to identify the root cause and resolve it.
 
 [Technical Website Support](/)

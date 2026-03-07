@@ -1,69 +1,51 @@
 ---
-title: 'Service Pages for Contractor SEO'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Service Page Issues'
+excerpt: 'Technical explanation of service page structure problems affecting search visibility.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'service-pages'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Website Architecture', 'SEO Signals']
 author: ''
 ---
 
-## What This Issue Means
+# Service Page Issues
 
-Service Pages refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Service page issues occur when a website does not clearly define or structure the services it offers. Search engines rely on individual service pages to understand what a business provides. If services are not organized into dedicated pages with clear content, search engines cannot associate the website with specific service queries.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- multiple services combined on a single generic page
+- service pages lacking descriptive headings or structured content
+- services listed only in images or graphics rather than text
+- internal links not connecting service pages to other relevant pages
+- navigation menus not exposing service pages clearly
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- website ranking for brand searches but not service-related searches
+- individual services not appearing in search results
+- crawlers identifying only a single general services page
+- search engines associating the site with fewer service categories than expected
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- reviewing the site structure to identify whether services have dedicated pages
+- crawling the site to check how service pages are linked internally
+- analyzing search queries that trigger the site in search results
+- comparing site architecture with competitor service page structures
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- create a dedicated page for each major service
+- include descriptive headings and structured content explaining the service
+- link service pages from the main navigation and relevant content pages
+- ensure service pages include internal links to related services
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/local-seo/
+- /insights/location-pages/
+- /insights/backlinks/

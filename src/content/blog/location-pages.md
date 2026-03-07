@@ -1,69 +1,50 @@
 ---
-title: 'Location Pages for Contractor SEO'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Location Page Issues'
+excerpt: 'Technical explanation of location page problems affecting local search visibility.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'location-pages'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Local SEO', 'Google Business Profile']
 author: ''
 ---
 
-## What This Issue Means
+# Location Page Issues
 
-Location Pages refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Location page issues occur when pages intended to represent specific service areas or business locations fail to provide clear geographic relevance. Search engines rely on these pages to understand where a business operates.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- location pages containing duplicated content across cities
+- missing NAP information on location pages
+- location pages not linked internally from the main navigation
+- pages created without supporting local content
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- location pages failing to appear in city-based searches
+- search engines indexing only one location page instead of multiple
+- pages ranking poorly for geographic service queries
+- map listings not associating with the corresponding location page
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- reviewing location pages for duplicate or thin content
+- verifying NAP information appears on each location page
+- crawling the site to confirm internal links to location pages
+- checking indexed pages for geographic variations
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- create unique content describing each service area
+- include full NAP details on each location page
+- link location pages from the main navigation or service pages
+- align location pages with the business’s map listing
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/maps-listing-errors/
+- /insights/google-business-profile/
+- /insights/missing-contact-info/

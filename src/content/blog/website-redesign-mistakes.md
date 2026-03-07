@@ -1,69 +1,60 @@
 ---
-title: 'Contractor Website Redesign Mistakes'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Website Redesign Mistakes'
+excerpt: 'Technical explanation of common website redesign mistakes that cause SEO loss, crawl issues, and broken site architecture.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'website-redesign-mistakes'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Website Architecture', 'Website Redesign']
 author: ''
 ---
 
-## What This Issue Means
+# Website Redesign Mistakes
 
-Website Redesign Mistakes refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Website redesign mistakes occur when structural changes introduced during a site redesign disrupt the existing architecture, URLs, or search engine signals that previously supported the site’s visibility. Redesign projects often involve updating layouts, CMS platforms, or navigation systems. If these changes are deployed without preserving important technical signals, search engines may treat the redesigned site as a completely new website.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- existing page URLs changed without implementing redirects
+- navigation structures reorganized without maintaining internal links
+- important pages removed during redesign planning
+- metadata such as title tags or headings lost during theme changes
+- staging environments accidentally indexed by search engines
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- significant drops in organic search traffic after launching the redesign
+- previously ranking pages disappearing from search results
+- SEO crawlers reporting large numbers of broken links
+- search engines indexing duplicate staging or test environments
+- important service pages no longer accessible from navigation
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- comparing the previous site URL structure with the redesigned version
+- crawling the new site to identify missing or broken pages
+- reviewing redirect rules to ensure old URLs map to new ones
+- analyzing search performance data before and after the redesign
+- checking whether staging or development environments are indexed
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- implement 301 redirects from old URLs to their new equivalents
+- restore internal links to important pages removed from navigation
+- reapply metadata and heading structure lost during the redesign
+- block staging environments from search indexing
+- verify that the new site architecture preserves the previous content hierarchy
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+- [Website Migration](/insights/website-migration/)
+- [Broken Links](/insights/broken-links/)
+- [Site Structure](/insights/site-structure/)
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If a website redesign has caused traffic loss or broken site functionality, technical troubleshooting may be required to restore search visibility and correct architectural changes.
 
 [Technical Website Support](/)

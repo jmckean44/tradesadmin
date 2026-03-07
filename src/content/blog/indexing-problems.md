@@ -1,69 +1,59 @@
 ---
-title: 'Contractor Website Indexing Problems'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Indexing Problems'
+excerpt: 'Technical explanation of issues preventing search engines from adding pages to their index.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'indexing-problems'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Technical SEO', 'Indexing']
 author: ''
 ---
 
-## What This Issue Means
+# Indexing Problems
 
-Indexing Problems refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Indexing problems occur when search engines successfully crawl a page but decide not to include it in their searchable index. A page must pass multiple checks before it becomes eligible to appear in search results. If signals indicate the page should not be indexed or that its content is redundant or low value, the page may remain excluded from the index.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- `noindex` directives placed in the page meta tags
+- canonical tags pointing to a different page
+- pages considered duplicates of other indexed pages
+- pages returning inconsistent HTTP responses during crawling
+- sitemap entries referencing pages that redirect or return errors
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- pages accessible in a browser but not appearing in search results
+- Search Console showing **Crawled – currently not indexed**
+- indexing coverage reports listing pages as **Excluded**
+- new pages remaining invisible in search results after being published
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- inspecting page status using the **Search Console URL Inspection tool**
+- reviewing meta tags for `noindex` directives
+- checking canonical tags pointing to alternate URLs
+- verifying the page returns a valid **200 HTTP status**
+- comparing sitemap URLs with indexed pages
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- remove unintended `noindex` directives
+- ensure canonical tags reference the correct page
+- eliminate duplicate content across multiple URLs
+- update sitemap files to include only valid, indexable pages
+- improve page content to ensure it provides unique value
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+- [Search Console Errors](/insights/search-console-errors/)
+- [Website Indexing Issues](/insights/website-indexing/)
+- [Robots.txt Errors](/insights/robots-txt-errors/)
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If search engines are crawling your pages but not indexing them, technical troubleshooting may be required to determine which signals are preventing the pages from being included in search results.
 
 [Technical Website Support](/)

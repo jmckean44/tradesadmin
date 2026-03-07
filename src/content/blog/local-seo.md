@@ -1,69 +1,51 @@
 ---
-title: 'Contractor Local SEO Basics'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Local SEO Issues'
+excerpt: 'Technical explanation of problems affecting local search visibility for service area businesses.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'local-seo'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Website Architecture', 'SEO Signals']
 author: ''
 ---
 
-## What This Issue Means
+# Local SEO Issues
 
-Local Seo refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Local SEO issues occur when a website fails to signal geographic relevance to search engines. Local search algorithms rely on business location data, location pages, and external citations to determine which businesses appear for location-based searches.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- missing location pages describing service areas
+- inconsistent business NAP information across directories
+- weak connection between the website and the business listing profile
+- lack of local citations referencing the business location
+- location keywords absent from page content and headings
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- business appearing only for brand searches rather than service-plus-location queries
+- competitors appearing above the site in map results
+- service area searches not triggering the website
+- local landing pages failing to rank for city-specific queries
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- reviewing the website for location-specific pages and geographic content
+- checking NAP consistency between the website and directories
+- analyzing search results for service-plus-city queries
+- comparing local signals with competitor sites
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- create location pages targeting key service areas
+- standardize business NAP information across directories
+- integrate location references within service page content
+- link location pages to the Google Business Profile listing
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/location-pages/
+- /insights/google-business-profile/
+- /insights/maps-listing-errors/

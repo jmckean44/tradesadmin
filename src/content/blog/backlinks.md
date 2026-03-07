@@ -1,69 +1,51 @@
 ---
-title: 'Backlinks for Contractor Websites'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Backlink Issues'
+excerpt: 'Technical explanation of backlink problems affecting domain authority and search ranking signals.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'backlinks'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Website Architecture', 'SEO Signals']
 author: ''
 ---
 
-## What This Issue Means
+# Backlink Issues
 
-Backlinks refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Backlink issues occur when a website lacks high-quality inbound links or when existing backlinks are low quality or broken. Search engines use backlinks as a signal of authority and trust. Without credible links from external websites, search engines may treat the site as less authoritative.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- few external websites linking to the domain
+- backlinks originating from low-quality or spam domains
+- links pointing to outdated or removed pages
+- competitors having significantly stronger link profiles
+- important pages lacking internal links that distribute link equity
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- domain authority metrics significantly lower than competitors
+- pages ranking poorly despite having relevant content
+- crawlers identifying broken inbound links
+- backlinks pointing to non-existent URLs
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- analyzing inbound links using backlink analysis tools
+- reviewing referring domains and link quality metrics
+- checking for broken links pointing to removed pages
+- comparing backlink profiles with competing sites
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- repair or redirect URLs receiving backlinks
+- acquire links from reputable industry directories or publications
+- remove or disavow spam backlinks
+- strengthen internal linking to distribute authority
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/service-pages/
+- /insights/local-seo/
+- /insights/duplicate-content/

@@ -1,69 +1,60 @@
 ---
-title: 'Website Structure for Contractor SEO'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Site Structure Issues'
+excerpt: 'Technical explanation of site structure problems that prevent search engines from effectively crawling and understanding a website.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'site-structure'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Website Architecture', 'Crawlability']
 author: ''
 ---
 
-## What This Issue Means
+# Site Structure Issues
 
-Site Structure refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Site structure issues occur when the internal organization of a website makes it difficult for search engines or users to navigate between pages. Search engines rely on internal links and hierarchical relationships between pages to understand the relative importance of content. If pages are deeply nested, poorly linked, or disconnected from the main navigation, search engines may struggle to discover or prioritize them.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- important pages located several levels deep in the site hierarchy
+- navigation menus that do not include key service or category pages
+- orphan pages that are not linked from any other page
+- inconsistent URL structures across sections of the site
+- excessive pagination or archive pages creating crawl inefficiency
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- search engines indexing only a portion of the site’s pages
+- important pages receiving little or no organic traffic
+- SEO crawlers identifying orphan or inaccessible pages
+- internal link analysis showing weak connections between key pages
+- search engines prioritizing less relevant pages in search results
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- crawling the site to map internal linking relationships
+- reviewing navigation menus and page hierarchy
+- analyzing page depth from the homepage
+- identifying orphan pages using crawl reports
+- inspecting URL patterns to verify consistent directory structure
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- reorganize navigation to highlight important pages
+- create clear content hierarchies grouping related pages
+- add internal links connecting related content
+- reduce page depth by restructuring site architecture
+- standardize URL patterns for major sections of the site
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
+- [Service Page Issues](/insights/service-pages/)
+- [SEO Mistakes](/insights/seo-mistakes/)
+- [Website Indexing Issues](/insights/website-indexing/)
 
 ## Technical Website Support
 
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
+If poor site structure prevents search engines from discovering or prioritizing your pages, technical troubleshooting may be required to improve internal linking and navigation architecture.
 
 [Technical Website Support](/)

@@ -1,69 +1,50 @@
 ---
-title: 'Google Reviews and Contractor SEO'
-excerpt: 'Technical explanation of a common contractor website issue and how to diagnose it.'
-date: 2025-10-21
+title: 'Google Reviews Issues'
+excerpt: 'Technical explanation of problems affecting the display and management of Google reviews.'
+date: 2026-03-07
 heroImage: './images/seo.webp'
 isDraft: false
 slug: 'google-reviews'
-tags: ['Web', 'Contractor SEO', 'Technical', 'Troubleshooting']
+tags: ['Troubleshooting', 'Local SEO', 'Google Business Profile']
 author: ''
 ---
 
-## What This Issue Means
+# Google Reviews Issues
 
-Google Reviews refers to a technical condition that can prevent a website from functioning correctly, loading efficiently, or appearing properly in search engines.
+## Overview
+
+Google reviews issues occur when customer reviews are missing, filtered, or not appearing on a business listing. Reviews contribute to local ranking signals and influence customer trust. Problems in review visibility can reduce engagement with the business listing.
 
 ## Common Causes
 
-Typical causes include:
-
-- configuration mistakes
-- outdated software or plugins
-- hosting or server limitations
-- incorrect DNS or domain settings
-- broken scripts or dependencies
+- reviews flagged by Google’s spam detection system
+- reviews posted by accounts lacking sufficient trust signals
+- duplicate listings splitting reviews between profiles
+- listing changes causing review association issues
 
 ## How the Problem Appears
 
-Signs of this issue often include:
-
-- slow or inconsistent website loading
-- pages failing to display properly
-- missing content or broken features
-- search engines not indexing pages correctly
-- visitors unable to submit forms or complete actions
+- newly submitted reviews not appearing publicly
+- review counts lower than expected
+- reviews appearing on duplicate listings rather than the main profile
+- sudden loss of previously visible reviews
 
 ## How It Is Diagnosed
 
-Diagnosis usually involves reviewing:
-
-- server responses and network requests
-- page loading behavior
-- browser console errors
-- configuration files and DNS records
-- website performance metrics
+- checking listing activity inside the Google Business Profile dashboard
+- verifying whether duplicate listings exist for the same business
+- reviewing Google’s review policies for potential violations
+- comparing review counts across different devices or accounts
 
 ## Typical Fix
 
-Resolving the problem usually involves:
+- merge duplicate business listings
+- ensure the listing is verified and correctly configured
+- encourage legitimate reviews from real customers
+- report missing reviews through Google support if necessary
 
-- correcting configuration settings
-- updating outdated components
-- repairing broken scripts or redirects
-- optimizing assets and page structure
-- adjusting hosting or server configuration
+## Related Technical Issues
 
-## Related Website Issues
-
-- [Website Performance Seo](/blog/website-performance-seo)
-- [Website Security](/blog/website-security)
-- [Contact Form Issues](/blog/contact-form-issues)
-- [Domain Configuration](/blog/domain-configuration)
-- [Hosting Problems](/blog/hosting-problems)
-- [Redirect Errors](/blog/redirect-errors)
-
-## Technical Website Support
-
-If this issue is affecting your website, technical troubleshooting may be required to identify the exact cause and restore normal operation.
-
-[Technical Website Support](/)
+- /insights/google-business-profile/
+- /insights/gbp-visibility/
+- /insights/maps-listing-errors/
