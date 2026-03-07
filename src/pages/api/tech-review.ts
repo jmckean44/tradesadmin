@@ -210,19 +210,50 @@ function pct(score: number | null | undefined): number | null {
 	return score == null ? null : Math.round(score * 100);
 }
 
-function reviewFromLhrLike(lhr: { categories?: Record<string, { score?: number | null }>; audits?: Record<string, { displayValue?: string }> }): Review {
+function reviewFromLhrLike(lhr: { categories?: Record<string, { score?: number | null }>; audits?: Record<string, { displayValue?: string; numericValue?: number }> }): Review {
 	const categories = lhr.categories ?? {};
 	const audits = lhr.audits ?? {};
+
+	// Helper for CWV emoji/graphics
+	function cwvGraphic(metric: string, value: number | null): string {
+		if (value == null || isNaN(value)) return '❔';
+		if (metric === 'lcp') {
+			if (value <= 2500) return '🟢';
+			if (value <= 4000) return '🟡';
+			return '🔴';
+		}
+		if (metric === 'cls') {
+			if (value <= 0.1) return '🟢';
+			if (value <= 0.25) return '🟡';
+			return '🔴';
+		}
+		if (metric === 'tbt') {
+			if (value <= 200) return '🟢';
+			if (value <= 600) return '🟡';
+			return '🔴';
+		}
+		return '';
+	}
+
+	// Parse numeric values for CWV
+	const lcpNumeric = audits['largest-contentful-paint']?.numericValue ?? null;
+	const clsNumeric = audits['cumulative-layout-shift']?.numericValue ?? null;
+	const tbtNumeric = audits['total-blocking-time']?.numericValue ?? null;
+
+	// Add emoji/graphics to display values
+	const lcpDisplay = audits['largest-contentful-paint']?.displayValue ? `${audits['largest-contentful-paint'].displayValue} ${cwvGraphic('lcp', lcpNumeric)}` : 'N/A';
+	const clsDisplay = audits['cumulative-layout-shift']?.displayValue ? `${audits['cumulative-layout-shift'].displayValue} ${cwvGraphic('cls', clsNumeric)}` : 'N/A';
+	const tbtDisplay = audits['total-blocking-time']?.displayValue ? `${audits['total-blocking-time'].displayValue} ${cwvGraphic('tbt', tbtNumeric)}` : 'N/A';
 
 	return {
 		performance: pct(categories.performance?.score),
 		seo: pct(categories.seo?.score),
 		accessibility: pct(categories.accessibility?.score),
 		bestPractices: pct(categories['best-practices']?.score),
-		lcp: audits['largest-contentful-paint']?.displayValue ?? 'N/A',
-		cls: audits['cumulative-layout-shift']?.displayValue ?? 'N/A',
+		lcp: lcpDisplay,
+		cls: clsDisplay,
 		interactive: audits['interactive']?.displayValue ?? 'N/A',
-		tbt: audits['total-blocking-time']?.displayValue ?? 'N/A',
+		tbt: tbtDisplay,
 	};
 }
 
@@ -1065,21 +1096,29 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		const reviewHtml = review
-			? `
+		// Improved results messaging and CWV graphics
+		let reviewHtml = '';
+		if (review && hasAnyLiveScore(review)) {
+			reviewHtml = `
 				<h3 style="margin:16px 0 8px;">Technical Review</h3>
 				<ul>
-					<li><strong>Performance:</strong> ${review.performance ?? 'N/A'}</li>
-					<li><strong>SEO:</strong> ${review.seo ?? 'N/A'}</li>
-					<li><strong>Accessibility:</strong> ${review.accessibility ?? 'N/A'}</li>
-					<li><strong>Best Practices:</strong> ${review.bestPractices ?? 'N/A'}</li>
+					<li><strong>Performance:</strong> ${review.performance ?? 'N/A'} / 100</li>
+					<li><strong>SEO:</strong> ${review.seo ?? 'N/A'} / 100</li>
+					<li><strong>Accessibility:</strong> ${review.accessibility ?? 'N/A'} / 100</li>
+					<li><strong>Best Practices:</strong> ${review.bestPractices ?? 'N/A'} / 100</li>
+				</ul>
+				<h4 style="margin:12px 0 4px;">Core Web Vitals</h4>
+				<ul>
 					<li><strong>LCP:</strong> ${review.lcp}</li>
 					<li><strong>CLS:</strong> ${review.cls}</li>
-					<li><strong>Interactive:</strong> ${review.interactive}</li>
 					<li><strong>Total Blocking Time:</strong> ${review.tbt}</li>
 				</ul>
-			`
-			: `<h3 style="margin:16px 0 8px;">Technical Review</h3><p>Technical review unavailable.</p>${reviewError ? `<p><strong>Reason:</strong> ${escapeHtml(reviewError)}</p>` : ''}`;
+			`;
+		} else {
+			reviewHtml = `<h3 style="margin:16px 0 8px;">Technical Review</h3><p style="color:#b00;">No scores available. ${
+				reviewError ? `<br/><strong>Reason:</strong> ${escapeHtml(reviewError)}` : ''
+			}</p>`;
+		}
 
 		const scanSourceLabel: Record<typeof scanSource, string> = {
 			psi: 'PageSpeed Insights (API)',
