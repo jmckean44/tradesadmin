@@ -95,7 +95,7 @@ type CachedReview = {
 
 type ReviewRunResult = {
 	review: Review;
-	source: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key';
+	source: 'lighthouse';
 };
 
 type NotionPropertyType = 'title' | 'rich_text' | 'email' | 'url' | 'phone_number' | 'number' | 'checkbox' | 'date' | 'select' | 'status';
@@ -873,11 +873,10 @@ export const POST: APIRoute = async ({ request }) => {
 
 		// --- SCAN LOGIC (moved up to ensure all variables are set before integrations) ---
 		review = null;
-		let scanSource: 'lighthouse' | 'pagespeed-key' | 'pagespeed-no-key' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
+		let scanSource: 'lighthouse' | 'cache-fresh' | 'cache-stale' | 'fallback' = 'fallback';
 		reviewError = '';
 		liveScanError = '';
 		forceUnavailablePreview = false;
-		// psiApiErrors removed
 		if (!url) {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
@@ -899,16 +898,13 @@ export const POST: APIRoute = async ({ request }) => {
 						review = runResult.review;
 						scanSource = runResult.source;
 						setCachedReview(url, review);
-					} catch (psiErr) {
-						const psiMsg = psiErr instanceof Error ? psiErr.message : String(psiErr);
-						// psiApiErrors removed
+					} catch (lhErr) {
+						const lhMsg = lhErr instanceof Error ? lhErr.message : String(lhErr);
 						// Extra logging for diagnostics
-						console.error('[CWV SCAN FAILURE]', {
+						console.error('[Lighthouse SCAN FAILURE]', {
 							url,
-							psiMsg,
+							lhMsg,
 							env: {
-								PAGESPEED_API_KEY: getEnv('PAGESPEED_API_KEY') ? 'set' : 'unset',
-								PAGESPEED_PROJECT_NUMBER: getEnv('PAGESPEED_PROJECT_NUMBER') || 'unset',
 								NODE_ENV: getEnv('NODE_ENV') || 'unset',
 								BASE_URL: getEnv('BASE_URL') || 'unset',
 							},
@@ -917,7 +913,7 @@ export const POST: APIRoute = async ({ request }) => {
 							startedAt: new Date(requestStartedAt).toISOString(),
 							now: new Date().toISOString(),
 						});
-						throw psiErr;
+						throw lhErr;
 					}
 				}
 			} catch (err) {
@@ -950,19 +946,6 @@ export const POST: APIRoute = async ({ request }) => {
 		preview = buildReviewPreview(review, reviewError, forceUnavailablePreview);
 
 		// Log Notion payload for debugging
-		console.log('[Notion Payload]', {
-			company,
-			email,
-			url: displayUrl,
-			phone,
-			message,
-			liveScanError,
-			reportFilename,
-			preview,
-			review,
-			reviewError,
-			siteChecks,
-		});
 
 		let notionError: string | null = null;
 		try {
@@ -1005,11 +988,6 @@ export const POST: APIRoute = async ({ request }) => {
 				},
 			};
 			console.error('Notion sync failed:', errorDetails);
-			try {
-				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
-			} catch (logErr) {
-				console.error('Failed to write Notion error log:', logErr);
-			}
 		}
 
 		// Now perform email submission (after all variables are assigned)
@@ -1057,11 +1035,7 @@ export const POST: APIRoute = async ({ request }) => {
 				},
 			};
 			console.error('SMTP send failed:', errorDetails);
-			try {
-				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
-			} catch (logErr) {
-				console.error('Failed to write email error log:', logErr);
-			}
+
 			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
 			const fallbackRecipient = getEnv('SMTP_USER');
 			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
@@ -1108,11 +1082,6 @@ export const POST: APIRoute = async ({ request }) => {
 						},
 					};
 					console.error('SMTP send retry failed:', retryErrorDetails);
-					try {
-						require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(retryErrorDetails) + '\n');
-					} catch (logErr) {
-						console.error('Failed to write email retry error log:', logErr);
-					}
 				}
 			} else {
 				emailError = primaryMessage;
@@ -1137,8 +1106,6 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const scanSourceLabel: Record<typeof scanSource, string> = {
 			lighthouse: 'Lighthouse (server)',
-			'pagespeed-key': 'PageSpeed API (with key)',
-			'pagespeed-no-key': 'PageSpeed API (without key)',
 			'cache-fresh': 'Cached live result (fresh)',
 			'cache-stale': 'Cached live result (stale fallback)',
 			fallback: 'Fallback site checks only',
@@ -1204,21 +1171,7 @@ export const POST: APIRoute = async ({ request }) => {
 			};
 			const nowIso = new Date().toISOString();
 			// Log Sheets payload for debugging
-			console.log('[Sheets Payload]', {
-				apiKey: getEnv('GS_API_KEY'),
-				company,
-				email,
-				url: displayUrl.replace(/^https?:\/\//, ''),
-				phone,
-				message,
-				performance: review?.performance ?? null,
-				seo: review?.seo ?? null,
-				accessibility: review?.accessibility ?? null,
-				bestPractices: review?.bestPractices ?? null,
-				apiResponse: JSON.stringify(apiResponse),
-				timestamp: nowIso,
-				date: nowIso,
-			});
+
 			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbyys70cFFF9cBcXEnD47j3rSC8AEZ7JRaKOmeh2Ehg1rQOLQtYu7pAsk8smrHS3hV0n/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -1290,11 +1243,7 @@ export const POST: APIRoute = async ({ request }) => {
 				},
 			};
 			console.error('SMTP send failed:', errorDetails);
-			try {
-				require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(errorDetails) + '\n');
-			} catch (logErr) {
-				console.error('Failed to write email error log:', logErr);
-			}
+
 			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
 			const fallbackRecipient = getEnv('SMTP_USER');
 			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
@@ -1341,11 +1290,6 @@ export const POST: APIRoute = async ({ request }) => {
 						},
 					};
 					console.error('SMTP send retry failed:', retryErrorDetails);
-					try {
-						require('fs').appendFileSync('notion_email_errors.log', JSON.stringify(retryErrorDetails) + '\n');
-					} catch (logErr) {
-						console.error('Failed to write email retry error log:', logErr);
-					}
 				}
 			} else {
 				emailError = primaryMessage;
