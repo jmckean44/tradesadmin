@@ -421,39 +421,39 @@
 }
 
 .pricing-card .item {
-	padding: 1.5rem clamp(2.75rem, 4.5vw, 3.5rem) 1.5rem 1.5rem;
+	padding: 1.5rem 3.5rem 1.5rem 1.5rem;
 	background: var.$theme-clr-dark;
 	margin-bottom: 0;
 	border-radius: 10px;
 }
 
 .pricing-card .item:first-child {
-	background: var.$theme-clr-dark url('../img/icon-issue-speed.svg') no-repeat top 10px right 10px;
+	background: var.$theme-clr-dark url('../img/icon-issue-speed.svg') no-repeat top 15px right 15px;
 	background-size: 40px;
 }
 
 .pricing-card .item:nth-child(2) {
-	background: var.$theme-clr-dark url('../img/icon-technical-seo.webp') no-repeat top 0px right 10px;
+	background: var.$theme-clr-dark url('../img/icon-technical-seo.webp') no-repeat top 5px right 15px;
 	background-size: 56px;
 }
 
 .pricing-card .item:nth-child(3) {
-	background: var.$theme-clr-dark url('../img/icon-structure.webp') no-repeat top 10px right 5px;
+	background: var.$theme-clr-dark url('../img/icon-structure.webp') no-repeat top 10px right 10px;
 	background-size: 60px;
 }
 
 .pricing-card .item:nth-child(4) {
-	background: var.$theme-clr-dark url('../img/icon-hosting.webp') no-repeat top 10px right 10px;
+	background: var.$theme-clr-dark url('../img/icon-hosting.webp') no-repeat top 15px right 15px;
 	background-size: 50px;
 }
 
 .pricing-card .item:nth-child(5) {
-	background: var.$theme-clr-dark url('../img/icon-website.webp') no-repeat top 10px right 10px;
-	background-size: 50px;
+	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 20px right 20px;
+	background-size: 45px;
 }
 
-.pricing-card .item:last-child(6) {
-	background: var.$theme-clr-dark url('../img/icon-website.webp') no-repeat top 10px right 10px;
+.pricing-card .item:nth-child(6) {
+	background: var.$theme-clr-dark url('../img/icon-credentials.webp') no-repeat top 15px right 15px;
 	background-size: 50px;
 }
 
@@ -465,7 +465,7 @@
 	padding: 0 0 0 2rem;
 	border-left: 0;
 	box-shadow: none;
-	border-left: 2px #ddd solid;
+	border-left: 2px var.$theme-clr-dark solid;
 }
 
 .single-issue .fix {
