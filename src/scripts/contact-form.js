@@ -640,7 +640,9 @@ document.addEventListener('astro:page-load', () => {
 				if (resultsRoot) {
 					resultsRoot.innerHTML = `<div class="review-preview-card">Network stalled, please try again.</div>`;
 				}
-				result.textContent = '';
+				// Always show a message in the result area as well
+				result.style.display = 'block';
+				result.textContent = 'Network stalled, please try again.';
 				resetTurnstileIfAvailable();
 				return;
 			}

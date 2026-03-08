@@ -1185,8 +1185,7 @@ export const POST: APIRoute = async ({ request }) => {
 			};
 			const nowIso = new Date().toISOString();
 			// Log Sheets payload for debugging
-
-			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbyys70cFFF9cBcXEnD47j3rSC8AEZ7JRaKOmeh2Ehg1rQOLQtYu7pAsk8smrHS3hV0n/exec', {
+			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbz_c322kcAXLMtAnydieBXwNJ77tBsNzVDa2wFVap3EhRFx22o3opX9PXOV0-CLiftdDw/exec', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -1200,9 +1199,8 @@ export const POST: APIRoute = async ({ request }) => {
 					seo: review?.seo ?? null,
 					accessibility: review?.accessibility ?? null,
 					bestPractices: review?.bestPractices ?? null,
-					apiResponse: JSON.stringify(apiResponse),
-					timestamp: nowIso,
 					date: nowIso, // Explicitly add a date field for Google Sheets
+					apiResponse: JSON.stringify(apiResponse),
 				}),
 			});
 			sheetsResponseText = await sheetsResponse.text();
