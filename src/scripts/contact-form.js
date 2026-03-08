@@ -463,13 +463,27 @@ document.addEventListener('astro:page-load', () => {
 			setScanCompleteView(false);
 			setCellphoneHidden(false);
 			if (resultsRoot) {
-				const message = preview && typeof preview === 'object' && preview.reviewError ? escapeHtml(preview.reviewError) : 'No Core Web Vitals data is available for this site at this time.';
-				resultsRoot.innerHTML = `<div class="review-preview-card">${message}</div>`;
+				resultsRoot.innerHTML = `<div class="review-preview-card">Network request stalled. Please try again.</div>`;
 			}
+			// Show back to form button, hide submit button
+			if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'none';
+			if (typeof backToFormButton !== 'undefined' && backToFormButton) backToFormButton.style.display = 'inline-block';
 			return;
 		}
 
 		const scores = preview.scores || {};
+		const allScoresMissing = [scores.performance, scores.seo, scores.accessibility, scores.bestPractices].every((v) => v == null || v === '');
+
+		if (allScoresMissing) {
+			setScanCompleteView(false);
+			setCellphoneHidden(false);
+			if (resultsRoot) {
+				resultsRoot.innerHTML = `<div class="review-preview-card">Network request stalled. Please try again.</div>`;
+			}
+			if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'none';
+			if (typeof backToFormButton !== 'undefined' && backToFormButton) backToFormButton.style.display = 'inline-block';
+			return;
+		}
 
 		const scoreHtml = [
 			scoreCard('Performance', scores.performance),
@@ -480,14 +494,17 @@ document.addEventListener('astro:page-load', () => {
 
 		if (resultsRoot) {
 			resultsRoot.innerHTML = `
-				   <div class="review-preview-card">
-					   <div class="review-score-grid">${scoreHtml}</div>
-				   </div>
-			   `;
+					  <div class="review-preview-card">
+						  <div class="review-score-grid">${scoreHtml}</div>
+					  </div>
+				   `;
 		}
 
 		setScanCompleteView(true);
 		setCellphoneHidden(true);
+		// Show submit button, hide back to form button
+		if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'inline-block';
+		if (typeof backToFormButton !== 'undefined' && backToFormButton) backToFormButton.style.display = 'none';
 	}
 
 	function setResultsUrl(urlValue) {

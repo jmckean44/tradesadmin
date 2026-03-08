@@ -61,6 +61,13 @@ form #result {
 	font-size: 1.25rem;
 }
 
+.review-score-note {
+	color: var.$note;
+	font-size: 1rem;
+	margin-top: 1rem;
+	text-align: center;
+}
+
 .review-score-circle {
 	--score-color: #{var.$theme-clr};
 	--ring-bg: rgba(41, 54, 86, 0.16);
