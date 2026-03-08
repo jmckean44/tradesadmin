@@ -405,7 +405,7 @@
 	background: #fff;
 	margin: 0 auto;
 	//max-width: 1300px !important;
-	padding: 2rem clamp(1.25rem, 4vw, 3rem) 0;
+	padding: 3rem clamp(1.25rem, 4vw, 3rem) 1.5rem;
 	border: 1px #ddd solid;
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -413,19 +413,48 @@
 
 .pricing-card {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-	gap: 2rem;
+	grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 25vw, 400px), 1fr));
+	gap: 1.5rem;
 	margin-top: 3rem;
 	width: 100%;
 	z-index: 2;
 }
 
 .pricing-card .item {
-	padding: 1.5rem;
+	padding: 1.5rem clamp(2.75rem, 4.5vw, 3.5rem) 1.5rem 1.5rem;
 	background: var.$theme-clr-dark;
-	//color: #fff;
-	//border: 1px #ddd solid;
+	margin-bottom: 0;
 	border-radius: 10px;
+}
+
+.pricing-card .item:first-child {
+	background: var.$theme-clr-dark url('../img/icon-issue-speed.svg') no-repeat top 10px right 10px;
+	background-size: 40px;
+}
+
+.pricing-card .item:nth-child(2) {
+	background: var.$theme-clr-dark url('../img/icon-technical-seo.webp') no-repeat top 0px right 10px;
+	background-size: 56px;
+}
+
+.pricing-card .item:nth-child(3) {
+	background: var.$theme-clr-dark url('../img/icon-structure.webp') no-repeat top 10px right 5px;
+	background-size: 60px;
+}
+
+.pricing-card .item:nth-child(4) {
+	background: var.$theme-clr-dark url('../img/icon-hosting.webp') no-repeat top 10px right 10px;
+	background-size: 50px;
+}
+
+.pricing-card .item:nth-child(5) {
+	background: var.$theme-clr-dark url('../img/icon-website.webp') no-repeat top 10px right 10px;
+	background-size: 50px;
+}
+
+.pricing-card .item:last-child(6) {
+	background: var.$theme-clr-dark url('../img/icon-website.webp') no-repeat top 10px right 10px;
+	background-size: 50px;
 }
 
 .single-issue-container {
@@ -445,17 +474,21 @@
 	padding: 0 0 1rem 1rem;
 }
 
-.pricing-card.single-issue h3 {
+.single-issue h3 {
 	color: var.$theme-clr;
 	font-size: min(max(2.5rem, 3vw), 36px) !important;
 	margin-bottom: 1rem;
 }
 
-.pricing-card.single-issue p {
+.single-issue .price-desc {
+	font-family: var.$font-sans-serif-med;
+}
+
+.single-issue p {
 	color: var.$theme-clr-dark;
 }
 
-.pricing-card.single-issue .pricing-amount {
+.single-issue .pricing-amount {
 	color: var.$theme-clr-dark;
 }
 
@@ -474,6 +507,7 @@
 
 .pricing-card p {
 	color: #fff;
+	font-size: 1.2rem;
 }
 
 .pricing-amount {
@@ -483,10 +517,6 @@
 	font-family: var.$font-sans-serif-med;
 	color: #fff;
 	margin-bottom: 1.5rem;
-}
-
-.pricing-card.single-issue .price-desc {
-	font-family: var.$font-sans-serif-med;
 }
 
 .pricing-amount:last-child {
@@ -510,18 +540,17 @@
 }
 
 @media (max-width: var.$mobile) {
-	#pricing .container {
-		padding: 50px clamp(1.5rem, 3vw, 3rem) 0;
-	}
 	.pricing-card {
 		padding: 0;
 		border-left: 0;
 		margin: 0;
 	}
-	.pricing-card.single-issue {
+	.single-issue {
 		margin-bottom: 3rem;
+		border-left: 0;
+		padding: 0;
 	}
-	.pricing-card.single-issue .pricing-amount {
+	.single-issue .pricing-amount {
 		text-align: left;
 	}
 }
