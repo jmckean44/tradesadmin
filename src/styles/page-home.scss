@@ -448,10 +448,10 @@
 // 	background-size: 50px;
 // }
 
-// .pricing-card .item:nth-child(5) {
-// 	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 15px right 18px;
-// 	background-size: 43px;
-// }
+.pricing-card .item:nth-child(5) {
+	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 20px right 20px;
+	background-size: 45px;
+}
 
 // .pricing-card .item:nth-child(6) {
 // 	background: var.$theme-clr-dark url('../img/icon-credentials.webp') no-repeat top 15px right 15px;
