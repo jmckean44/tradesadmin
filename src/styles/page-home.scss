@@ -428,36 +428,6 @@
 	border-radius: 10px;
 }
 
-// .pricing-card .item:first-child {
-// 	background: var.$theme-clr-dark url('../img/icon-issue-speed.svg') no-repeat top 15px right 15px;
-// 	background-size: 40px;
-// }
-
-// .pricing-card .item:nth-child(2) {
-.pricing-card .item:nth-child(5) {
-	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 15px right 18px;
-	background-size: 43px;
-
-// .pricing-card .item:nth-child(3) {
-// 	background: var.$theme-clr-dark url('../img/icon-structure.webp') no-repeat top 10px right 10px;
-// 	background-size: 60px;
-// }
-
-// .pricing-card .item:nth-child(4) {
-// 	background: var.$theme-clr-dark url('../img/icon-hosting.webp') no-repeat top 15px right 15px;
-// 	background-size: 50px;
-// }
-
-// .pricing-card .item:nth-child(5) {
-// 	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 20px right 20px;
-// 	background-size: 45px;
-// }
-
-// .pricing-card .item:nth-child(6) {
-// 	background: var.$theme-clr-dark url('../img/icon-credentials.webp') no-repeat top 15px right 15px;
-// 	background-size: 50px;
-// }
-
 .single-issue-container {
 	padding-right: clamp(0rem, 3vw, 3rem);
 }
