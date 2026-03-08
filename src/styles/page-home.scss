@@ -1,21 +1,67 @@
-@use 'variables.scss' as var;
+@use 'variables' as var;
 
-.audit {
-	max-width: 800px;
-	margin: 0 auto 50px;
-}
-
+/* =======================
+	 INTRO
+========================== */
 #intro {
-	margin-bottom: 6rem;
+	margin-bottom: 2rem;
 }
 
 #intro .container {
-	padding: clamp(8rem, 20vw, 220px) var.$container-padding 0;
+	margin: 0 auto;
+	text-align: center;
+	padding: clamp(8rem, 15vw, 220px) var.$container-padding 0;
 }
 
-.lottie {
-	max-width: 600px;
-	margin: 60px auto 0;
+#intro h1 {
+	font-size: clamp(3.5rem, 6.5vw, 6rem);
+	line-height: 1;
+	font-family: var.$font-sans-serif-reg;
+	max-width: 1100px;
+	margin: 0 auto 2rem;
+	text-align: center;
+	letter-spacing: -1px;
+}
+
+#intro h1 span {
+	font-family: var.$font-sans-serif-bold;
+	background: linear-gradient(to right, #10d800 40%, #ff5000 80%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-size: 500% auto;
+	animation: textShine 3s ease-in-out infinite alternate;
+}
+
+#intro p.tagline {
+	font-size: clamp(1.75rem, 3vw, 2.25rem);
+	line-height: 1.2;
+	margin: 0 auto 2rem;
+	text-align: center;
+	max-width: clamp(500px, 80%, 1000px);
+	letter-spacing: -1px;
+}
+
+#intro p.tagline span {
+	font-family: var.$font-sans-serif-semibold;
+}
+
+#intro p.disclaimer {
+	font-size: 2;
+	line-height: 1.2;
+	margin: 1rem auto 4rem;
+	text-align: center;
+	max-width: clamp(500px, 80%, 1000px);
+	letter-spacing: -1px;
+}
+
+@keyframes textShine {
+	0% {
+		background-position: 0% 50%;
+	}
+	100% {
+		background-position: 100% 50%;
+	}
 }
 
 /* =======================
@@ -30,7 +76,7 @@
 #pricing,
 #testimonials,
 #contact {
-	scroll-margin-top: calc(var.$header-height-desktop + 24px);
+	scroll-margin-top: calc(var.$header-height-desktop + 20px);
 }
 
 @media (max-width: var.$tablet) {
@@ -43,7 +89,7 @@
 	#pricing,
 	#testimonials,
 	#contact {
-		scroll-margin-top: calc(var.$header-height-tablet + 20px);
+		scroll-margin-top: calc(var.$header-height-tablet + 16px);
 	}
 }
 
@@ -57,7 +103,7 @@
 	#pricing,
 	#testimonials,
 	#contact {
-		scroll-margin-top: calc(var.$header-height-mobile + 16px);
+		scroll-margin-top: calc(var.$header-height-mobile + 10px);
 	}
 }
 
@@ -523,6 +569,15 @@
 	}
 	.single-issue .pricing-amount {
 		text-align: left;
+	}
+}
+
+@media (max-width: 450px) {
+	#pricing .container {
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		padding: 0 0 1.5rem;
 	}
 }
 

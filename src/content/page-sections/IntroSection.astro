@@ -1,79 +1,181 @@
 ---
 import { Image } from 'astro:assets';
 import technical from '../../img/technical.webp';
-import localseo from '../../img/local-seo.webp';
-import iconStructure from '../../img/icon-structure.webp';
-import hosting from '../../img/icon-audit.webp';
 ---
 
 <section id="intro">
 	<div class="container">
-		<div class="swiper swiper-intro">
-			<div class="swiper-wrapper">
-				<div class="swiper-slide slide-1">
-					<div class="flex padding-x align-middle">
-						<div class="cell small-18 medium-10">
-							<h1>
-								Technical<strong> <span class="theme-clr">web support</span></strong>
-								<span class="txt-light">for</span>
-								<strong>HVAC, plumbing, electrical</strong> & other contractors in the <strong>GTA</strong>.
-							</h1>
-						</div>
-						<div class="cell small-18 medium-8 center performance">
-							<Image src={technical} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
-						</div>
+		<h1>Your website may be <span>losing leads.</span></h1>
+		<p class="tagline">
+			We identify hidden technical issues and <span class="semibold">correct them.</span>
+		</p>
+
+		<div id="before-after">
+			<div class="review-preview-card mock-scan">
+				<div class="review-score-note center"><strong>Typical contractor website diagnostic</strong></div>
+				<div class="review-score-grid">
+					<div class="review-score-item is-poor">
+						<div class="review-score-circle" style="--score:40"><span>40</span></div>
+						<strong>Performance</strong>
 					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="flex padding-x align-middle">
-						<div class="cell small-18 medium-10">
-							<h1><strong>Performance Optimization</strong></h1>
-							<p class="txt-lrg">
-								<span class="semibold">Core Web Vitals</span> diagnostics, layout stabilization, and <span class="semibold">performance corrections</span>.
-							</p>
-						</div>
-						<div class="cell small-18 medium-8 center performance">
-							<Image src={technical} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
-						</div>
+					<div class="review-score-item is-poor">
+						<div class="review-score-circle" style="--score:45"><span>45</span></div>
+						<strong>SEO</strong>
 					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="flex padding-x align-middle">
-						<div class="cell small-18 medium-10">
-							<h1><strong>Technical SEO & Indexing</strong></h1>
-							<p class="txt-lrg">Improve your <span class="semibold">visibility</span> when people search for your services <span class="semibold">"near me".</span></p>
-						</div>
-						<div class="cell small-18 medium-8 center technical">
-							<Image src={localseo} alt="Technical SEO andGoogle Business Profile optimization and local search results" />
-						</div>
+					<div class="review-score-item is-average">
+						<div class="review-score-circle" style="--score:60"><span>60</span></div>
+						<strong>Accessibility</strong>
 					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="flex padding-x align-middle">
-						<div class="cell small-18 medium-10">
-							<h1><strong>Structural & Functional Corrections</strong></h1>
-							<p class="txt-lrg">
-								Fix <span class="semibold">broken layouts</span>, <span class="semibold">navigation</span>, <span class="semibold">forms</span>, and other technical inconsistencies.
-							</p>
-						</div>
-						<div class="cell small-18 medium-8 center structure">
-							<Image src={iconStructure} alt="Structure icon" class="structure" />
-						</div>
-					</div>
-				</div>
-				<div class="swiper-slide">
-					<div class="flex padding-x align-middle">
-						<div class="cell small-18 medium-10">
-							<h1><strong>Security & Maintenance</strong></h1>
-							<p class="txt-lrg">Technical support for <span class="semibold">hosting, DNS, SSL certificates,</span> and more.</p>
-						</div>
-						<div class="cell small-18 medium-8 hosting center">
-							<Image src={hosting} alt="Website Hosting, Maintenance & Support Illustration" />
-						</div>
+					<div class="review-score-item is-poor">
+						<div class="review-score-circle" style="--score:50"><span>50</span></div>
+						<strong>Best Practices</strong>
 					</div>
 				</div>
 			</div>
-			<div class="swiper-pagination"></div>
+
+			<br />
+
+			<div class="review-preview-card mock-scan">
+				<div class="review-score-note center"><strong>Common technical audit results</strong></div>
+				<div class="review-score-grid">
+					<div class="review-score-item is-good">
+						<div class="review-score-circle" style="--score:95"><span>95</span></div>
+						<strong>Performance</strong>
+					</div>
+					<div class="review-score-item is-good">
+						<div class="review-score-circle" style="--score:98"><span>98</span></div>
+						<strong>SEO</strong>
+					</div>
+					<div class="review-score-item is-good">
+						<div class="review-score-circle" style="--score:99"><span>99</span></div>
+						<strong>Accessibility</strong>
+					</div>
+					<div class="review-score-item is-good">
+						<div class="review-score-circle" style="--score:100"><span>100</span></div>
+						<strong>Best Practices</strong>
+					</div>
+				</div>
+			</div>
 		</div>
+
+		<p class="disclaimer">* Most issues are small technical fixes - not large agency projects.</p>
+
+		<div class="cta"><a class="btn" href="#contact" role="link" aria-label="link to form">CHECK YOUR WEBSITE</a></div>
 	</div>
 </section>
+
+<style lang="scss">
+	@use '../../styles/variables' as var;
+
+	// #before-after {
+	// 	margin: 2rem auto 3rem;
+	// 	max-width: 1000px;
+	// 	display: flex;
+	// 	flex-direction: row;
+	// }
+
+	.review-score-grid {
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		margin-bottom: 2rem;
+	}
+
+	.review-preview-card {
+		max-width: 800px;
+	}
+
+	.review-score-circle span {
+		font-size: 2rem;
+	}
+	.review-score-circle {
+		height: 80px;
+		width: 80px;
+	}
+	.review-score-circle:before {
+		inset: 5px;
+	}
+	.review-score-note {
+		color: var.$theme-clr-dark;
+		font-family: var.$font-sans-serif-med;
+		font-size: 1.25rem;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+	.review-score-item {
+		padding: 1.5rem 1rem;
+	}
+
+	.review-score-item strong {
+		font-size: 1rem;
+	}
+
+	@media (max-width: 600px) {
+		#before-after {
+			flex-direction: column;
+		}
+		.review-score-circle {
+			height: 80px;
+			width: 80px;
+		}
+	}
+	@media (max-width: 500px) {
+		.review-score-item {
+			padding: 1rem;
+		}
+	}
+</style>
+
+<script>
+	if (typeof window !== 'undefined') {
+		// On DOMContentLoaded, set all review-score-circle values to 0 before animation
+		window.addEventListener('DOMContentLoaded', () => {
+			document.querySelectorAll('#before-after .review-score-circle').forEach((circle) => {
+				const span = circle.querySelector('span');
+				circle.style.setProperty('--score', 0);
+				if (span) span.textContent = '0';
+			});
+		});
+
+		const beforeCircles = document.querySelectorAll('#before-after .review-preview-card.mock-scan:first-child .review-score-circle');
+		const afterCircles = document.querySelectorAll('#before-after .review-preview-card.mock-scan:last-child .review-score-circle');
+		function animateCircles(circles, delay = 0, cb) {
+			let idx = 0;
+			function animateNext() {
+				if (idx >= circles.length) {
+					if (cb) cb();
+					return;
+				}
+				const circle = circles[idx];
+				const span = circle.querySelector('span');
+				const target = parseInt(span?.getAttribute('data-score') || span?.textContent || '0', 10);
+				let current = 0;
+				const duration = 500;
+				const start = performance.now();
+				function animate(now) {
+					const elapsed = Math.min((now - start) / duration, 1);
+					const value = Math.round(elapsed * target);
+					circle.style.setProperty('--score', value);
+					if (span) span.textContent = value;
+					if (elapsed < 1) {
+						requestAnimationFrame(animate);
+					} else {
+						circle.style.setProperty('--score', target);
+						if (span) span.textContent = target;
+						idx++;
+						setTimeout(animateNext, 120);
+					}
+				}
+				// Start with 0
+				circle.style.setProperty('--score', 0);
+				if (span) span.textContent = '0';
+				setTimeout(() => requestAnimationFrame(animate), delay);
+			}
+			animateNext();
+		}
+		// Set data-score for each span for robustness
+		document.querySelectorAll('#before-after .review-score-circle span').forEach((span) => {
+			span.setAttribute('data-score', span.textContent);
+		});
+		animateCircles(beforeCircles, 0, () => animateCircles(afterCircles));
+	}
+</script>

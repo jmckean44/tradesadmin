@@ -502,9 +502,9 @@ document.addEventListener('astro:page-load', () => {
 
 		setScanCompleteView(true);
 		setCellphoneHidden(true);
-		// Show submit button, hide back to form button
-		if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'inline-block';
-		if (typeof backToFormButton !== 'undefined' && backToFormButton) backToFormButton.style.display = 'none';
+		// Show back to form button, hide submit button after successful scan
+		if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'none';
+		if (typeof backToFormButton !== 'undefined' && backToFormButton) backToFormButton.style.display = 'inline-block';
 	}
 
 	function setResultsUrl(urlValue) {

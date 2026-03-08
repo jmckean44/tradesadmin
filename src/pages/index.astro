@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import '../styles/page-home.scss';
 import '../styles/form.scss';
-import '../styles/swiper-intro.scss';
 import '../styles/swiper-testimonials.scss';
 import gbp from '../img/gbp-mobile.webp';
 import testimonials from '../img/testimonials.webp';
@@ -32,13 +31,10 @@ import PricingSection from '../content/page-sections/PricingSection.astro';
 import ProcessSection from '../content/page-sections/ProcessSection.astro';
 import TestimonialsSection from '../content/page-sections/TestimonialsSection.astro';
 import ContactSection from '../content/page-sections/ContactSection.astro';
-
-import TopCTA from '../content/page-sections/TopCTA.astro';
 ---
 
 <Layout pageTitle="description" pageSiteTitles="">
 	<IntroSection />
-	<TopCTA />
 	<ServicesIntroSection />
 	<MasonrySection />
 	<ServicesSection />
@@ -48,7 +44,6 @@ import TopCTA from '../content/page-sections/TopCTA.astro';
 	<TestimonialsSection />
 	<ContactSection />
 
-	<script src="../scripts/swiper-intro.js"></script>
 	<script src="../scripts/swiper-testimonials.js"></script>
 	<script src="../scripts/nav-active-scroll.js"></script>
 	<script src="../scripts/lazyload-videos.js"></script>
