@@ -228,6 +228,7 @@ h6 {
 	color: var.$font-clr;
 	margin: 0 0 1.5rem;
 	line-height: 1;
+	text-wrap: pretty;
 }
 
 h1 {
@@ -251,19 +252,6 @@ h2 {
 	position: relative;
 	z-index: 1;
 }
-
-// .eyebrow::before {
-// 	content: '';
-// 	position: absolute;
-// 	left: -160px; /* extend off the page */
-// 	top: 50%;
-// 	transform: translateY(-80%);
-// 	width: 60px;
-// 	height: 50px;
-// 	background: var.$theme-clr;
-// 	border-radius: 0 25px 25px 0;
-// 	z-index: -1;
-// }
 
 .eyebrow:before {
 	position: absolute;

@@ -17,8 +17,8 @@
 	font-size: clamp(3.5rem, 6.5vw, 6rem);
 	line-height: 1;
 	font-family: var.$font-sans-serif-reg;
-	max-width: 1100px;
-	margin: 0 auto 2rem;
+	//max-width: 1100px;
+	margin: 0 auto 3rem;
 	text-align: center;
 	letter-spacing: -1px;
 }
@@ -36,7 +36,7 @@
 #intro p.tagline {
 	font-size: clamp(1.75rem, 3vw, 2.25rem);
 	line-height: 1.2;
-	margin: 0 auto 2rem;
+	margin: 0 auto 4rem;
 	text-align: center;
 	max-width: clamp(500px, 80%, 1000px);
 	letter-spacing: -1px;

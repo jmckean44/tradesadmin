@@ -7,12 +7,12 @@ import technical from '../../img/technical.webp';
 	<div class="container">
 		<h1>Your website may be <span>losing leads.</span></h1>
 		<p class="tagline">
-			We identify hidden technical issues and <span class="semibold">correct them.</span>
+			Technical issues: <span class="semibold">detected</span> and <span class="semibold">corrected</span>.
 		</p>
 
 		<div id="before-after">
 			<div class="review-preview-card mock-scan">
-				<div class="review-score-note center"><strong>Typical contractor website diagnostic</strong></div>
+				<div class="review-score-note center">Typical contractor website diagnostic</div>
 				<div class="review-score-grid">
 					<div class="review-score-item is-poor">
 						<div class="review-score-circle" style="--score:40"><span>40</span></div>
@@ -36,7 +36,7 @@ import technical from '../../img/technical.webp';
 			<br />
 
 			<div class="review-preview-card mock-scan">
-				<div class="review-score-note center"><strong>Common technical audit results</strong></div>
+				<div class="review-score-note center">Common technical audit results</div>
 				<div class="review-score-grid">
 					<div class="review-score-item is-good">
 						<div class="review-score-circle" style="--score:95"><span>95</span></div>
@@ -75,7 +75,7 @@ import technical from '../../img/technical.webp';
 	// }
 
 	.review-score-grid {
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
 		margin-bottom: 2rem;
 	}
 
@@ -96,7 +96,7 @@ import technical from '../../img/technical.webp';
 	.review-score-note {
 		color: var.$theme-clr-dark;
 		font-family: var.$font-sans-serif-med;
-		font-size: 1.25rem;
+		font-size: clamp(1.1rem, 1.5vw, 1.25rem);
 		margin-top: 1rem;
 		margin-bottom: 1rem;
 		text-align: center;
@@ -104,14 +104,20 @@ import technical from '../../img/technical.webp';
 	.review-score-item {
 		padding: 1.5rem 1rem;
 	}
-
 	.review-score-item strong {
-		font-size: 1rem;
+		font-size: clamp(1rem, 1.25vw, 1.25rem);
+		line-height: 1;
+		text-align: center;
 	}
 
 	@media (max-width: 600px) {
 		#before-after {
 			flex-direction: column;
+		}
+		.review-score-grid {
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-rows: repeat(2, 1fr);
+			gap: 1rem;
 		}
 		.review-score-circle {
 			height: 80px;
@@ -126,19 +132,16 @@ import technical from '../../img/technical.webp';
 </style>
 
 <script>
-	if (typeof window !== 'undefined') {
-		// On DOMContentLoaded, set all review-score-circle values to 0 before animation
-		window.addEventListener('DOMContentLoaded', () => {
-			document.querySelectorAll('#before-after .review-score-circle').forEach((circle) => {
-				const span = circle.querySelector('span');
-				circle.style.setProperty('--score', 0);
-				if (span) span.textContent = '0';
-			});
+	document.addEventListener('DOMContentLoaded', function () {
+		// Set data-score for each span to the intended value (from the HTML, not 0)
+		document.querySelectorAll('#before-after .review-score-circle').forEach(function (circle: Element) {
+			var span = circle.querySelector('span');
+			if (span) span.setAttribute('data-score', span.textContent || '');
+			(circle instanceof HTMLElement ? circle : null)?.style.setProperty('--score', '0');
+			if (span) span.textContent = '0';
 		});
 
-		const beforeCircles = document.querySelectorAll('#before-after .review-preview-card.mock-scan:first-child .review-score-circle');
-		const afterCircles = document.querySelectorAll('#before-after .review-preview-card.mock-scan:last-child .review-score-circle');
-		function animateCircles(circles, delay = 0, cb) {
+		function animateCircles(circles: NodeListOf<Element> | Element[], cb?: () => void) {
 			let idx = 0;
 			function animateNext() {
 				if (idx >= circles.length) {
@@ -147,35 +150,51 @@ import technical from '../../img/technical.webp';
 				}
 				const circle = circles[idx];
 				const span = circle.querySelector('span');
-				const target = parseInt(span?.getAttribute('data-score') || span?.textContent || '0', 10);
-				let current = 0;
-				const duration = 500;
+				const target = parseInt((span && span.getAttribute('data-score')) || '0', 10);
+				const duration = 350;
 				const start = performance.now();
-				function animate(now) {
+				function animate(now: number) {
 					const elapsed = Math.min((now - start) / duration, 1);
 					const value = Math.round(elapsed * target);
-					circle.style.setProperty('--score', value);
-					if (span) span.textContent = value;
+					(circle instanceof HTMLElement ? circle : null)?.style.setProperty('--score', value.toString());
+					if (span) span.textContent = value.toString();
 					if (elapsed < 1) {
 						requestAnimationFrame(animate);
 					} else {
-						circle.style.setProperty('--score', target);
-						if (span) span.textContent = target;
+						(circle instanceof HTMLElement ? circle : null)?.style.setProperty('--score', target.toString());
+						if (span) span.textContent = target.toString();
 						idx++;
 						setTimeout(animateNext, 120);
 					}
 				}
-				// Start with 0
-				circle.style.setProperty('--score', 0);
+				(circle instanceof HTMLElement ? circle : null)?.style.setProperty('--score', '0');
 				if (span) span.textContent = '0';
-				setTimeout(() => requestAnimationFrame(animate), delay);
+				requestAnimationFrame(animate as FrameRequestCallback);
 			}
 			animateNext();
 		}
-		// Set data-score for each span for robustness
-		document.querySelectorAll('#before-after .review-score-circle span').forEach((span) => {
-			span.setAttribute('data-score', span.textContent);
-		});
-		animateCircles(beforeCircles, 0, () => animateCircles(afterCircles));
-	}
+
+		const beforeCircles: NodeListOf<Element> = document.querySelectorAll('#before-after .review-preview-card.mock-scan:first-child .review-score-circle');
+		const afterCircles: NodeListOf<Element> = document.querySelectorAll('#before-after .review-preview-card.mock-scan:last-child .review-score-circle');
+
+		let hasAnimated = false;
+		const beforeAfterSection = document.getElementById('before-after');
+		if (beforeAfterSection) {
+			const observer = new window.IntersectionObserver(
+				(entries, obs) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting && !hasAnimated) {
+							hasAnimated = true;
+							animateCircles(beforeCircles, function () {
+								animateCircles(afterCircles);
+							});
+							obs.disconnect();
+						}
+					});
+				},
+				{ threshold: 0.2 },
+			);
+			observer.observe(beforeAfterSection);
+		}
+	});
 </script>
