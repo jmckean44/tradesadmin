@@ -553,6 +553,18 @@ document.addEventListener('astro:page-load', () => {
 				}
 			}
 
+			// Fallback: if response is empty or missing preview, show a message
+			if (!data || typeof data !== 'object' || !('preview' in data)) {
+				setScanCompleteView(false);
+				setCellphoneHidden(false);
+				if (resultsRoot) {
+					resultsRoot.innerHTML = `<div class="review-preview-card">Network request stalled, please try again.</div>`;
+				}
+				result.textContent = '';
+				resetTurnstileIfAvailable();
+				return;
+			}
+
 			// Always store the full API response (success or error) in localStorage
 			localStorage.setItem(
 				'techReviewSubmission',
@@ -615,6 +627,21 @@ document.addEventListener('astro:page-load', () => {
 					result.textContent = '';
 					resetTurnstileIfAvailable();
 				}
+				return;
+			}
+
+			// Check for missing preview or all scores missing
+			const scores = data?.preview?.scores || {};
+			const allScoresMissing = !data?.preview || [scores.performance, scores.seo, scores.accessibility, scores.bestPractices].every((v) => v == null || v === '');
+
+			if (allScoresMissing) {
+				setScanCompleteView(false);
+				setCellphoneHidden(false);
+				if (resultsRoot) {
+					resultsRoot.innerHTML = `<div class="review-preview-card">Network stalled, please try again.</div>`;
+				}
+				result.textContent = '';
+				resetTurnstileIfAvailable();
 				return;
 			}
 
