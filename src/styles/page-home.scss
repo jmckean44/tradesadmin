@@ -423,6 +423,7 @@
 .pricing-card .item {
 	padding: 1.5rem 3.5rem 1.5rem 1.5rem;
 	background: var.$theme-clr-dark;
+	//background: linear-gradient(180deg, var.$theme-clr-dark 0%, rgba(16, 236, 0, 0.1) 100%);
 	margin-bottom: 0;
 	border-radius: 10px;
 }
@@ -448,8 +449,8 @@
 }
 
 .pricing-card .item:nth-child(5) {
-	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 20px right 20px;
-	background-size: 45px;
+	background: var.$theme-clr-dark url('/icon-website.webp') no-repeat top 15px right 18px;
+	background-size: 43px;
 }
 
 .pricing-card .item:nth-child(6) {
