@@ -232,36 +232,16 @@ button {
 	padding: 1rem 1.5rem;
 	cursor: pointer;
 	position: relative;
-	background: var.$theme-clr;
+	background: var.$theme-clr-dark;
 	color: #fff !important;
 	cursor: pointer;
 	display: inline-block;
 	transition: all ease 0.3s;
 }
 
-button:hover,
 .btn:hover {
-	background: var.$theme-clr-dark;
-	color: #fff !important;
-	transition: all ease 0.3s;
-}
-
-.btn.arrow {
-	background: var.$theme-clr !important;
-	//background-size: 10px !important;
-	transform: translateX(0px);
-	transition: all ease 0.3s;
-}
-
-.btn.arrow {
-	position: relative;
-	overflow: hidden;
-}
-
-.btn.arrow:hover {
-	padding-right: 2.5rem;
 	background: var.$highlight !important;
-	transform: translateX(5px);
+	color: #fff !important;
 	transition: all ease 0.3s;
 }
 

@@ -494,7 +494,7 @@ ul.bullets {
 }
 
 .btn:hover {
-	background: var.$theme-clr;
+	background: var.$highlight;
 	color: #fff;
 }
 
@@ -692,12 +692,12 @@ section {
 .cta .btn {
 	padding: 1rem 1.5rem;
 	font-size: min(max(1.75rem, 2.5vw), 24px);
-	background: var.$theme-clr;
+	background: var.$theme-clr-dark;
 	color: #fff !important;
 }
 
 .cta .btn:hover {
-	background: var.$theme-clr-dark;
+	background: var.$highlight;
 	color: #fff;
 }
 
