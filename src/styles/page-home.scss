@@ -52,7 +52,7 @@
 	margin: 1rem auto 4rem;
 	text-align: center;
 	max-width: clamp(500px, 80%, 1000px);
-	letter-spacing: -1px;
+	font-family: var.$font-sans-serif-med;
 }
 
 @keyframes textShine {

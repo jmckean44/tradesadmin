@@ -769,6 +769,8 @@ document.addEventListener('astro:page-load', () => {
 			if (formContainer instanceof HTMLElement) {
 				formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
+			// Ensure submit button is always visible after returning to form
+			if (typeof submitButton !== 'undefined' && submitButton) submitButton.style.display = 'inline-block';
 			const companyInput = document.getElementById('company');
 			if (companyInput instanceof HTMLInputElement) {
 				companyInput.focus();
