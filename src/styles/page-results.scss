@@ -26,6 +26,7 @@ form #result {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
 	margin-bottom: 2rem;
+	gap: 1.5rem;
 }
 
 .review-score-item {

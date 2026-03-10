@@ -1,54 +1,6 @@
-import dns from 'dns/promises';
-
-// Shared error message for unresolved domains
-export const DOMAIN_NOT_FOUND_ERROR = 'The website address you entered could not be found. Please check for typos and try again.';
-// Check if domain resolves
-async function isDomainResolvable(url: string): Promise<boolean> {
-	try {
-		const normalized = normalizeUrl(url);
-		const parsed = new URL(normalized);
-		const hostname = String(parsed.hostname || '')
-			.trim()
-			.toLowerCase();
-		if (!hostname) return false;
-
-		const hostCandidates = Array.from(new Set([hostname, hostname.startsWith('www.') ? hostname.slice(4) : `www.${hostname}`].filter(Boolean)));
-
-		for (const hostCandidate of hostCandidates) {
-			try {
-				await dns.lookup(hostCandidate);
-				return true;
-			} catch {
-				// continue trying fallbacks
-			}
-		}
-
-		for (const hostCandidate of hostCandidates) {
-			try {
-				const candidateUrl = new URL(normalized);
-				candidateUrl.hostname = hostCandidate;
-				const response = await withTimeout(
-					fetch(candidateUrl.toString(), {
-						method: 'HEAD',
-						redirect: 'follow',
-					}),
-					7000,
-					'Website reachability check',
-				);
-
-				if (response.status >= 100) return true;
-			} catch {
-				// continue trying fallbacks
-			}
-		}
-
-		return false;
-	} catch {
-		return false;
-	}
-}
+// Site checks (SSL, DNS, etc.) removed for simplification
 import type { APIRoute } from 'astro';
-import nodemailer from 'nodemailer';
+// import nodemailer from 'nodemailer';
 // import lighthouse from 'lighthouse';
 // import * as chromeLauncher from 'chrome-launcher';
 
@@ -120,14 +72,6 @@ type NotionSubmissionInput = {
 	preview: ReviewPreview;
 	review: Review | null;
 	reviewError: string;
-	siteChecks: {
-		sslValid: boolean | null;
-		httpStatus: number | null;
-		dnsFound: boolean | null;
-		sitemapExists: boolean | null;
-		cspPresent: boolean | null;
-		error: string;
-	};
 };
 
 const REVIEW_CACHE_TTL_MS_DEFAULT = 6 * 60 * 60 * 1000;
@@ -715,14 +659,7 @@ export const POST: APIRoute = async ({ request }) => {
 		};
 		let review: Review | null = null;
 		let reviewError = '';
-		let siteChecks: NotionSubmissionInput['siteChecks'] = {
-			sslValid: null,
-			httpStatus: null,
-			dnsFound: null,
-			sitemapExists: null,
-			cspPresent: null,
-			error: '',
-		};
+		// Site checks removed
 		let html = '';
 		let emailSent = false;
 		let emailError = '';
@@ -882,31 +819,6 @@ export const POST: APIRoute = async ({ request }) => {
 					{ status: 200 },
 				);
 			}
-			// DNS resolution check
-			if (!(await isDomainResolvable(url))) {
-				return new Response(
-					JSON.stringify({
-						ok: false,
-						message: DOMAIN_NOT_FOUND_ERROR,
-						preview: {
-							available: false,
-							scores: {
-								performance: null,
-								seo: null,
-								accessibility: null,
-								bestPractices: null,
-							},
-							reviewError: DOMAIN_NOT_FOUND_ERROR,
-						},
-						scan: {
-							available: false,
-							source: 'fallback',
-							error: DOMAIN_NOT_FOUND_ERROR,
-						},
-					}),
-					{ status: 200 },
-				);
-			}
 		}
 
 		// --- SCAN LOGIC: Use PSI API ---
@@ -969,7 +881,6 @@ export const POST: APIRoute = async ({ request }) => {
 					preview,
 					review,
 					reviewError,
-					siteChecks,
 				}),
 				12000,
 				'Notion sync',
@@ -992,108 +903,9 @@ export const POST: APIRoute = async ({ request }) => {
 					preview,
 					review,
 					reviewError,
-					siteChecks,
 				},
 			};
 			console.error('Notion sync failed:', errorDetails);
-		}
-
-		// Now perform email submission (after all variables are assigned)
-		try {
-			// Compose the email HTML (already defined above as html)
-			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
-			const fallbackRecipient = getEnv('SMTP_USER');
-			// Setup nodemailer transporter (should be configured at top-level, but safe to re-use)
-			const transporter = nodemailer.createTransport({
-				host: getEnv('SMTP_HOST'),
-				port: Number(getEnv('SMTP_PORT')) || 465,
-				secure: true,
-				auth: {
-					user: getEnv('SMTP_USER'),
-					pass: getEnv('SMTP_PASS'),
-				},
-			});
-			await withTimeout(
-				transporter.sendMail({
-					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-					to: primaryRecipient,
-					replyTo: email,
-					subject: `New submission: ${company}`,
-					html,
-				}),
-				25000,
-				'SMTP send',
-			);
-			emailSent = true;
-		} catch (err) {
-			const primaryErr = err as { message?: string };
-			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
-			const errorDetails = {
-				type: 'email',
-				time: new Date().toISOString(),
-				error: primaryMessage,
-				stack: err instanceof Error ? err.stack : undefined,
-				payload: {
-					company,
-					email,
-					url: displayUrl,
-					phone,
-					message,
-					html,
-				},
-			};
-			console.error('SMTP send failed:', errorDetails);
-
-			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
-			const fallbackRecipient = getEnv('SMTP_USER');
-			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
-			if (canRetryWithFallback) {
-				try {
-					// Setup nodemailer transporter again (safe to re-use)
-					const transporter = nodemailer.createTransport({
-						host: getEnv('SMTP_HOST'),
-						port: Number(getEnv('SMTP_PORT')) || 465,
-						secure: true,
-						auth: {
-							user: getEnv('SMTP_USER'),
-							pass: getEnv('SMTP_PASS'),
-						},
-					});
-					await withTimeout(
-						transporter.sendMail({
-							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
-							to: fallbackRecipient,
-							replyTo: email,
-							subject: `New submission: ${company}`,
-							html,
-						}),
-						25000,
-						'SMTP send retry',
-					);
-					emailSent = true;
-					emailError = '';
-				} catch (retryErr) {
-					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
-					const retryErrorDetails = {
-						type: 'email-retry',
-						time: new Date().toISOString(),
-						error: retryMessage,
-						stack: retryErr instanceof Error ? retryErr.stack : undefined,
-						payload: {
-							company,
-							email,
-							url: displayUrl,
-							phone,
-							message,
-							html,
-						},
-					};
-					console.error('SMTP send retry failed:', retryErrorDetails);
-				}
-			} else {
-				emailError = primaryMessage;
-			}
 		}
 
 		// Improved results messaging and CWV graphics
@@ -1153,160 +965,6 @@ export const POST: APIRoute = async ({ request }) => {
 		if (missingDateMessage) {
 			preview.reviewError = preview.reviewError ? `${preview.reviewError} ${missingDateMessage}` : missingDateMessage;
 		}
-		siteChecks = {
-			sslValid: null,
-			httpStatus: null,
-			dnsFound: null,
-			sitemapExists: null,
-			cspPresent: null,
-			error: '',
-		};
-		siteChecks.error = 'Skipped in simplified mode.';
-		// Notion and SMTP submission removed for testing reliability
-
-		// Send submission to Google Sheets Web App
-		let sheetsResponseText = null;
-		let sheetsResponseError = null;
-		try {
-			// Build the API response object to send to Sheets
-			const apiResponse = {
-				ok: true,
-				message: 'Submitted successfully.',
-				preview: {
-					available: preview.available,
-					scores: preview.scores,
-					reviewError: preview.reviewError,
-				},
-				scan: {
-					available: preview.available === true,
-					source: scanSource,
-					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
-				},
-			};
-			const nowIso = new Date().toISOString();
-			// Log Sheets payload for debugging
-			const sheetsResponse = await fetch('https://script.google.com/macros/s/AKfycbz_c322kcAXLMtAnydieBXwNJ77tBsNzVDa2wFVap3EhRFx22o3opX9PXOV0-CLiftdDw/exec', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					apiKey: getEnv('GS_API_KEY'),
-					company,
-					email,
-					url: displayUrl.replace(/^https?:\/\//, ''),
-					phone,
-					message,
-					performance: review?.performance ?? null,
-					seo: review?.seo ?? null,
-					accessibility: review?.accessibility ?? null,
-					bestPractices: review?.bestPractices ?? null,
-					date: nowIso, // Explicitly add a date field for Google Sheets
-					apiResponse: JSON.stringify(apiResponse),
-				}),
-			});
-			sheetsResponseText = await sheetsResponse.text();
-		} catch (sheetErr) {
-			sheetsResponseError = sheetErr instanceof Error ? sheetErr.message : String(sheetErr);
-			console.error('Google Sheets submission failed:', sheetErr);
-		}
-
-		// Send email notification to hello@tradesadmin.ca (SMTP)
-		// (Declarations moved to top)
-		try {
-			// Compose the email HTML (already defined above as html)
-			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
-			const fallbackRecipient = getEnv('SMTP_USER');
-			// Setup nodemailer transporter (should be configured at top-level, but safe to re-use)
-			const transporter = nodemailer.createTransport({
-				host: getEnv('SMTP_HOST'),
-				port: Number(getEnv('SMTP_PORT')) || 465,
-				secure: true,
-				auth: {
-					user: getEnv('SMTP_USER'),
-					pass: getEnv('SMTP_PASS'),
-				},
-			});
-			await withTimeout(
-				transporter.sendMail({
-					from: getEnv('SMTP_FROM') || getEnv('SMTP_USER'),
-					to: primaryRecipient,
-					replyTo: email,
-					subject: `New submission: ${company}`,
-					html,
-				}),
-				25000,
-				'SMTP send',
-			);
-			emailSent = true;
-		} catch (err) {
-			const primaryErr = err as { message?: string };
-			const primaryMessage = primaryErr?.message || 'SMTP send failed.';
-			const errorDetails = {
-				type: 'email',
-				time: new Date().toISOString(),
-				error: primaryMessage,
-				stack: err instanceof Error ? err.stack : undefined,
-				payload: {
-					company,
-					email,
-					url: displayUrl,
-					phone,
-					message,
-					html,
-				},
-			};
-			console.error('SMTP send failed:', errorDetails);
-
-			const primaryRecipient = getEnv('CONTACT_TO') || 'hello@tradesadmin.ca';
-			const fallbackRecipient = getEnv('SMTP_USER');
-			const canRetryWithFallback = Boolean(fallbackRecipient && primaryRecipient && fallbackRecipient !== primaryRecipient);
-			if (canRetryWithFallback) {
-				try {
-					// Setup nodemailer transporter again (safe to re-use)
-					const transporter = nodemailer.createTransport({
-						host: getEnv('SMTP_HOST'),
-						port: Number(getEnv('SMTP_PORT')) || 465,
-						secure: true,
-						auth: {
-							user: getEnv('SMTP_USER'),
-							pass: getEnv('SMTP_PASS'),
-						},
-					});
-					await withTimeout(
-						transporter.sendMail({
-							from: getEnv('SMTP_USER') || getEnv('SMTP_FROM'),
-							to: fallbackRecipient,
-							replyTo: email,
-							subject: `New submission: ${company}`,
-							html,
-						}),
-						25000,
-						'SMTP send retry',
-					);
-					emailSent = true;
-					emailError = '';
-				} catch (retryErr) {
-					const retryMessage = retryErr instanceof Error ? retryErr.message : String(retryErr);
-					emailError = `Primary send failed: ${primaryMessage}. Retry failed: ${retryMessage}`;
-					const retryErrorDetails = {
-						type: 'email-retry',
-						time: new Date().toISOString(),
-						error: retryMessage,
-						stack: retryErr instanceof Error ? retryErr.stack : undefined,
-						payload: {
-							company,
-							email,
-							url: displayUrl,
-							phone,
-							message,
-							html,
-						},
-					};
-					console.error('SMTP send retry failed:', retryErrorDetails);
-				}
-			} else {
-				emailError = primaryMessage;
-			}
-		}
 
 		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets/Notion response
 		return new Response(
@@ -1324,12 +982,6 @@ export const POST: APIRoute = async ({ request }) => {
 					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
 				},
 				notionError: notionError,
-				sheetsResponse: sheetsResponseText,
-				sheetsResponseError,
-				email: {
-					sent: emailSent,
-					error: emailError ? (isDev ? emailError : 'Unable to send your request email right now. Please contact us directly at hello@tradesadmin.ca.') : undefined,
-				},
 			}),
 			{ status: 200 },
 		);
