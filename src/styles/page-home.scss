@@ -450,9 +450,8 @@
 #pricing .container {
 	background: #fff;
 	margin: 0 auto;
-	//max-width: 1300px !important;
 	padding: 3rem clamp(1.25rem, 4vw, 3rem) 1.5rem;
-	border: 1px #ddd solid;
+	border: 1px var.$theme-clr-dark solid;
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
