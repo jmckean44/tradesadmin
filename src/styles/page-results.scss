@@ -19,10 +19,11 @@ form #result {
 
 .review-preview-card {
 	max-width: 1000px;
-	margin: 0 auto;
+	margin: 0 auto 4rem;
 }
 
 .review-score-grid {
+	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
 	margin-bottom: 2rem;
 }
@@ -51,8 +52,8 @@ form #result {
 .review-score-circle {
 	--score-color: #{var.$theme-clr};
 	--ring-bg: rgba(41, 54, 86, 0.16);
-	width: clamp(80px, 20vw, 140px);
-	height: clamp(80px, 20vw, 140px);
+	width: clamp(80px, 15vw, 140px);
+	height: clamp(80px, 15vw, 140px);
 	border-radius: 50%;
 	position: relative;
 	display: flex;
@@ -66,7 +67,7 @@ form #result {
 .review-score-circle::before {
 	content: '';
 	position: absolute;
-	inset: clamp(5px, 2vw, 8px);
+	inset: clamp(5px, 1vw, 8px);
 	border-radius: 50%;
 	background: #fff;
 }
@@ -93,4 +94,11 @@ form #result {
 
 .review-score-item.is-na .review-score-circle {
 	--score-color: #{var.$note};
+}
+
+@media (max-width: 625px) {
+	.review-score-grid {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+	}
 }

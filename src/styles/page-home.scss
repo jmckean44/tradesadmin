@@ -49,7 +49,7 @@
 #intro p.disclaimer {
 	font-size: 2;
 	line-height: 1.2;
-	margin: 1rem auto 4rem;
+	margin: 1rem auto 7rem;
 	text-align: center;
 	max-width: clamp(500px, 80%, 1000px);
 	font-family: var.$font-sans-serif-med;
@@ -160,10 +160,12 @@
 
 .masonry-item .gbp {
 	margin-top: 0;
-	max-width: 70px;
+	max-width: 50px;
 }
+
 .masonry-item img {
-	max-width: 90px;
+	max-width: 60px;
+	//filter: grayscale(100%);
 }
 
 @media (max-width: 1400px) {
@@ -212,7 +214,7 @@
 	position: relative;
 	background: #fff;
 	border-radius: 10px;
-	border: 1px var.$highlight solid;
+	border: 2px var.$highlight solid;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
@@ -261,7 +263,7 @@
 	overflow: visible;
 	top: -2rem;
 	right: 1rem;
-	width: 80px;
+	width: 70px;
 	transition: all ease 0.3s;
 }
 
@@ -374,9 +376,7 @@
 }
 
 #process .container {
-	margin: 0 auto;
-	//background: #f9f9f9;
-	border-radius: 20px;
+	margin: 140px 0 50px;
 }
 
 #process h2 {
@@ -441,7 +441,7 @@
 ========================== */
 
 #pricing {
-	margin-top: 100px;
+	margin: 100px auto 100px;
 	padding: 0 var.$container-padding;
 	//background: var.$bg-clr;
 	//background: var.$theme-clr-blue;
@@ -468,7 +468,8 @@
 
 .pricing-card .item {
 	padding: 1.5rem 3.5rem 1.5rem 1.5rem;
-	background: var.$theme-clr-dark;
+	border: 2px var.$theme-clr-dark solid;
+	//background: var.$theme-clr-dark;
 	//background: linear-gradient(180deg, var.$theme-clr-dark 0%, rgba(16, 236, 0, 0.1) 100%);
 	margin-bottom: 0;
 	border-radius: 10px;
@@ -519,11 +520,10 @@
 
 .pricing-card h3,
 .pricing-card h3 a {
-	color: var.$highlight;
+	color: var.$theme-clr-dark;
 }
 
 .pricing-card p {
-	color: #fff;
 	font-size: 1.2rem;
 }
 
@@ -532,7 +532,7 @@
 	//text-align: right;
 	line-height: 1.2;
 	font-family: var.$font-sans-serif-med;
-	color: #fff;
+	color: var.$theme-clr-dark;
 	margin-bottom: 1.5rem;
 }
 
@@ -550,7 +550,7 @@
 
 .price em {
 	font-family: var.$font-sans-serif-reg;
-	color: var.$note;
+	color: var.$note-light;
 	font-size: 60%;
 	text-align: left;
 	font-style: normal;

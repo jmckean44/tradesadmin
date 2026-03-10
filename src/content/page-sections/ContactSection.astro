@@ -45,7 +45,8 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 						<span class="helperText">Details</span>
 					</div>
 					<div class="margin-top-med margin-btm-sm">
-						<div id="turnstile-container" data-sitekey={turnstileSiteKey}></div>
+						<!-- Cloudflare Turnstile widget -->
+						<div class="cf-turnstile" data-sitekey="0x4AAAAAACoikfsHQ6JGAHNZ"></div>
 					</div>
 					<p id="result" style="display:none;"></p>
 					<button type="submit" class="btn" id="submit-btn">
@@ -86,4 +87,5 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 	</div>
 </section>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="../../scripts/contact-form.js"></script>

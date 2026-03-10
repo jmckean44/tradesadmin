@@ -13,16 +13,16 @@ import after from '../../img/after.webp';
 
 		<div id="before-after">
 			<div>
-				<p>Site With Issues</p>
+				<p class="theme-clr">With Issues</p>
 				<Image src={before} alt="Before image showing a website with technical issues" />
 			</div>
 			<div>
-				<p>After Technical Fixes</p>
+				<p class="highlight">After Fixes</p>
 				<Image src={after} alt="After image showing a website with technical issues resolved" />
 			</div>
 		</div>
 
-		<p class="disclaimer">* Most issues are small technical fixes - not large agency projects.</p>
+		<p class="disclaimer">* Common issues: broken forms, indexing errors, slow mobile pages.</p>
 
 		<div class="cta"><a class="btn" href="#contact" role="link" aria-label="link to form">CHECK YOUR WEBSITE</a></div>
 	</div>
@@ -35,7 +35,7 @@ import after from '../../img/after.webp';
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
 		margin: 0 auto 2rem;
-		max-width: 800px;
+		max-width: 650px;
 		text-align: center;
 		gap: 1rem;
 	}
@@ -43,7 +43,8 @@ import after from '../../img/after.webp';
 	#before-after p {
 		text-align: center;
 		margin-bottom: 0.25rem;
-		font-family: var.$font-sans-serif-med;
-		font-size: 1.1rem;
+		font-family: var.$font-sans-serif-bold;
+		font-size: 1.2rem;
+		text-transform: uppercase;
 	}
 </style>
