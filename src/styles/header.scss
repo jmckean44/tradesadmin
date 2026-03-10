@@ -46,10 +46,7 @@ header > div {
 }
 
 @media (max-width: var.$mobile) {
-	#header {
-		height: 70px;
-	}
-	#header.unpinned,
+	#header #header.unpinned,
 	#header.pinned {
 		padding: 0;
 		height: 70px;
@@ -58,26 +55,11 @@ header > div {
 	}
 }
 
-/* Add fade-in effect for pinned header */
-// #header.pinned.fade-in {
-// 	opacity: 0;
-// 	animation: fadeInHeader 0.5s forwards;
-// }
-
-// @keyframes fadeInHeader {
-// 	from {
-// 		opacity: 0;
-// 	}
-// 	to {
-// 		opacity: 1;
-// 	}
-// }
-
 /* =========================
 	 LOGO DESKTOP
 ============================ */
 #logo {
-	max-width: clamp(170px, 20vw, 250px);
+	max-width: clamp(150px, 20vw, 250px);
 	transition: all 0.3s ease;
 	margin-left: 1.25rem;
 	margin-bottom: 0;
@@ -103,15 +85,6 @@ header > div {
 #header.pinned #logo {
 	max-width: 150px;
 	transition: all 0.3s ease;
-}
-
-@media (max-width: var.$mobile) {
-	#logo {
-		max-width: 150px;
-	}
-	#logo img {
-		margin-top: 2px;
-	}
 }
 
 /* =======================

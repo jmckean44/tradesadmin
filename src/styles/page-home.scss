@@ -74,37 +74,14 @@
 #services,
 #process,
 #pricing,
+#contact {
+	scroll-margin-top: calc(var.$header-height-desktop + 0px);
+}
+
+#services,
 #testimonials,
 #contact {
-	scroll-margin-top: calc(var.$header-height-desktop + 20px);
-}
-
-@media (max-width: var.$tablet) {
-	#seo,
-	#maintenance,
-	#structure,
-	#performance,
-	#services,
-	#process,
-	#pricing,
-	#testimonials,
-	#contact {
-		scroll-margin-top: calc(var.$header-height-tablet + 16px);
-	}
-}
-
-@media (max-width: var.$mobile) {
-	#seo,
-	#maintenance,
-	#structure,
-	#performance,
-	#services,
-	#process,
-	#pricing,
-	#testimonials,
-	#contact {
-		scroll-margin-top: calc(var.$header-height-mobile + 10px);
-	}
+	scroll-margin-top: calc(var.$header-height-desktop - 40px);
 }
 
 /* =======================
