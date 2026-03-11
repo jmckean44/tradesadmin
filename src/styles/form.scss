@@ -232,7 +232,7 @@ button {
 	padding: 1rem 1.5rem;
 	cursor: pointer;
 	position: relative;
-	background: var.$theme-clr-dark;
+	background: var.$highlight;
 	color: #fff !important;
 	cursor: pointer;
 	display: inline-block;
@@ -240,7 +240,7 @@ button {
 }
 
 .btn:hover {
-	background: var.$highlight !important;
+	background: var.$theme-clr-dark;
 	color: #fff !important;
 	transition: all ease 0.3s;
 }

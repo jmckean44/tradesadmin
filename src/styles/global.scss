@@ -474,7 +474,7 @@ ul.bullets {
 	padding: 0.75rem 1rem;
 	cursor: pointer;
 	position: relative;
-	background: var.$theme-clr-dark;
+	background: var.$highlight;
 	color: #fff !important;
 	cursor: pointer;
 	display: inline-block;
@@ -482,7 +482,7 @@ ul.bullets {
 }
 
 .btn:hover {
-	background: var.$highlight;
+	background: var.$theme-clr-dark;
 	color: #fff;
 }
 
@@ -661,14 +661,14 @@ section {
 .cta .btn {
 	padding: 1rem 1.5rem;
 	font-size: min(max(1.75rem, 2.5vw), 24px);
-	background: var.$theme-clr-dark;
+	//background: var.$theme-clr-dark;
 	color: #fff !important;
 }
 
-.cta .btn:hover {
-	background: var.$highlight;
-	color: #fff;
-}
+// .cta .btn:hover {
+// 	background: var.$highlight;
+// 	color: #fff;
+// }
 
 .margin-top-med {
 	margin-bottom: 2rem !important;
