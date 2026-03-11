@@ -592,30 +592,6 @@ document.addEventListener('astro:page-load', () => {
 				}),
 			);
 
-			// Store Google Sheets response if present, and always store the full API response in gsSubmissionResponse
-			if (data && typeof data.sheetsResponse !== 'undefined') {
-				localStorage.setItem(
-					'gsSubmissionResponse',
-					JSON.stringify({
-						response: data.sheetsResponse,
-						error: data.sheetsResponseError || null,
-						apiResponse: data, // Store the full API response
-						timestamp: Date.now(),
-					}),
-				);
-			} else {
-				// Always store the full API response in gsSubmissionResponse for error cases too
-				localStorage.setItem(
-					'gsSubmissionResponse',
-					JSON.stringify({
-						response: null,
-						error: data?.error || null,
-						apiResponse: data,
-						timestamp: Date.now(),
-					}),
-				);
-			}
-
 			if (!response.ok) {
 				// If the error is the domain not found/typo error, show in #result, else show in #review-preview
 				const domainNotFoundError = 'The website address you entered could not be found. Please check for typos and try again.';

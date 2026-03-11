@@ -486,6 +486,21 @@ function buildReviewPreview(review: Review | null, reviewError: string, forceUna
 		};
 	}
 
+	// If all scores are missing, treat as unavailable
+	const allScoresMissing = [review.performance, review.seo, review.accessibility, review.bestPractices].every((v) => v == null || v === undefined);
+	if (allScoresMissing) {
+		return {
+			available: false,
+			scores: {
+				performance: null,
+				seo: null,
+				accessibility: null,
+				bestPractices: null,
+			},
+			reviewError: reviewError || 'No scores available.',
+		};
+	}
+
 	return {
 		available: true,
 		scores: {
@@ -974,7 +989,7 @@ export const POST: APIRoute = async ({ request }) => {
 		// If no scores and scan failed, show network stalled message and try again button
 		const hasLiveScore = review ? hasAnyLiveScore(review) : false;
 		if (!preview.available || !hasLiveScore) {
-			scanErrorMsg = 'Network stalled. Unable to retrieve scores.';
+			scanErrorMsg = 'The scan stalled, please check the captcha and try again.';
 			showTryAgain = true;
 			// If this is a retry and still fails, show back to form
 			if (scanAttempts > 1) {
