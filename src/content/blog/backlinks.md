@@ -46,6 +46,6 @@ Backlink issues occur when a website lacks high-quality inbound links or when ex
 
 ## Related Technical Issues
 
-- /insights/service-pages/
-- /insights/local-seo/
-- /insights/duplicate-content/
+- [Service Pages](/insights/service-pages/)
+- [Local SEO](/insights/local-seo/)
+- [Duplicate Content](/insights/duplicate-content/)

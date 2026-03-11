@@ -46,6 +46,6 @@ Maps listing errors occur when business information displayed in map platforms i
 
 ## Related Technical Issues
 
-- /insights/google-business-profile/
-- /insights/location-pages/
-- /insights/gbp-visibility/
+- [Google Business Profile](/insights/google-business-profile/)
+- [Location Pages](/insights/location-pages/)
+- [Google Business Profile Visibility Issues](/insights/gbp-visibility/)

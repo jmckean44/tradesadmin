@@ -47,6 +47,6 @@ JavaScript performance issues occur when scripts executed in the browser delay p
 
 ## Related Technical Issues
 
-- /insights/page-speed/
-- /insights/server-response-time/
-- /insights/hosting-problems/
+- [Page Speed](/insights/page-speed/)
+- [Server Response Time](/insights/server-response-time/)
+- [Hosting Problems](/insights/hosting-problems/)

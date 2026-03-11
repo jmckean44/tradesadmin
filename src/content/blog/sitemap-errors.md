@@ -46,6 +46,6 @@ Sitemap errors occur when XML sitemaps contain invalid URLs or incorrectly repre
 
 ## Related Technical Issues
 
-- /insights/robots-txt-errors/
-- /insights/duplicate-content/
-- /insights/redirect-errors/
+- [Robots.txt Errors](/insights/robots-txt-errors/)
+- [Duplicate Content](/insights/duplicate-content/)
+- [Redirect Errors](/insights/redirect-errors/)

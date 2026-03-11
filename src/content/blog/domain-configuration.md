@@ -48,6 +48,6 @@ Domain configuration errors occur when DNS records do not correctly map a domain
 
 ## Related Technical Issues
 
-- /insights/dns-propagation/
-- /insights/nameserver-errors/
-- /insights/domain-email-problems/
+- [DNS Propagation](/insights/dns-propagation/)
+- [Nameserver Errors](/insights/nameserver-errors/)
+- [Domain Email Problems](/insights/domain-email-problems/)

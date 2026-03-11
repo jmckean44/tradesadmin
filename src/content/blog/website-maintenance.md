@@ -46,6 +46,6 @@ Website maintenance refers to the ongoing process of keeping website software, i
 
 ## Related Technical Issues
 
-- /insights/website-errors/
-- /insights/website-security/
-- /insights/hosting-problems/
+- [Website Errors](/insights/website-errors/)
+- [Website Security](/insights/website-security/)
+- [Hosting Problems](/insights/hosting-problems/)

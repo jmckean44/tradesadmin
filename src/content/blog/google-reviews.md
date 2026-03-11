@@ -45,6 +45,6 @@ Google reviews issues occur when customer reviews are missing, filtered, or not 
 
 ## Related Technical Issues
 
-- /insights/google-business-profile/
-- /insights/gbp-visibility/
-- /insights/maps-listing-errors/
+- [Google Business Profile](/insights/google-business-profile/)
+- [Google Business Profile Visibility Issues](/insights/gbp-visibility/)
+- [Maps Listing Errors](/insights/maps-listing-errors/)

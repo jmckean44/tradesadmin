@@ -45,6 +45,6 @@ Form email delivery failures occur when form submissions are processed successfu
 
 ## Related Technical Issues
 
-- /insights/contact-form-issues/
-- /insights/domain-email-problems/
-- /insights/website-maintenance/
+- [Contact Form Issues](/insights/contact-form-issues/)
+- [Domain Email Problems](/insights/domain-email-problems/)
+- [Website Maintenance](/insights/website-maintenance/)

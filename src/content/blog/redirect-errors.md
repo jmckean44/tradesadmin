@@ -46,6 +46,6 @@ Redirect errors occur when HTTP redirects send browsers or crawlers to incorrect
 
 ## Related Technical Issues
 
-- /insights/robots-txt-errors/
-- /insights/sitemap-errors/
-- /insights/duplicate-content/
+- [robots.txt Errors](/insights/robots-txt-errors/)
+- [Sitemap Errors](/insights/sitemap-errors/)
+- [Duplicate Content](/insights/duplicate-content/)

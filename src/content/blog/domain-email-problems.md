@@ -48,6 +48,6 @@ Domain email problems occur when DNS records responsible for routing email are m
 
 ## Related Technical Issues
 
-- /insights/domain-configuration/
-- /insights/nameserver-errors/
-- /insights/dns-propagation/
+- [Domain Configuration](/insights/domain-configuration/)
+- [Nameserver Errors](/insights/nameserver-errors/)
+- [DNS Propagation](/insights/dns-propagation/)

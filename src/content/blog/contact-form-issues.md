@@ -45,6 +45,6 @@ Contact form issues occur when website forms fail to properly submit or process 
 
 ## Related Technical Issues
 
-- /insights/form-email-not-sending/
-- /insights/missing-contact-info/
-- /insights/website-maintenance/
+- [Form Email Not Sending](/insights/form-email-not-sending/)
+- [Missing Contact Info](/insights/missing-contact-info/)
+- [Website Maintenance](/insights/website-maintenance/)

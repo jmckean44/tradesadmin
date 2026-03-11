@@ -46,6 +46,6 @@ Service page issues occur when a website does not clearly define or structure th
 
 ## Related Technical Issues
 
-- /insights/local-seo/
-- /insights/location-pages/
-- /insights/backlinks/
+- [Local SEO](/insights/local-seo/)
+- [Location Pages](/insights/location-pages/)
+- [Backlinks](/insights/backlinks/)

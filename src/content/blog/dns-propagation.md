@@ -46,6 +46,6 @@ DNS propagation refers to the time required for DNS record changes to update acr
 
 ## Related Technical Issues
 
-- /insights/domain-configuration/
-- /insights/nameserver-errors/
-- /insights/domain-email-problems/
+- [Domain Configuration](/insights/domain-configuration/)
+- [Nameserver Errors](/insights/nameserver-errors/)
+- [Domain Email Problems](/insights/domain-email-problems/)

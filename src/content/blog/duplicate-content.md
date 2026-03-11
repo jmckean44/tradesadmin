@@ -46,6 +46,6 @@ Duplicate content occurs when multiple URLs present identical or substantially s
 
 ## Related Technical Issues
 
-- /insights/redirect-errors/
-- /insights/robots-txt-errors/
-- /insights/sitemap-errors/
+- [Redirect Errors](/insights/redirect-errors/)
+- [robots.txt Errors](/insights/robots-txt-errors/)
+- [Sitemap Errors](/insights/sitemap-errors/)

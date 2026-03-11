@@ -45,6 +45,6 @@ Location page issues occur when pages intended to represent specific service are
 
 ## Related Technical Issues
 
-- /insights/maps-listing-errors/
-- /insights/google-business-profile/
-- /insights/missing-contact-info/
+- [Maps Listing Errors](/insights/maps-listing-errors/)
+- [Google Business Profile](/insights/google-business-profile/)
+- [Missing Contact Info](/insights/missing-contact-info/)

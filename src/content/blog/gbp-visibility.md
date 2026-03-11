@@ -46,6 +46,13 @@ Google Business Profile visibility issues occur when a verified business listing
 
 ## Related Technical Issues
 
-- /insights/google-business-profile/
-- /insights/location-pages/
-- /insights/maps-listing-errors/
+- [Google Business Profile](/insights/google-business-profile/)
+- [Location Pages](/insights/location-pages/)
+- [Maps Listing Errors](/insights/maps-listing-errors/)
+
+---
+
+**Related Articles:**
+
+- [Google Business Profile Issues](/blog/google-business-profile/)
+- [Google Business Profile Optimization Issues](/blog/gbp-optimization/)

@@ -45,6 +45,6 @@ Website errors occur when server-side or application-level failures prevent page
 
 ## Related Technical Issues
 
-- /insights/website-maintenance/
-- /insights/hosting-problems/
-- /insights/page-speed/
+- [Website Maintenance](/insights/website-maintenance/)
+- [Hosting Problems](/insights/hosting-problems/)
+- [Page Speed](/insights/page-speed/)
