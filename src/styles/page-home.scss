@@ -201,7 +201,7 @@
 }
 
 #services .services-card:hover {
-	background: rgba(16, 236, 0, 0.127);
+	background: rgba(16, 236, 0, 0.1);
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -447,6 +447,11 @@
 	background: #f5f4ef66;
 	margin-bottom: 0;
 	border-radius: 10px;
+	transition: all 0.3s ease-in-out;
+}
+
+.pricing-card .item:hover {
+	background: rgba(16, 236, 0, 0.1);
 }
 
 .single-issue-container {
