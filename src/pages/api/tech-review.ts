@@ -662,6 +662,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		// Declare all variables that will be used throughout the handler
 		let liveScanError = '';
+		let psiRawError: any = null;
 		let reportFilename = '';
 		let preview: ReviewPreview = {
 			available: false,
@@ -868,9 +869,17 @@ export const POST: APIRoute = async ({ request }) => {
 					review = runResult.review;
 					scanSource = runResult.source;
 					break;
-				} catch (err) {
+				} catch (err: any) {
 					console.error('PSI review failed:', err);
-					const message = err instanceof Error ? err.message : String(err);
+					psiRawError = err;
+					let message = err instanceof Error ? err.message : String(err);
+					// If PSI API error, try to extract more info
+					if (err && typeof err === 'object' && err.response && typeof err.response.text === 'function') {
+						try {
+							const body = await err.response.text();
+							message += ` | PSI API response: ${body}`;
+						} catch {}
+					}
 					liveScanError = message;
 					reviewError = normalizeLiveScanErrorForUser(message, scanAttempts);
 					if (scanAttempts === 1) {
@@ -1027,6 +1036,7 @@ export const POST: APIRoute = async ({ request }) => {
 					error: scanErrorMsg || (liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined),
 					showTryAgain,
 					showBackToForm,
+					psiRawError: isDev ? psiRawError : undefined,
 				},
 				notionError: notionError,
 			}),
