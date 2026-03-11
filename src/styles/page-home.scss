@@ -176,7 +176,7 @@
 	 SERVICES
 ========================== */
 #services .container.top.btm {
-	padding: 125px 1.25rem 50px;
+	padding: 50px 1.25rem 50px;
 }
 
 #services .services-grid {
@@ -300,6 +300,10 @@
 /* =======================
 	 PROCESS
 ========================== */
+#process .container {
+	margin: 50px auto 80px;
+}
+
 .process-timeline {
 	position: relative;
 	display: grid;
@@ -349,10 +353,6 @@
 }
 .process-step:nth-child(4) .step-number {
 	animation-delay: 1.2s;
-}
-
-#process .container {
-	margin: 140px 0 50px;
 }
 
 #process h2 {
