@@ -966,11 +966,27 @@ export const POST: APIRoute = async ({ request }) => {
 			preview.reviewError = preview.reviewError ? `${preview.reviewError} ${missingDateMessage}` : missingDateMessage;
 		}
 
-		// Always return a minimal, clear JSON response, including all PSI API errors and Sheets/Notion response
+		// Custom error handling for scan failures
+		let responseMessage = '';
+		let showTryAgain = false;
+		let showBackToForm = false;
+		let scanErrorMsg = '';
+		// If no scores and scan failed, show network stalled message and try again button
+		const hasLiveScore = review ? hasAnyLiveScore(review) : false;
+		if (!preview.available || !hasLiveScore) {
+			scanErrorMsg = 'Network stalled. Unable to retrieve scores.';
+			showTryAgain = true;
+			// If this is a retry and still fails, show back to form
+			if (scanAttempts > 1) {
+				showTryAgain = false;
+				showBackToForm = true;
+			}
+		}
+		// Compose response for frontend
 		return new Response(
 			JSON.stringify({
-				ok: true,
-				message: 'Submitted successfully.',
+				ok: preview.available && hasLiveScore,
+				message: responseMessage,
 				preview: {
 					available: preview.available,
 					scores: preview.scores,
@@ -979,7 +995,9 @@ export const POST: APIRoute = async ({ request }) => {
 				scan: {
 					available: preview.available === true,
 					source: scanSource,
-					error: liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined,
+					error: scanErrorMsg || (liveScanError ? (isDev ? liveScanError : normalizeLiveScanErrorForUser(liveScanError)) : undefined),
+					showTryAgain,
+					showBackToForm,
 				},
 				notionError: notionError,
 			}),

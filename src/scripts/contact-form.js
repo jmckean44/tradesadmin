@@ -630,7 +630,7 @@ document.addEventListener('astro:page-load', () => {
 					urlInput.focus();
 				} else if (data?.error && String(data.error).trim() === invalidVerificationError) {
 					result.style.display = 'block';
-					result.textContent = 'Verification expired. Please complete the verification checkbox again and resubmit.';
+					result.textContent = 'Captcha expired or invalid. Please try again.';
 					setScanCompleteView(false);
 					setCellphoneHidden(false);
 					if (resultsRoot) resultsRoot.innerHTML = '';
