@@ -879,6 +879,13 @@ export const POST: APIRoute = async ({ request }) => {
 					precheckErrorMessage = `Server error: ${preResp.status}`;
 				}
 			} catch (err: any) {
+				// Detailed error logging
+				console.error('[tech-review precheck error]', {
+					url,
+					error: err && err.message ? err.message : err,
+					stack: err && err.stack ? err.stack : undefined,
+					timestamp: new Date().toISOString(),
+				});
 				if (err && err.message && /ssl|cert|certificate|self signed|expired/i.test(err.message)) {
 					precheckErrorType = 'ssl_error';
 					precheckErrorMessage = 'SSL certificate error (expired, invalid, or not trusted).';
