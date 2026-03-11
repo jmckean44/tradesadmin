@@ -688,6 +688,31 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const verification = await verifyTurnstileToken(turnstileToken, remoteIp);
 		if (!verification.success) {
+			// Expanded diagnostics for dev mode
+			let diagnostics = undefined;
+			if (isDev) {
+				const envVars = {
+					TURNSTILE_SECRET_KEY: getEnv('TURNSTILE_SECRET_KEY') ? 'set' : 'unset',
+					NOTION_API_KEY: getEnv('NOTION_API_KEY') ? 'set' : 'unset',
+					NOTION_DATABASE_ID: getEnv('NOTION_DATABASE_ID') ? 'set' : 'unset',
+					GS_API_KEY: getEnv('GS_API_KEY') ? 'set' : 'unset',
+					SMTP_USER: getEnv('SMTP_USER') ? 'set' : 'unset',
+					SMTP_HOST: getEnv('SMTP_HOST') ? 'set' : 'unset',
+				};
+				diagnostics = {
+					errorCodes: verification.errorCodes,
+					hostname: verification.hostname,
+					tokenPresent: Boolean(turnstileToken),
+					secretPresent: Boolean(getEnv('TURNSTILE_SECRET_KEY')),
+					envVars,
+					contentType: request.headers.get('content-type') || '',
+					bodyKeys: Object.keys(body),
+					turnstileTokenType: typeof body.turnstileToken,
+					turnstileTokenLength: typeof body.turnstileToken === 'string' ? body.turnstileToken.length : 0,
+					requestHeaders: Object.fromEntries(request.headers.entries()),
+					timestamp: new Date().toISOString(),
+				};
+			}
 			return new Response(
 				JSON.stringify({
 					ok: false,
@@ -707,18 +732,7 @@ export const POST: APIRoute = async ({ request }) => {
 						source: 'fallback',
 						error: 'Verification failed.',
 					},
-					diagnostics: isDev
-						? {
-								errorCodes: verification.errorCodes,
-								hostname: verification.hostname,
-								tokenPresent: Boolean(turnstileToken),
-								secretPresent: Boolean(getEnv('TURNSTILE_SECRET_KEY')),
-								contentType: request.headers.get('content-type') || '',
-								bodyKeys: Object.keys(body),
-								turnstileTokenType: typeof body.turnstileToken,
-								turnstileTokenLength: typeof body.turnstileToken === 'string' ? body.turnstileToken.length : 0,
-						  }
-						: undefined,
+					diagnostics,
 				}),
 				{ status: 200 },
 			);

@@ -582,7 +582,7 @@ document.addEventListener('astro:page-load', () => {
 				return;
 			}
 
-			// Always store the full API response (success or error) in localStorage
+			// Only store the techReviewSubmission in localStorage
 			localStorage.setItem(
 				'techReviewSubmission',
 				JSON.stringify({
@@ -631,11 +631,11 @@ document.addEventListener('astro:page-load', () => {
 				setScanCompleteView(false);
 				setCellphoneHidden(false);
 				if (resultsRoot) {
-					resultsRoot.innerHTML = `<div class="review-preview-card">Network stalled, please try again.</div>`;
+					resultsRoot.innerHTML = `<div class="review-preview-card">The scan stalled, please check the captcha and try again.</div>`;
 				}
 				// Always show a message in the result area as well
 				result.style.display = 'block';
-				result.textContent = 'Network stalled, please try again.';
+				result.textContent = 'The scan stalled, please check the captcha and try again.';
 				resetTurnstileIfAvailable();
 				return;
 			}
