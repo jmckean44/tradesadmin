@@ -55,5 +55,3 @@ Schema markup errors occur when structured data embedded in a webpage cannot be 
 ## Technical Website Support
 
 If schema markup errors are preventing search engines from properly understanding your website, technical troubleshooting may be required.
-
-[Technical Website Support](/)

@@ -56,5 +56,3 @@ Slow website performance occurs when a webpage requires excessive time to load a
 ## Technical Website Support
 
 If slow performance is affecting your website’s usability or search performance, technical troubleshooting may be required to identify performance bottlenecks and optimize page delivery.
-
-[Technical Website Support](/)

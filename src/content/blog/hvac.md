@@ -15,9 +15,6 @@ author: ''
 
 HVAC businesses often rely on urgent service requests. Technical website problems can prevent potential customers from contacting the business during these moments.
 
-Browse technical troubleshooting articles: [Technical Insights](/insights/)
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Website Problems for HVAC Contractors
@@ -69,7 +66,3 @@ Check these items:
 ## Next Steps
 
 Technical problems can prevent HVAC customers from contacting your business.
-
-Explore troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Return to homepage: [TradesAdmin](/)

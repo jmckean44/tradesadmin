@@ -41,5 +41,3 @@ Troubleshooting usually involves:
 ## Technical Website Support
 
 If your contractor website has technical problems, troubleshooting may be required.
-
-[Technical Website Support](/)

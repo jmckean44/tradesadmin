@@ -57,5 +57,3 @@ SEO mistakes occur when a website contains structural or configuration errors th
 ## Technical Website Support
 
 If SEO implementation mistakes are preventing your website from performing in search results, technical troubleshooting may be required to identify and correct configuration problems.
-
-[Technical Website Support](/)

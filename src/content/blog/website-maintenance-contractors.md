@@ -35,5 +35,3 @@ Without regular updates, websites may experience:
 ## Technical Website Support
 
 If your contractor website requires maintenance or troubleshooting, technical assistance may be required.
-
-[Technical Website Support](/)

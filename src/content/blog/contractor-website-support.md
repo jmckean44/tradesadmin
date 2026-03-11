@@ -42,5 +42,3 @@ Technical support typically begins with:
 ## Technical Website Support
 
 If your business website in Ontario is experiencing technical problems, troubleshooting may be required.
-
-[Technical Website Support](/)

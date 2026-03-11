@@ -52,5 +52,3 @@ WordPress updates occasionally introduce compatibility problems between plugins,
 ## Technical Website Support
 
 If a WordPress update caused your site to break, technical troubleshooting may be required to restore the website.
-
-[Technical Website Support](/)

@@ -15,10 +15,6 @@ author: ''
 
 Contractor websites are often designed to showcase services but fail to generate inquiries. Lead generation problems frequently originate from technical issues that prevent visitors from contacting the business.
 
-Insights library: [Technical Troubleshooting Articles](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -78,7 +74,3 @@ Check these items:
 ## Next Steps
 
 Lead generation problems often result from technical issues that prevent visitors from contacting the business.
-
-Explore troubleshooting resources: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

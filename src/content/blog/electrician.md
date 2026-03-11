@@ -70,7 +70,3 @@ Check these items:
 ## Next Steps
 
 Technical problems can prevent electrician customers from contacting your business.
-
-Explore troubleshooting resources: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

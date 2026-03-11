@@ -17,10 +17,6 @@ If your website receives traffic but produces no inquiries, the cause is often t
 
 Many businesses assume they need more advertising when the real issue is a malfunction within the website.
 
-Insights library: [Technical Troubleshooting Articles](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -96,7 +92,3 @@ If any of these fail, the issue may be preventing potential customers from conta
 ## Next Steps
 
 Many technical issues are invisible to website owners but immediately apparent during a structured diagnostic review.
-
-Explore more technical troubleshooting guides: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

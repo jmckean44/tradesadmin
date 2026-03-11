@@ -53,5 +53,3 @@ Broken links occur when hyperlinks on a website point to URLs that no longer exi
 ## Technical Website Support
 
 If broken links are affecting navigation or search engine crawling, technical troubleshooting may be required to locate and repair invalid URLs across the site.
-
-[Technical Website Support](/)

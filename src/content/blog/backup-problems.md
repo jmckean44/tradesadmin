@@ -53,5 +53,3 @@ Backup problems occur when a website’s backup system fails to correctly captur
 ## Technical Website Support
 
 If backup failures prevent reliable recovery of your website, technical troubleshooting may be required to configure a secure and complete backup system.
-
-[Technical Website Support](/)

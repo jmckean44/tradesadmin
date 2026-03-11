@@ -52,5 +52,3 @@ Plugin conflicts occur when multiple CMS plugins attempt to modify the same appl
 ## Technical Website Support
 
 If this issue is affecting your website, technical troubleshooting may be required.
-
-[Technical Website Support](/)

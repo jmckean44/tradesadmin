@@ -55,5 +55,3 @@ DNS errors occur when a domain name cannot be resolved into the IP address requi
 ## Technical Website Support
 
 If DNS errors prevent your domain from resolving correctly, technical troubleshooting may be required to identify and correct misconfigured DNS records.
-
-[Technical Website Support](/)

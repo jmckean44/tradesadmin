@@ -48,5 +48,3 @@ Technical help may be needed when websites experience:
 ## Technical Website Support
 
 If your contractor website requires troubleshooting or updates, technical support may be required.
-
-[Technical Website Support](/)

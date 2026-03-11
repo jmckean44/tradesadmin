@@ -15,10 +15,6 @@ Contractor websites in Toronto often experience hidden technical issues that pre
 
 These issues may affect search visibility, website performance, and lead generation.
 
-Browse technical troubleshooting articles: [Technical Insights](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Website Issues
@@ -86,7 +82,3 @@ Check these items:
 ## Next Steps
 
 If technical issues exist, potential customers in Toronto may not be able to discover or contact your business.
-
-Explore troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

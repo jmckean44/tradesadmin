@@ -15,10 +15,6 @@ author: ''
 
 Mobile performance directly affects search rankings and user behavior. Slow pages often cause visitors to leave before interacting with the website.
 
-Return to troubleshooting articles: [Technical Insights](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -29,7 +25,7 @@ Uncompressed images are a frequent cause of slow page load times.
 
 Related insight:
 
-- [/insights/image-optimization/](/insights/image-optimization/)
+- [image-optimization](/insights/image-optimization/)
 
 ---
 
@@ -39,7 +35,7 @@ Multiple tracking scripts and plugins increase page load time.
 
 Related insight:
 
-- [/insights/javascript-performance/](/insights/javascript-performance/)
+- [javascript-performance](/insights/javascript-performance/)
 
 ---
 
@@ -49,7 +45,7 @@ Hosting configuration may create delays in page delivery.
 
 Related insight:
 
-- [/insights/server-response-time/](/insights/server-response-time/)
+- [server-response-time](/insights/server-response-time/)
 
 ---
 
@@ -67,7 +63,3 @@ Check these items:
 ## Next Steps
 
 Performance issues reduce engagement and can negatively impact search rankings.
-
-Explore troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

@@ -53,5 +53,3 @@ A broken website usually indicates a technical failure within the hosting enviro
 ## Technical Website Support
 
 If your website stopped working or critical functionality is broken, technical troubleshooting may be required.
-
-[Technical Website Support](/)

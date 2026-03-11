@@ -55,5 +55,3 @@ Google Business Profile website link issues occur when the website URL associate
 ## Technical Website Support
 
 If your Google Business Profile website link does not correctly connect to your website, technical troubleshooting may be required to restore the association between your listing and your domain.
-
-[Technical Website Support](/)

@@ -56,5 +56,3 @@ Site structure issues occur when the internal organization of a website makes it
 ## Technical Website Support
 
 If poor site structure prevents search engines from discovering or prioritizing your pages, technical troubleshooting may be required to improve internal linking and navigation architecture.
-
-[Technical Website Support](/)

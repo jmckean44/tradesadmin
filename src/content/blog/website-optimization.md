@@ -15,10 +15,6 @@ author: ''
 
 Website optimization involves improving technical performance, search visibility, and user experience. Many contractor websites suffer from hidden issues that limit their effectiveness.
 
-Insights library: [Technical Troubleshooting Articles](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -77,7 +73,3 @@ Check these items:
 ## Next Steps
 
 Optimizing technical performance improves both search visibility and user experience.
-
-Explore additional troubleshooting resources: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

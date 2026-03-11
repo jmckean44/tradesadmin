@@ -15,10 +15,6 @@ author: ''
 
 Roofing contractors rely on search visibility and mobile accessibility. Technical issues may prevent customers from discovering the website or contacting the business.
 
-Browse technical troubleshooting articles: [Technical Insights](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Website Problems for Roofers
@@ -70,7 +66,3 @@ Check these items:
 ## Next Steps
 
 If technical issues exist, roofing customers may not be able to request estimates or contact your business.
-
-Browse troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

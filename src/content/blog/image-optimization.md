@@ -54,5 +54,3 @@ Image optimization issues occur when images used on a website are not properly c
 ## Technical Website Support
 
 If unoptimized images are slowing down your website, technical troubleshooting may be required to implement proper asset optimization and delivery.
-
-[Technical Website Support](/)

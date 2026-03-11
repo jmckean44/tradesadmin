@@ -58,5 +58,3 @@ If these metrics exceed recommended limits, users may experience delayed loading
 ## Technical Website Support
 
 If Core Web Vitals problems are affecting page experience or search performance, technical troubleshooting may be required to identify performance bottlenecks and improve loading behavior.
-
-[Technical Website Support](/)

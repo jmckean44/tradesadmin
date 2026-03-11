@@ -57,5 +57,3 @@ If these systems are misconfigured, websites may receive excessive spam messages
 ## Technical Website Support
 
 If spam submissions or filtering errors are affecting your website forms, technical troubleshooting may be required to configure reliable spam protection.
-
-[Technical Website Support](/)

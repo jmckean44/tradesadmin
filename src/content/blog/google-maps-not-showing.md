@@ -55,5 +55,3 @@ Google Maps not showing typically indicates a failure in the map embed or API in
 ## Technical Website Support
 
 If Google Maps fails to appear on your website, technical troubleshooting may be required to identify API configuration problems or embed errors.
-
-[Technical Website Support](/)

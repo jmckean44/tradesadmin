@@ -61,5 +61,3 @@ These diagnostic steps help isolate whether problems originate from hosting, app
 ## Technical Website Support
 
 If your business website in the GTA is experiencing technical problems, professional troubleshooting may be required to identify the underlying cause and restore functionality.
-
-[Technical Website Support](/)

@@ -55,5 +55,3 @@ Indexing problems occur when search engines successfully crawl a page but decide
 ## Technical Website Support
 
 If search engines are crawling your pages but not indexing them, technical troubleshooting may be required to determine which signals are preventing the pages from being included in search results.
-
-[Technical Website Support](/)

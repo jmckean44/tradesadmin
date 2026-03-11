@@ -55,5 +55,3 @@ Local search ranking issues occur when a business listing exists in map platform
 ## Technical Website Support
 
 If your business listing exists but performs poorly in local search results, technical troubleshooting may be required to identify missing ranking signals.
-
-[Technical Website Support](/)

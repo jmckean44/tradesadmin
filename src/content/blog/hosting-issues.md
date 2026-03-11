@@ -55,5 +55,3 @@ Hosting issues occur when the server infrastructure responsible for delivering a
 ## Technical Website Support
 
 If hosting infrastructure problems are affecting your website’s availability or performance, technical troubleshooting may be required to identify server limitations or configuration errors.
-
-[Technical Website Support](/)

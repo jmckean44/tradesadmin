@@ -15,10 +15,6 @@ author: ''
 
 A Google Business Profile is often the primary way local customers discover businesses. If the listing does not appear in search or Maps results, configuration or verification issues may exist.
 
-Troubleshooting articles: [Technical Insights](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -66,7 +62,3 @@ Check these items:
 ## Next Steps
 
 If your business listing is not appearing, potential customers may not discover your services.
-
-Explore troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

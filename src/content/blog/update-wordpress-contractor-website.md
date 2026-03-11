@@ -40,5 +40,3 @@ Typical troubleshooting steps include:
 ## Technical Website Support
 
 If WordPress updates cause website issues, technical troubleshooting may be required.
-
-[Technical Website Support](/)

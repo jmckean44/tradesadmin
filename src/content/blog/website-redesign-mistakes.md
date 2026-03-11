@@ -56,5 +56,3 @@ Website redesign mistakes occur when structural changes introduced during a site
 ## Technical Website Support
 
 If a website redesign has caused traffic loss or broken site functionality, technical troubleshooting may be required to restore search visibility and correct architectural changes.
-
-[Technical Website Support](/)

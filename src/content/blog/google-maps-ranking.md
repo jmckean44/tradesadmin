@@ -15,10 +15,6 @@ author: ''
 
 Google Maps often serves as the primary discovery channel for local service businesses. If a contractor business does not appear prominently in Maps results, configuration or technical issues may exist.
 
-Insights library: [Technical Troubleshooting Articles](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -71,5 +67,3 @@ Check these items:
 Improving Google Maps visibility requires both a properly configured business profile and a technically functional website.
 
 Explore troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

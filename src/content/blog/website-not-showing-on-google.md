@@ -17,10 +17,6 @@ If your website does not appear in Google search results, the problem is often r
 
 Search engines must be able to crawl, interpret, and index your website before it can appear in results.
 
-Insights library: [Technical Troubleshooting Articles](/insights/)
-
-Homepage: [TradesAdmin](/)
-
 ---
 
 ## Common Causes
@@ -85,7 +81,3 @@ Check these items:
 ## Next Steps
 
 If indexing problems exist, your website may remain invisible regardless of marketing or advertising efforts.
-
-Explore the troubleshooting articles: [Browse Technical Issues](/insights/)
-
-Homepage: [TradesAdmin](/)

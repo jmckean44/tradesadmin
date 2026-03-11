@@ -40,5 +40,3 @@ Hosting troubleshooting often involves:
 ## Technical Website Support
 
 If hosting problems are affecting your contractor website, technical troubleshooting may be required.
-
-[Technical Website Support](/)

@@ -56,5 +56,3 @@ A contact form not working typically indicates a failure in the form submission 
 ## Technical Website Support
 
 If your contact form cannot be submitted or fails to process user input, technical troubleshooting may be required to identify the failure point in the form handling process.
-
-[Technical Website Support](/)

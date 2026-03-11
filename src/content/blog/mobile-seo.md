@@ -58,5 +58,3 @@ If the mobile experience differs significantly from the desktop version, search 
 ## Technical Website Support
 
 If mobile usability or mobile-first indexing issues are affecting your website’s search visibility, technical troubleshooting may be required.
-
-[Technical Website Support](/)

@@ -55,5 +55,3 @@ Search visibility issues occur when a website is technically accessible but fail
 ## Technical Website Support
 
 If your website is indexed but not appearing in search results for relevant queries, technical troubleshooting may be required to identify the missing signals affecting visibility.
-
-[Technical Website Support](/)

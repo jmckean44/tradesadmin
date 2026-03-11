@@ -52,5 +52,3 @@ Robots.txt errors occur when crawler directives incorrectly prevent search engin
 ## Technical Website Support
 
 If this issue is affecting your website, technical troubleshooting may be required.
-
-[Technical Website Support](/)

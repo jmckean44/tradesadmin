@@ -55,5 +55,3 @@ Search Console errors occur when Google detects problems while crawling or index
 ## Technical Website Support
 
 If Search Console errors are preventing your pages from being indexed correctly, technical troubleshooting may be required to identify and resolve the underlying issue.
-
-[Technical Website Support](/)

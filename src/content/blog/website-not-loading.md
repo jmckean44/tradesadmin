@@ -53,5 +53,3 @@ When a website fails to load, the problem usually originates from DNS resolution
 ## Technical Website Support
 
 If your website is not loading or appears offline, technical troubleshooting may be required to restore access.
-
-[Technical Website Support](/)

@@ -56,5 +56,3 @@ SMTP problems occur when a website cannot successfully deliver email messages th
 ## Technical Website Support
 
 If SMTP configuration problems prevent your website from sending email notifications, technical troubleshooting may be required to restore reliable email delivery.
-
-[Technical Website Support](/)
