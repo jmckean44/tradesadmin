@@ -850,17 +850,74 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		// --- SCAN LOGIC: Use PSI API ---
+		// --- SCAN LOGIC: Pre-check for HTTP/SSL errors ---
 		review = null;
 		let scanSource: 'psi' | 'fallback' = 'fallback';
 		reviewError = '';
 		liveScanError = '';
 		forceUnavailablePreview = false;
 		let scanAttempts = 1;
+		let precheckErrorType: string | null = null;
+		let precheckErrorMessage: string | null = null;
+		let precheckHttpStatus: number | null = null;
 		if (!url) {
 			reviewError = 'No URL provided.';
 			liveScanError = reviewError;
 		} else {
+			// Pre-check for HTTP/SSL errors
+			try {
+				const preResp = await fetch(url, { method: 'GET', redirect: 'manual' });
+				precheckHttpStatus = preResp.status;
+				if (preResp.status === 404) {
+					precheckErrorType = 'not_found';
+					precheckErrorMessage = 'Page returned 404 Not Found.';
+				} else if (preResp.status === 403) {
+					precheckErrorType = 'forbidden';
+					precheckErrorMessage = 'Page returned 403 Forbidden.';
+				} else if (preResp.status >= 500) {
+					precheckErrorType = 'server_error';
+					precheckErrorMessage = `Server error: ${preResp.status}`;
+				}
+			} catch (err: any) {
+				if (err && err.message && /ssl|cert|certificate|self signed|expired/i.test(err.message)) {
+					precheckErrorType = 'ssl_error';
+					precheckErrorMessage = 'SSL certificate error (expired, invalid, or not trusted).';
+				} else if (err && err.message && /ENOTFOUND|EAI_AGAIN|DNS/i.test(err.message)) {
+					precheckErrorType = 'dns_error';
+					precheckErrorMessage = 'DNS error: domain not found.';
+				} else if (err && err.message && /timeout/i.test(err.message)) {
+					precheckErrorType = 'timeout';
+					precheckErrorMessage = 'Connection timed out.';
+				} else {
+					precheckErrorType = 'network_error';
+					precheckErrorMessage = err && err.message ? err.message : 'Unknown network error.';
+				}
+			}
+			// If precheck error, return immediately with error info
+			if (precheckErrorType) {
+				preview = buildReviewPreview(null, precheckErrorMessage || 'Scan failed.', true);
+				return new Response(
+					JSON.stringify({
+						ok: false,
+						message: precheckErrorMessage,
+						preview: {
+							available: false,
+							scores: preview.scores,
+							reviewError: precheckErrorMessage,
+						},
+						scan: {
+							available: false,
+							source: 'fallback',
+							errorType: precheckErrorType,
+							error: precheckErrorMessage,
+							httpStatus: precheckHttpStatus,
+						},
+						notionError: null,
+					}),
+					{ status: 200 },
+				);
+			}
+			// If no precheck error, proceed with scan attempts
 			for (; scanAttempts <= 2; scanAttempts++) {
 				try {
 					const boundedReviewTimeoutMs = Math.max(3500, Math.min(reviewTimeoutMs, requestBudgetMs - (Date.now() - requestStartedAt) - 3000));
