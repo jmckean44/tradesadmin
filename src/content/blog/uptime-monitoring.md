@@ -47,6 +47,5 @@ Uptime monitoring issues occur when a website becomes intermittently unavailable
 
 ## Related Technical Issues
 
-- [Hosting Problems](/insights/hosting-problems/)
 - [Server Response Time](/insights/server-response-time/)
 - [Page Speed](/insights/page-speed/)

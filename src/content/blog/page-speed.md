@@ -49,4 +49,3 @@ Page speed issues occur when the total time required to load and render a webpag
 
 - [Server Response Time](/insights/server-response-time/)
 - [JavaScript Performance](/insights/javascript-performance/)
-- [Hosting Problems](/insights/hosting-problems/)

@@ -47,7 +47,7 @@ WordPress updates occasionally introduce compatibility problems between plugins,
 
 - [Plugin Conflicts](/insights/plugin-conflicts/)
 - [Website Maintenance](/insights/website-maintenance/)
-- [Fix Broken Website](/fix-broken-website/)
+- [Fix Broken Website](/insights/fix-broken-website/)
 
 ## Technical Website Support
 

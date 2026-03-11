@@ -47,6 +47,5 @@ Server response time measures how long a server takes to begin sending data afte
 
 ## Related Technical Issues
 
-- [Hosting Problems](/insights/hosting-problems/)
 - [Page Speed](/insights/page-speed/)
 - [JavaScript Performance](/insights/javascript-performance/)

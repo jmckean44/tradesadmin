@@ -47,6 +47,5 @@ Website security issues arise when vulnerabilities in server software, CMS platf
 
 ## Related Technical Issues
 
-- [Malware](/insights/malware/)
 - [SSL Errors](/insights/ssl-errors/)
 - [Website Maintenance](/insights/website-maintenance/)

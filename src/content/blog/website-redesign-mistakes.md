@@ -49,7 +49,6 @@ Website redesign mistakes occur when structural changes introduced during a site
 
 ## Related Technical Issues
 
-- [Website Migration](/insights/website-migration/)
 - [Broken Links](/insights/broken-links/)
 - [Site Structure](/insights/site-structure/)
 

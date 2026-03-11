@@ -51,7 +51,6 @@ SEO mistakes occur when a website contains structural or configuration errors th
 ## Related Technical Issues
 
 - [Search Visibility](/insights/search-visibility/)
-- [Website Not Ranking](/insights/website-not-ranking/)
 - [Site Structure](/insights/site-structure/)
 
 ## Technical Website Support

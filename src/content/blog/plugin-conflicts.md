@@ -45,7 +45,6 @@ Plugin conflicts occur when multiple CMS plugins attempt to modify the same appl
 
 ## Related Technical Issues
 
-- [Plugin Updates](/insights/plugin-updates/)
 - [Website Maintenance](/insights/website-maintenance/)
 - [Website Errors](/insights/website-errors/)
 
