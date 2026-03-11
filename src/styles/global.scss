@@ -228,7 +228,7 @@ h6 {
 	color: var.$font-clr;
 	margin: 0 0 1.5rem;
 	line-height: 1;
-	text-wrap: pretty;
+	text-wrap: pretty !important;
 }
 
 h1 {
@@ -288,7 +288,7 @@ p {
 	line-height: inherit;
 	margin-bottom: 1rem;
 	text-rendering: optimizeSpeed;
-	text-wrap: pretty;
+	text-wrap: pretty !important;
 	color: var.$font-clr;
 	text-align: left;
 }
