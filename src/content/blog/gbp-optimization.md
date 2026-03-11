@@ -62,5 +62,5 @@ If your Google Business Profile exists but performs poorly in local search resul
 
 **Related Articles:**
 
-- [Google Business Profile Issues](/blog/google-business-profile/)
-- [Google Business Profile Visibility Issues](/blog/gbp-visibility/)
+- [Google Business Profile Issues](/insights/google-business-profile/)
+- [Google Business Profile Visibility Issues](/insights/gbp-visibility/)

@@ -54,5 +54,5 @@ Google Business Profile visibility issues occur when a verified business listing
 
 **Related Articles:**
 
-- [Google Business Profile Issues](/blog/google-business-profile/)
-- [Google Business Profile Optimization Issues](/blog/gbp-optimization/)
+- [Google Business Profile Issues](/insights/google-business-profile/)
+- [Google Business Profile Optimization Issues](/insights/gbp-optimization/)

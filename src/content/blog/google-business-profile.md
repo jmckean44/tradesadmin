@@ -48,10 +48,10 @@ Google Business Profile issues occur when a business listing is incomplete, unve
 
 - [Maps Listing Errors](/insights/maps-listing-errors/)
 - [Location Pages](/insights/location-pages/)
-- [Google Business Profile Visibility Issues](/blog/gbp-visibility/)
+- [Google Business Profile Visibility Issues](/insights/gbp-visibility/)
 
 ---
 
 **Related Articles:**
 
-- [Google Business Profile Optimization Issues](/blog/gbp-optimization/)
+- [Google Business Profile Optimization Issues](/insights/gbp-optimization/)
