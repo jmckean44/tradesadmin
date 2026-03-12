@@ -38,7 +38,6 @@
 	line-height: 1.2;
 	margin: 0 auto 5rem;
 	text-align: center;
-	letter-spacing: -1px;
 }
 
 #intro p.tagline span {
@@ -46,11 +45,10 @@
 }
 
 #intro p.disclaimer {
-	font-size: 2;
+	font-size: 1.5rem;
 	line-height: 1.2;
 	margin: 1rem auto 7rem;
 	text-align: center;
-	max-width: clamp(500px, 80%, 1000px);
 	font-family: var.$font-sans-serif-med;
 }
 
@@ -485,10 +483,6 @@
 	color: var.$theme-clr-dark;
 }
 
-.single-issue .pricing-amount {
-	color: var.$theme-clr-dark;
-}
-
 .pricing-card h3 {
 	font-family: var.$font-sans-serif-semibold;
 	font-size: clamp(1.5rem, 1.75vw, 1.75rem);
@@ -507,10 +501,10 @@
 }
 
 .pricing-amount {
-	font-size: 1.5rem;
+	font-size: 1.7rem;
 	//text-align: right;
 	line-height: 1.2;
-	font-family: var.$font-sans-serif-med;
+	font-family: var.$font-sans-serif-reg;
 	color: var.$note-light;
 	margin-bottom: 1.5rem;
 }
@@ -533,6 +527,12 @@
 	font-size: 60%;
 	text-align: left;
 	font-style: normal;
+}
+
+#pricing p.disclaimer {
+	font-size: clamp(1.1rem, 2vw, 1.25rem);
+	margin-top: 2rem;
+	font-family: var.$font-sans-serif-med-italic;
 }
 
 @media (max-width: var.$mobile) {
