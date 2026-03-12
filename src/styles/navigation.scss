@@ -115,7 +115,6 @@
 }
 
 .mobile-menu a {
-	//color: #fff !important;
 	font-family: var.$font-sans-serif-semibold;
 	text-transform: uppercase;
 	display: block;
@@ -123,13 +122,23 @@
 	font-size: 1.5rem;
 }
 
+.mobile-menu a:hover {
+	color: var.$theme-clr !important;
+	text-transform: uppercase;
+}
+
 .mobile-menu a.phone {
 	font-family: var.$font-sans-serif-bold;
 }
 
-.mobile-menu a:hover {
-	color: var.$theme-clr !important;
-	text-transform: uppercase;
+.mobile-menu a.email {
+	font-family: var.$font-sans-serif-bold;
+	text-transform: none;
+}
+
+.mobile-menu a.email:hover {
+	font-family: var.$font-sans-serif-bold;
+	text-transform: none;
 }
 
 @keyframes slideInMenu {
