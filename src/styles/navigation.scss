@@ -24,7 +24,7 @@
 			color: var.$font-clr;
 			display: inline-block;
 			text-align: center;
-			padding: 1.5rem clamp(0.4rem, 1vw, 1rem) 1.5rem;
+			padding: 1.4rem clamp(0.4rem, 1vw, 1rem) 1.5rem;
 			text-decoration: none;
 			text-transform: uppercase;
 			line-height: 1;
@@ -43,6 +43,15 @@
 			}
 		}
 	}
+}
+
+.site-scan a {
+	font-family: var.$font-sans-serif-bold !important;
+}
+
+.insights-link span {
+	font-size: 100%;
+	vertical-align: text-top;
 }
 
 #phone-number {
@@ -118,7 +127,7 @@
 	overflow-y: auto;
 	//background: var.$theme-clr-dark;
 	background: hsla(50, 30%, 96%, 1);
-	z-index: 99999999;
+	z-index: 1;
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.3s;
@@ -231,7 +240,7 @@
 	transform: rotate(-45deg);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 800px) {
 	#hamburger {
 		display: none;
 	}
@@ -244,7 +253,7 @@
 	}
 }
 
-@media (max-width: 899px) {
+@media (max-width: 799px) {
 	#nav-desktop {
 		display: none;
 	}

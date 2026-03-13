@@ -297,8 +297,7 @@ p {
 .bold,
 b,
 strong {
-	//font-family: var.$font-sans-serif-bold;
-	font-family: var.$font-sans-serif-bold;
+	font-family: var.$font-sans-serif-bold !important;
 }
 
 .fnt-reg {

@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import seo from '../../content/blog/images/seo.webp';
 
 export const prerender = true;
 
@@ -11,8 +13,18 @@ const blogPosts = await getCollection('blog');
 	<section id="insights-index">
 		<div class="container">
 			<div class="flex padding-x">
+				<div class="cell small-18 medium-9">
+					<h1>Insights</h1>
+					<p class="txt-lrg semibold">Technical insights on common website issues that affect visibility, performance, and customer contact.</p>
+					<p class="txt-lrg">These articles explain how problems like broken forms, SSL errors, indexing issues, and slow mobile pages can impact contractor websites and how they can be corrected.</p>
+				</div>
+				<div class="cell small-18 medium-9">
+					<Image src={seo} style="border-radius: 10px;" alt="SEO Insights" />
+				</div>
+			</div>
+			<div class="flex padding-x">
 				<div class="cell small-18">
-					<!-- <h1>Insights</h1> -->
+					<br /><br />
 
 					<ul class="insights-list">
 						{
