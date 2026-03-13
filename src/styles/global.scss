@@ -420,50 +420,6 @@ ul.bullets {
 	margin-bottom: 2rem;
 }
 
-/* =============================================
-	 LENIS
-================================================ */
-// html.lenis,
-// html.lenis body {
-// 	height: auto;
-// 	scroll-behavior: initial;
-// }
-
-// html.lenis-stopped,
-// html.nav {
-// 	overflow: hidden;
-// }
-// body {
-// 	min-height: 100vh;
-// }
-
-// .lenis.lenis-smooth {
-// 	scroll-behavior: auto;
-// }
-// .lenis.lenis-smooth [data-lenis-prevent] {
-// 	overscroll-behavior: contain;
-// }
-// .lenis.lenis-stopped {
-// 	overflow: hidden;
-// }
-// .lenis.lenis-scrolling iframe {
-// 	pointer-events: none;
-// }
-
-/* =================================
-	 BUTTONS
-==================================== */
-// button {
-// 	border: none;
-// 	text-transform: uppercase;
-// 	cursor: pointer;
-// 	transition: var.$transition-time;
-// 	margin-top: 1rem;
-// 	padding: 0;
-// 	display: block;
-// 	background: none;
-// }
-
 .btn {
 	font-size: 1rem;
 	font-family: var.$font-sans-serif-bold;
@@ -645,19 +601,18 @@ section {
 .cta {
 	text-align: center;
 	margin: 0 auto;
-	padding: 0 var.$container-padding;
 }
 
 .cta.top {
-	padding: 50px var.$container-padding 0;
+	padding: 50px 0 0;
 }
 
 .cta.btm {
-	padding: 0 var.$container-padding 100px;
+	padding: 0 0 100px;
 }
 
 .cta.top.btm {
-	padding: 50px var.$container-padding 80px;
+	padding: 50px 0 80px;
 }
 
 .cta .btn {

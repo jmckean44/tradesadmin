@@ -66,7 +66,7 @@
 		justify-content: center;
 		margin-bottom: 1rem;
 		line-height: 1.1;
-		font-size: clamp(1.5rem, 3vw, 2rem);
+		font-size: clamp(1.25rem, 4vw, 2rem);
 		font-family: var.$font-sans-serif-med;
 	}
 	li span {
@@ -76,11 +76,17 @@
 		max-width: 30px;
 	}
 
+	em {
+		font-style: normal;
+		font-size: 80%;
+	}
+
 	.before {
 		flex: 1 1 0;
 		text-align: right;
 		padding-right: 1rem;
 		white-space: wrap;
+		font-family: var.$font-sans-serif-semibold;
 	}
 
 	.arrow {
@@ -225,6 +231,10 @@
 	padding: 100px 1.25rem 0;
 }
 
+#services-intro .container ul {
+	font-family: var.$font-sans-serif-med;
+}
+
 /* =======================
 	 SERVICES
 ========================== */
@@ -266,7 +276,7 @@
 }
 
 #services .services-card p {
-	font-size: 1.2rem;
+	font-size: 1.5rem;
 	line-height: 1.2;
 	margin-bottom: 1.5rem;
 	font-family: var.$font-sans-serif-semibold;
@@ -300,6 +310,7 @@
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	font-family: var.$font-sans-serif-med;
 }
 
 .service-features li {
@@ -468,9 +479,8 @@
 /* =======================
 	 PRICING
 ========================== */
-
 #pricing {
-	margin: 150px auto 125px;
+	margin: 140px auto 70px;
 	padding: 0 var.$container-padding;
 	//background: var.$bg-clr;
 	//background: var.$theme-clr-blue;
@@ -539,8 +549,8 @@
 }
 
 .pricing-card h3 {
-	font-family: var.$font-sans-serif-semibold;
-	font-size: clamp(1.5rem, 1.75vw, 1.75rem);
+	font-family: var.$font-sans-serif-bold;
+	font-size: clamp(1.5rem, 2vw, 2rem);
 	font-weight: 500;
 	margin-bottom: 1rem;
 	line-height: 1;
@@ -560,7 +570,7 @@
 	//text-align: right;
 	line-height: 1.2;
 	font-family: var.$font-sans-serif-med;
-	color: var.$note-light;
+	color: var.$highlight;
 	margin-bottom: 1.5rem;
 }
 

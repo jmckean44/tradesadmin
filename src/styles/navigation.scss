@@ -76,11 +76,17 @@
 @media (max-width: 550px) {
 	#phone-number {
 		justify-content: flex-start;
-		font-size: 1.1rem;
-		margin: 0 0 0 1rem;
+		font-size: 1.2rem;
+		margin: 0 0 0 0.5rem;
 	}
 	.phone {
 		margin-right: 0.5rem;
+	}
+}
+
+@media (max-width: 400px) {
+	#email {
+		display: none;
 	}
 }
 
@@ -190,9 +196,9 @@
 #hamburger {
 	display: block;
 	position: absolute;
-	width: 40px;
+	width: 34px;
 	height: 44px;
-	right: 1.5rem;
+	right: 20px;
 	top: 0.65rem;
 	background: none;
 	border: none;
