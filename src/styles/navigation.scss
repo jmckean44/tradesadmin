@@ -9,7 +9,7 @@
 	justify-content: flex-end;
 	align-items: center;
 	padding-right: 1%;
-	transition: all ease 0.3s;
+	transition: all ease 0.2s;
 	ul {
 		display: flex;
 		align-items: center;
@@ -20,11 +20,11 @@
 		}
 		li a {
 			font-family: var.$font-sans-serif-semibold;
-			font-size: min(max(1.2rem, 1.5vw), 17px);
+			font-size: min(max(0.9rem, 1.5vw), 19px);
 			color: var.$font-clr;
 			display: inline-block;
 			text-align: center;
-			padding: 1.5rem clamp(0.5rem, 1vw, 1rem) 1.5rem;
+			padding: 1.5rem clamp(0.4rem, 1vw, 1rem) 1.5rem;
 			text-decoration: none;
 			text-transform: uppercase;
 			line-height: 1;
@@ -45,12 +45,44 @@
 	}
 }
 
-// #phone-number {
-// 	position: absolute;
-// 	top: 0.5rem;
-// 	font-size: 1rem;
-// 	right: 7%;
-// }
+#phone-number {
+	display: flex;
+	justify-content: flex-start;
+	align-self: center;
+	align-items: center;
+	font-size: 1.5rem;
+	font-family: var.$font-sans-serif-bold;
+	margin: 0 0 0 1.5rem;
+	//border: 1px red solid;
+}
+
+.phone {
+	margin-right: 1rem;
+}
+
+#email {
+	display: block;
+	width: 30px;
+	height: 30px;
+	background: url('../img/icon-email-clr.svg') no-repeat center center;
+	background-size: 25px;
+}
+
+#email:hover {
+	background: url('../img/icon-email.svg') no-repeat center center;
+	background-size: 29px;
+}
+
+@media (max-width: 550px) {
+	#phone-number {
+		justify-content: flex-start;
+		font-size: 1.1rem;
+		margin: 0 0 0 1rem;
+	}
+	.phone {
+		margin-right: 0.5rem;
+	}
+}
 
 /* =======================
 	 NAVIGATION 
@@ -106,7 +138,7 @@
 	padding-bottom: 100px;
 }
 .mobile-menu ul {
-	margin: 150px 0 0;
+	margin: 130px 0 0;
 	animation: slideInMenu 0.4s cubic-bezier(0.77, 0, 0.18, 1);
 }
 
@@ -196,7 +228,7 @@
 	transform: rotate(-45deg);
 }
 
-@media (min-width: 800px) {
+@media (min-width: 900px) {
 	#hamburger {
 		display: none;
 	}
@@ -209,7 +241,7 @@
 	}
 }
 
-@media (max-width: 800px) {
+@media (max-width: 899px) {
 	#nav-desktop {
 		display: none;
 	}

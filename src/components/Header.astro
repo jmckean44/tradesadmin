@@ -4,6 +4,7 @@ const currentPath = pathname.slice(1); // remove first "/"
 const sectionHref = (id: string) => (pathname === '/' ? `#${id}` : `/#${id}`);
 import { Image } from 'astro:assets';
 import logo from '../img/logo.svg';
+import iconEmail from '../img/icon-email.svg';
 import wordmark from '../img/logo-wordmark.svg';
 //import ThemeIcon from '../components/ThemeIcon.astro';
 ---
@@ -17,7 +18,10 @@ import wordmark from '../img/logo-wordmark.svg';
 				<Image src={logo} class="logo" alt="TradesAdmin logo" />
 			</a>
 		</div>
-		<!-- <div id="phone-number"><a href="tel:4169861059" class="phone" role="link" aria-label="phone">416 986 1059</a></div> -->
+		<div id="phone-number">
+			<a href="tel:4169861059" class="phone" role="link" aria-label="phone">416 986 1059</a>
+			<a href="mailto:hello@tradesadmin.ca" id="email" role="link" aria-label="email"></a>
+		</div>
 		<nav id="nav-desktop">
 			<ul>
 				<li>
@@ -41,7 +45,6 @@ import wordmark from '../img/logo-wordmark.svg';
 
 	<button class="nav-toggle" id="hamburger" aria-label="Open menu" aria-expanded="false" tabindex="0">
 		<span></span>
-		<!-- <span></span> -->
 		<span></span>
 	</button>
 </header>

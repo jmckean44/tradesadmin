@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import before from '../../img/before.webp';
 import after from '../../img/after.webp';
+import arrow from '../../img/arrow.svg';
 ---
 
 <section id="intro">
@@ -22,29 +23,65 @@ import after from '../../img/after.webp';
 			</div>
 		</div>
 
-		<p class="disclaimer"><strong>* Common issues:</strong> expired SSL certificates, broken forms, indexing errors, slow mobile page-loads.</p>
+		<div class="repairs-list">
+			<h2>Urgent repairs <span class="txt-reg">for</span> common technical issues:</h2>
+			<ul class="arrow-list">
+				<li>
+					<span class="before">Expired SSL certificate</span>
+					<span class="arrow"><Image src={arrow} alt="arrow" /></span>
+					<span class="after">“Not Secure” browser warning</span>
+				</li>
+				<li>
+					<span class="before">Broken forms</span>
+					<span class="arrow"><Image src={arrow} alt="arrow" /></span>
+					<span class="after">Missed leads</span>
+				</li>
+				<li>
+					<span class="before">Slow mobile page-loads</span>
+					<span class="arrow"><Image src={arrow} alt="arrow" /></span>
+					<span class="after">Potential customers leave</span>
+				</li>
+				<li>
+					<span class="before">Broken links</span>
+					<span class="arrow"><Image src={arrow} alt="arrow" /></span>
+					<span class="after">Cause credibility issues</span>
+				</li>
+				<li>
+					<span class="before">Indexing errors</span>
+					<span class="arrow"><Image src={arrow} alt="arrow" /></span>
+					<span class="after">Missing Google visibility</span>
+				</li>
+			</ul>
+			<!-- <ul>
+				<li>Expired SSL certificates <Image src={arrow} alt="arrow" /> <span>“Not Secure” browser warning</span></li>
+				<li>Broken forms <Image src={arrow} alt="arrow" /> <span>missed leads</span></li>
+				<li>Slow mobile page-loads <Image src={arrow} alt="arrow" /> <span>visitors leave</span></li>
+				<li>Broken links <Image src={arrow} alt="arrow" /> <span>credibility issues</span></li>
+				<li>Indexing errors <Image src={arrow} alt="arrow" /> <span>missing Google visibility</span></li>
+			</ul> -->
+		</div>
 
 		<div class="cta"><a class="btn" href="#contact" role="link" aria-label="link to form">SCAN YOUR WEBSITE</a></div>
 	</div>
+
+	<style lang="scss">
+		@use '../../styles/variables' as var;
+
+		#before-after {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+			margin: 0 auto 2rem;
+			max-width: 650px;
+			text-align: center;
+			gap: 1rem;
+		}
+
+		#before-after p {
+			text-align: center;
+			margin-bottom: 0.25rem;
+			font-family: var.$font-sans-serif-bold;
+			font-size: 1.2rem;
+			text-transform: uppercase;
+		}
+	</style>
 </section>
-
-<style lang="scss">
-	@use '../../styles/variables' as var;
-
-	#before-after {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
-		margin: 0 auto 2rem;
-		max-width: 650px;
-		text-align: center;
-		gap: 1rem;
-	}
-
-	#before-after p {
-		text-align: center;
-		margin-bottom: 0.25rem;
-		font-family: var.$font-sans-serif-bold;
-		font-size: 1.2rem;
-		text-transform: uppercase;
-	}
-</style>

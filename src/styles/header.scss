@@ -14,9 +14,7 @@ header {
 	top: 0;
 	width: 100%;
 	z-index: 999999999;
-	transition: all 0.3s ease;
-	//padding: 1rem 0;
-	//background: var.$bg-clr;
+	//transition: all 1s ease;
 	background: #fff;
 	border-top: 4px var.$theme-clr-dark solid;
 	border-bottom: 1px solid #ddd;
@@ -39,9 +37,12 @@ header > div {
 	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 	header {
 		padding: 0;
+	}
+	header > div {
+		justify-content: flex-start;
 	}
 }
 
