@@ -44,10 +44,10 @@ form #result {
 }
 
 .review-score-item strong {
-	font-family: var.$font-sans-serif-semibold;
+	font-family: var.$font-sans-serif-semibold !important;
 	line-height: 1;
 	text-align: center;
-	font-size: clamp(1rem, 1.25vw, 1.25rem);
+	font-size: clamp(1.25rem, 1.5vw, 1.75rem);
 }
 
 .review-score-circle {

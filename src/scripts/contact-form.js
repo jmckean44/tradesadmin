@@ -582,6 +582,19 @@ document.addEventListener('astro:page-load', () => {
 				return;
 			}
 
+			// Show PSI/network error if present
+			if (data?.preview?.reviewError) {
+				setScanCompleteView(false);
+				setCellphoneHidden(false);
+				if (resultsRoot) {
+					resultsRoot.innerHTML = `<div class="review-preview-card">${escapeHtml(data.preview.reviewError)}</div>`;
+				}
+				result.style.display = 'block';
+				result.textContent = data.preview.reviewError;
+				resetTurnstileIfAvailable();
+				return;
+			}
+
 			// Only store the techReviewSubmission in localStorage
 			localStorage.setItem(
 				'techReviewSubmission',
