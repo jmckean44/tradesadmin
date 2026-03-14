@@ -57,6 +57,11 @@
 	font-family: var.$font-sans-serif-semibold;
 }
 
+#intro .repairs-list h2 span:first-child {
+	font-size: clamp(1.25rem, 2vw, 1.5rem);
+	vertical-align: middle;
+}
+
 #intro .repairs-list ul.arrow-list {
 	margin: 0 0 100px;
 	font-family: var.$font-sans-serif-med;

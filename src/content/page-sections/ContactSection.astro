@@ -25,7 +25,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 						<label for="url" class="visually-hidden">URL</label>
 						<input type="text" name="url" id="url" placeholder="Website URL" inputmode="url" autocomplete="url" />
 						<span class="helperText">(example.com)</span>
-						<div class="invalid-feedback">Please provide a valid URL (example.com, http://example.com, or https://example.com)</div>
+						<div class="invalid-feedback">Please provide a valid URL (example.com or https://example.com)</div>
 					</div>
 					<div>
 						<label for="email_address" class="visually-hidden">Email</label>
@@ -50,7 +50,7 @@ const apiPath = `${import.meta.env.BASE_URL}api/tech-review/`;
 					</div>
 					<p id="result" style="display:none;"></p>
 					<button type="submit" class="btn" id="submit-btn">
-						RUN FREE SCAN <em class="loader" style="display:none;" aria-hidden="true"></em>
+						WEBSITE SCAN <em class="loader" style="display:none;" aria-hidden="true"></em>
 					</button>
 				</form>
 			</div>

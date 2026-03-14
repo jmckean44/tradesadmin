@@ -36,7 +36,7 @@ document.addEventListener('astro:page-load', () => {
 	}
 
 	function syncSubmitButtonLabel() {
-		setSubmitButtonLabel(hasUrlValue() ? 'RUN FREE SCAN' : 'SUBMIT');
+		setSubmitButtonLabel(hasUrlValue() ? 'WEBSITE SCAN' : 'SUBMIT');
 	}
 
 	function setSubmittingState(isSubmitting) {

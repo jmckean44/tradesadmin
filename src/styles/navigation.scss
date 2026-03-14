@@ -20,7 +20,7 @@
 		}
 		li a {
 			font-family: var.$font-sans-serif-semibold;
-			font-size: min(max(1rem, 1.5vw), 19px);
+			font-size: min(max(1rem, 2vw), 20px);
 			color: var.$font-clr;
 			display: inline-block;
 			text-align: center;
@@ -50,8 +50,8 @@
 }
 
 .insights-link span {
-	font-size: 100%;
-	vertical-align: text-top;
+	font-size: 60%;
+	transform: rotate(45deg);
 }
 
 #phone-number {
@@ -64,8 +64,8 @@
 }
 
 .phone {
-	margin-right: clamp(0.5rem, 1.5vw, 1rem);
-	font-size: clamp(1rem, 3vw, 2rem);
+	margin-right: 1rem;
+	font-size: clamp(1.2rem, 3vw, 2rem);
 }
 
 #email {
@@ -85,12 +85,9 @@
 	#phone-number {
 		justify-content: flex-start;
 	}
-	.phone {
-		margin-right: 0.5rem;
-	}
 }
 
-@media (max-width: 400px) {
+@media (max-width: 425px) {
 	#email {
 		display: none;
 	}
